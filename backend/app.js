@@ -1,8 +1,8 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import authRouter from "./routes/Auth.routes.js";
-import teamsRouter from "./routes/Teams.routes.js";
+import authRouter from "./routes/Auth.router.js";
+import teamRouter from "./routes/Team.router.js";
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
 // API routes
 app.use('/api/auth',authRouter);
-app.use('/api/teams',teamsRouter);
+app.use('/api/teams',teamRouter);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
