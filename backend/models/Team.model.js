@@ -11,7 +11,7 @@ const teamSchema = new mongoose.Schema({
     ref: 'User',
     validate: [arrayLimit, '{PATH} exceeds the limit of 4']
   }],
-  leaderId: {
+  leader: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
