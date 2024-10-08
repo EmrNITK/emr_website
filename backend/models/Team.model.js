@@ -6,11 +6,14 @@ const teamSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  members: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  members: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }],
     validate: [arrayLimit, '{PATH} exceeds the limit of 4']
-  }],
+  },
   leader: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
