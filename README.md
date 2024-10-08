@@ -1,4 +1,4 @@
-# EMR's Club Website Project - Contribution Guidelines
+# EMR's Club Website 3.0 - Contribution Guidelines
 
 Welcome to the EMR's Club Website Project! We appreciate your interest in contributing to our project. To ensure consistency and maintain a high standard of code quality, we have established some guidelines that all contributors should follow. Please read the following guidelines carefully before making any contributions.
 
