@@ -3,9 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import dotenv from "dotenv";
 
 dotenv.config();
-
-export const verifyJwt = asyncHandler(async (req, res, next) => {
-
+export const verifyJwt = asyncHandler(async (req, res,next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
@@ -13,7 +11,7 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
   }
 
   const decodedtoken = jwt.verify(token, process.env.SECRET);
-  
+  console.log(decodedtoken);
   req.userId = decodedtoken.id;
 
   next();
