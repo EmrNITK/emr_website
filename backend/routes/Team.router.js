@@ -9,5 +9,9 @@ teamRouter.get('/:teamId', verifyJwt, getTeamById);
 teamRouter.post('/', verifyJwt, createTeam);
 teamRouter.put('/:teamId/', verifyJwt, updateTeam);
 
+// invitation routes
+teamRouter.post('/:teamId/invite', verifyJwt, sendInvite);
+teamRouter.put('/:teamId/invite/:inviteId', verifyJwt, handleInvite);
+
 
 export default teamRouter;
