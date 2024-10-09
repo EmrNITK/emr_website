@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/User.model.js";
 import { createToken } from "../utils/jwt.js";
+import { sendOTP } from "../utils/sendOtp.js";
 
 export const register = asyncHandler(async (req, res) => {
   const isPresent = await User.findOne({ email: req.body.email });
@@ -58,30 +59,64 @@ export const logout = (req, res) => {
 };
 
 
-export const sendOTP = (req,res)=>{
-  // If user with given email exists
-  const {email} = req.body;
-
-  const user = User.findOne({email});
-  if(!user){
-    res.status(404).json({message:"User with given email not found"});
+export const sendOtp = asyncHandler(async (req, res) => {
+  // Check if user with given email exists
+  const { email } = req.body;
+  const user = User.findOne({ email });
+  if (!user) {
+    res.status(404).json({ message: "User with given email not found" });
   }
 
-  // Send mail with otp
+  // Send OTP to given email
+  await sendOTP(email);
+  res.status(200).json({ message: "OTP sent" });
+});
 
-};
 
+export const verifyOTP = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
 
-export const verifyOTP = (req,res)=>{
-  const {email,otp} = req.body;
-
-  const user = User.findOne({email});
-  if(!user){
-    res.status(404).json({message:"User with given email not found"});
+  // Check if user exists
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(404).json({ message: "User with given email not found" });
   }
 
-  if(!(otp == user.otp)){
-    res.status()
+  // Check if OTP is expired
+  const date = new Date();
+  console.log(date > user.otpExpireAt);
+  if (date > user.otpExpireAt) {
+    user.otp = null;
+    await user.save();
+    res.status(401).json({ message: "OTP expires" });
+  }
+  // Check if OTP matches
+  if (!(otp == user.otp)) {
+    res.status(401).json({ message: "OTP didn't match" });
   }
 
-}
+  // Removes OTP and save user
+  // user.otp = null;
+  await user.save()
+
+  res.status(200).json({ message: "OTP verified" });
+});
+
+export const createNewPassword = asyncHandler(async (req, res) => {
+  // Check if user exists
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404).json({ message: "User with given email not found" });
+  }
+
+  // Create hash
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Update user
+  user.password = hashedPassword;
+  await user.save();
+
+  res.status(200).json({ message: "Password Changed Successfuly" });
+});
