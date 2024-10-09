@@ -1,5 +1,5 @@
 import express from "express";
-import { register, logout, login,sendOtp,verifyOTP, createNewPassword } from "../controllers/Auth.controller.js";
+import { register, logout, login,sendOTP,verifyOTP, createNewPassword } from "../controllers/Auth.controller.js";
 import {
   validateRegistration,
   validateLogin,
@@ -13,7 +13,7 @@ authRouter.post("/login", validateLogin, login);
 
 authRouter.post("/logout", logout);
 
-authRouter.post("/forgot_password/get_otp",sendOtp);
+authRouter.post("/forgot_password/get_otp",sendOTP);
 authRouter.post("/forgot_password/verify",verifyOTP);
 authRouter.post("/forgot_password/new",createNewPassword);
 

@@ -20,7 +20,7 @@ const generateSixDigitOTP = () => {
   return otp;
 };
 
-const sendOTP = async (email) => {
+const sendOTPService = async (email) => {
   try {
     const otp = generateSixDigitOTP();
 
@@ -59,4 +59,4 @@ const sendOTP = async (email) => {
   }
 };
 
-export { sendOTP };
+export { sendOTPService};

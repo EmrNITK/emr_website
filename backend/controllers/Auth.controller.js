@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/User.model.js";
 import { createToken } from "../utils/jwt.js";
-import { sendOTP } from "../utils/sendOtp.js";
+import { sendOTPService } from "../utils/sendOTPService.js";
 
 export const register = asyncHandler(async (req, res) => {
   const isPresent = await User.findOne({ email: req.body.email });
@@ -59,7 +59,7 @@ export const logout = (req, res) => {
 };
 
 
-export const sendOtp = asyncHandler(async (req, res) => {
+export const sendOTP = asyncHandler(async (req, res) => {
   // Check if user with given email exists
   const { email } = req.body;
   const user = User.findOne({ email });
@@ -68,7 +68,7 @@ export const sendOtp = asyncHandler(async (req, res) => {
   }
 
   // Send OTP to given email
-  await sendOTP(email);
+  await sendOTPService(email);
   res.status(200).json({ message: "OTP sent" });
 });
 
