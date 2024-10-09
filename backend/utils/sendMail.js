@@ -255,6 +255,126 @@ const inviteRejectedEmail = async (user, team) => {
     console.error("Error sending rejection email: ", error.message); // Log any errors
   }
 };
+const sendjoinRequestEmail = async (user,userr) => {
+  try {
+    console.log("hehhhhhhhh", user.isAdmin);
+    const acceptUrl = `http://localhost:3000/teams/:teamId/join_request/:userId/${user._id}`;
+    const rejectUrl = `http://localhost:3000/teams/:teamId/join_request/:userId/${user._id}`;
+
+    const mailOptions = {
+      from: userr.email,
+      to: process.env.ADMIN_EMAIL,
+      subject: "Team Join Request",
+      html: `
+          <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+              <div style="border-bottom:1px solid #eee">
+                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
+                  <img width="200px" src="https://your-image-link.com/image.png" />
+                </a>
+              </div>
+              <p style="font-size:1.1em">Hello Admin,</p>
+              <p style="font-size:1.1em">${user.name} is requesting to join a team. Here are the details:</p>
+              <ul>
+                <li><strong>Name:</strong> ${user.name}</li>
+                <li><strong>Branch:</strong> ${user.branch}</li>
+                <li><strong>College Name:</strong> ${user.collegeName}</li>
+                <li><strong>Mobile No:</strong> ${user.mobileNo}</li>
+                <li><strong>Roll No:</strong> ${user.rollno}</li>
+                <li><strong>Email:</strong> ${user.email}</li>
+              </ul>
+              <p style="font-size:1.1em">Transaction ID:<br>Please review and accept or reject the request:</p>
+      
+              <!-- Accept/Reject Buttons -->
+              <div style="margin: 20px 0;">
+                <a href="${acceptUrl}" style="background-color:green;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Accept</a>
+                <a href="${rejectUrl}" style="background-color:red;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Reject</a>
+              </div>
+      
+              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <hr style="border:none;border-top:1px solid #eee" />
+            </div>
+          </div>`,
+    };
+    console.log(
+      `Sending email from: ${process.env.TEST_EMAIL} to: ${process.env.ADMIN_EMAIL}`
+    );
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending verification email: ", error.message);
+  }
+};
+const sendJoinAcceptanceEmail = async (user, team,leader) => {
+  try {
+    const mailOptions = {
+      from: process.env.TEST_EMAIL, 
+      to: user.email,
+      subject: "Team Join Request Accepted",
+      html: `
+          <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+              <div style="border-bottom:1px solid #eee">
+                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
+                  <img width="200px" src="https://your-image-link.com/image.png" />
+                </a>
+              </div>
+              <p style="font-size:1.1em">Hello ${user.name},</p>
+              <p style="font-size:1.1em">Congratulations! Your request to join the team has been accepted.</p>
+              <p style="font-size:1.1em">Here are the details:</p>
+              <ul>
+                <li><strong>Team Name:</strong> ${team.name}</li>
+                 <li><strong>Team Leader:</strong> ${leader.name}</li>
+              </ul>
+              <p style="font-size:1.1em">You can now participate in team activities and contribute to your team's success!</p>
+              
+              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <hr style="border:none;border-top:1px solid #eee" />
+            </div>
+          </div>`,
+    };
+    console.log(`Sending acceptance email to: ${user.email}`);
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending acceptance email: ", error.message);
+  }
+};
+const sendJoinRejectionEmail = async (user, team,leader) => {
+  try {
+    const mailOptions = {
+      from: process.env.TEST_EMAIL, 
+      to: user.email,
+      subject: "Team Join Request Accepted",
+      html: `
+          <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+              <div style="border-bottom:1px solid #eee">
+                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
+                  <img width="200px" src="https://your-image-link.com/image.png" />
+                </a>
+              </div>
+              <p style="font-size:1.1em">Hello ${user.name},</p>
+              <p style="font-size:1.1em">Congratulations! Your request to join the team has been rejected.</p>
+              <p style="font-size:1.1em">Please look for other team</p>
+              <p style="font-size:1.1em">We will team up next time </p>
+
+              <ul>
+                <li><strong>Team Name:</strong> ${team.name}</li>
+                 <li><strong>Team Leader:</strong> ${leader.name}</li>
+              </ul>
+              <p style="font-size:1.1em">You can now participate in team activities and contribute to your team's success!</p>
+              
+              <p style="font-size:0.9em;">Best Regards,<br />${team.name}</p>
+              <p style="font-size:0.9em;">Best Regards,<br />${leader.name}</p>
+              <hr style="border:none;border-top:1px solid #eee" />
+            </div>
+          </div>`,
+    };
+    console.log(`Sending acceptance email to: ${user.email}`);
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending acceptance email: ", error.message);
+  }
+};
 
 export {
   sendVerificationEmail,
@@ -262,5 +382,8 @@ export {
   sendRejectionEmail,
   sendInvitationEmail,
   inviteAcceptedEmail,
-  inviteRejectedEmail
+  inviteRejectedEmail,
+  sendjoinRequestEmail,
+  sendJoinAcceptanceEmail,
+  sendJoinRejectionEmail,
 };
