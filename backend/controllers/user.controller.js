@@ -7,7 +7,7 @@ export const sendMailToAdmin = asyncHandler(async (req, res) => {
   console.log(userId);
   const { transaction_id } = req.body;
   console.log(transaction_id, userId);
-  const user = await User.findOne({ id: userId });
+  const user = await User.findById(userId);
   console.log(user);
   //   const adminEmail = process.env.ADMIN_EMAIL ;
   if (!user) {
@@ -23,7 +23,8 @@ export const acceptedInviteByAdmin = asyncHandler(async (req, res) => {
   const userId = req.userId;
   console.log(userId);
 
-  const user = await User.findOne({ id: userId });
+  const user = await User.findById(userId);
+  console.log(user)
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
@@ -49,3 +50,6 @@ export const rejectedInviteByAdmin = asyncHandler(async (req, res) => {
 
   res.status(403).json({ message: `User ${userId} has been rejected.` });
 });
+
+
+
