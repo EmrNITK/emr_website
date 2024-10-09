@@ -10,7 +10,7 @@ const userRouter = express.Router();
 
 userRouter.post("/verify", verifyJwt, sendMailToAdmin);
 
-userRouter.post("/verify/accept", verifyJwt, acceptedInviteByAdmin);
+userRouter.put("/verify/accept", verifyJwt, acceptedInviteByAdmin);
 
 userRouter.post("/verify/reject", verifyJwt, rejectedInviteByAdmin);
 
