@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRouter from "./routes/Auth.router.js";
 import userRouter from "./routes/User.router.js";
-
+import teamRouter from "./routes/Team.router.js";
 
 dotenv.config();
 
@@ -33,6 +33,5 @@ app.use((err, req, res, next) => {
     const message = err.message || "Internal Server Error";
     res.status(statusCode).json({ success: false, statusCode, message });
 });
-
 
 export default app;
