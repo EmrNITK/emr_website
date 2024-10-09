@@ -2,8 +2,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRouter from "./routes/Auth.router.js";
-import userRouter from "./routes/User.router.js";
 import teamRouter from "./routes/Team.router.js";
+import inviteRouter from "./routes/Invite.router.js";
+import userRouter from "./routes/User.router.js";
 
 dotenv.config();
 
@@ -25,6 +26,9 @@ app.get('/', (req, res) => {
 
 // API routes
 app.use('/api/auth',authRouter);
+app.use('/api/teams',teamRouter);
+app.use('/api/invite',inviteRouter);
+
 app.use('/api/users',userRouter);
 app.use('/api/teams',teamRouter);
 
