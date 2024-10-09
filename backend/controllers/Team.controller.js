@@ -1,4 +1,6 @@
+import createTeamTransaction from '../db/createTeamTransaction.js';
 import Team from '../models/Team.model.js';
+import User from '../models/User.model.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 export const getAllTeams = asyncHandler(async (req, res) => {
@@ -16,20 +18,24 @@ export const getTeamById = asyncHandler(async (req, res) => {
 });
 
 export const createTeam = asyncHandler(async (req, res) => {
+    const userId = req.userId;
+    const name = req.body.name;
     const isPresent = await Team.findOne({ name: req.body.name });
+    const user = await User.findOne({ _id: userId });
 
+    // Check if user is already a member of a team.
+    if (user.teamId) {
+        res.status(409).json({ "message": "Already a member of a team" });
+    }
+
+    // Check if team name alrady exists.
     if (isPresent) {
         res.status(409).json({ "message": "Team name already exists." });
     }
 
-    const team = await Team.create({
-        name: req.body.name,
-        leader: req.userId,
-    });
+    // Use transaction to Create Team and Update User
+    const team = await createTeamTransaction(name,user);
 
-    team.members.push(req.userId);
-
-    await team.save();
     res.status(200).json({ team });
 });
 
@@ -43,13 +49,12 @@ export const updateTeam = asyncHandler(async (req, res) => {
         res.status(409).json({ "message": "Team name already exists." });
     }
 
-
     const team = await Team.updateOne({ _id: req.params.teamId }, { name });
 
     if (team.modifiedCount > 0) {
         res.status(200).json(team);
     };
 
-    res.status(500).json({"message":"Unalbe to rename"});
+    res.status(500).json({ "message": "Unalbe to rename" });
 
 });
