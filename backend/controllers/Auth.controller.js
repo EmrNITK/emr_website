@@ -56,3 +56,32 @@ export const logout = (req, res) => {
   res.clearCookie('jwt');
   res.status(200).json({ "message": "logged out succesfully" });
 };
+
+
+export const sendOTP = (req,res)=>{
+  // If user with given email exists
+  const {email} = req.body;
+
+  const user = User.findOne({email});
+  if(!user){
+    res.status(404).json({message:"User with given email not found"});
+  }
+
+  // Send mail with otp
+
+};
+
+
+export const verifyOTP = (req,res)=>{
+  const {email,otp} = req.body;
+
+  const user = User.findOne({email});
+  if(!user){
+    res.status(404).json({message:"User with given email not found"});
+  }
+
+  if(!(otp == user.otp)){
+    res.status()
+  }
+
+}
