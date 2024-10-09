@@ -5,7 +5,7 @@ import authRouter from "./routes/Auth.router.js";
 import teamRouter from "./routes/Team.router.js";
 import inviteRouter from "./routes/Invite.router.js";
 import userRouter from "./routes/User.router.js";
-
+import teamRouter from "./routes/Team.router.js";
 
 dotenv.config();
 
@@ -31,7 +31,7 @@ app.use('/api/teams',teamRouter);
 app.use('/api/invite',inviteRouter);
 
 app.use('/api/users',userRouter);
-
+app.use('/api/teams',teamRouter);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
