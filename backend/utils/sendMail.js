@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import User from "../models/User.model.js"; // Assuming you have a User model
 
 dotenv.config();
 
