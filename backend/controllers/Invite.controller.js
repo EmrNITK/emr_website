@@ -82,7 +82,7 @@ export const rejectedInviteResponse = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Team not found" });
   }
   if(team.members.indexOf(userId) != -1){
-    return res.status(404).json({message: "User is already a member of this team"});
+    return res.status(403).json({message: "User is already a member of this team"});
   }
   await inviteRejectedEmail(user, team);
 
