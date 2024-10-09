@@ -3,7 +3,7 @@ import {
   sendMailToAdmin,
   rejectedInviteByAdmin,
  acceptedInviteByAdmin,
-} from "../controllers/userController.js";
+} from "../controllers/user.controller.js";
 import { verifyJwt } from "../middlewares/auth.middlewares.js";
 
 const userRouter = express.Router();
