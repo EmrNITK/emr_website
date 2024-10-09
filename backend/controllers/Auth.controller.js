@@ -84,9 +84,10 @@ export const verifyOTP = asyncHandler(async (req, res) => {
 
   // Check if OTP is expired
   const date = new Date();
-  console.log(date > user.otpExpireAt);
+
   if (date > user.otpExpireAt) {
     user.otp = null;
+    user.otpExpireAt = null;
     await user.save();
     res.status(401).json({ message: "OTP expires" });
   }
@@ -96,7 +97,8 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   }
 
   // Removes OTP and save user
-  // user.otp = null;
+  user.otp = null;
+  user.otpExpireAt = null;
   await user.save()
 
   res.status(200).json({ message: "OTP verified" });
