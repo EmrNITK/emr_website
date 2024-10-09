@@ -25,7 +25,6 @@ export const register = asyncHandler(async (req, res) => {
   res.status(200).json(registerUser);
 });
 
-
 export const login = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -51,8 +50,26 @@ export const login = asyncHandler(async (req, res) => {
     .json({ message: "logged in successfully" });
 });
 
-
 export const logout = (req, res) => {
-  res.clearCookie('jwt');
-  res.status(200).json({ "message": "logged out succesfully" });
+  res.clearCookie("jwt");
+  res.status(200).json({ message: "logged out succesfully" });
 };
+
+export const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId=req.userId;
+  console.log("userIDD",userId)
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  const ismatch = bcrypt.compare(currentPassword, user.password);
+  if (!ismatch) {
+    res.status(401).json({ message: "currentPassword is incorrect" });
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  user.password = hashedPassword;
+  await user.save();
+  res.status(200).json({ message: "password is changed" });
+});

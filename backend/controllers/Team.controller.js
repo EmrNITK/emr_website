@@ -138,3 +138,27 @@ export const rejectTeamRequest = asyncHandler(async (req, res) => {
 
     console.log("updateTeam", updateTeam);
 });
+export const deleteMember =asyncHandler(async(req,res)=>{
+  const userId=req.userId;
+  const teamId=req.params.teamId;
+  const user=await User.findById(userId);
+  if(!user){
+    return res.status(404).json({"message":"user not found"});
+  }
+  const team=await Team.findById(teamId);
+  if(!team){
+    return res.status(404).json({"message":"team not found"});
+  }
+  const memberIndex = team.members.findIndex(member => member.equals(userId));
+  if (memberIndex === -1) {
+    return res.status(404).json({ "message": "User is not a member of this team" });
+  }
+
+  team.members.splice(memberIndex, 1);
+  await team.save();
+
+  user.teamId = null;
+  await user.save();
+
+  res.status(200).json({ "message": "Member successfully removed from the team" });
+})
