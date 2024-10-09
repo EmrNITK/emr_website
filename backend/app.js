@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 // API routes
 app.use('/api/auth',authRouter);
 app.use('/api/users',userRouter);
-
+app.use('/api/teams',teamRouter);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
