@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import {User} from '../models/User.model.js';
+import User from '../models/User.model.js';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -44,13 +44,18 @@ const sendOTP = async (email) => {
             <a href="https://your-social-link.com" style="text-decoration: none; color:#aaa;" target="_blank">@yourSocialHandle</a>
           </div>
         </div>
-      </div>`,
-};
+      </div>`
+    };
 
     await transporter.sendMail(mailOptions);
-    await User.updateOne({ email: email }, { otp: otp });
+    const date = new Date();
+    const expireAt = (date.getTime() + (5 * 60 * 1000));
+    const expireTime = new Date(expireAt);
+
+    await User.updateOne({ email: email }, { otp: otp, otpExpireAt: expireTime });
   } catch (error) {
     console.error("Error sending OTP: ", error.message);
+    throw error;
   }
 };
 
