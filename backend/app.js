@@ -5,7 +5,6 @@ import authRouter from "./routes/Auth.router.js";
 import teamRouter from "./routes/Team.router.js";
 import inviteRouter from "./routes/Invite.router.js";
 import userRouter from "./routes/User.router.js";
-import teamRouter from "./routes/Team.router.js";
 
 dotenv.config();
 

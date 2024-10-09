@@ -198,7 +198,7 @@ const inviteAcceptedEmail = async (user, team) => {
                 </a>
               </div>
               <p style="font-size:1.1em">Hello ${user.name},</p>
-              <p style="font-size:1.1em">Congratulations! You're now a member of team ${team.naem}.</p>
+              <p style="font-size:1.1em">Congratulations! You're now a member of team ${team.name}.</p>
               <p style="font-size:1.1em">We are excited to welcome you to our workshop.</p>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
               <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>

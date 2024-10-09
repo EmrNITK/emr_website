@@ -9,6 +9,5 @@ const inviteRouter = express.Router();
 inviteRouter.post('/:teamId', verifyJwt, sendInvitations);
 inviteRouter.put('/:teamId/invites/accept/:userId', acceptedInviteResponse);
 inviteRouter.post('/:teamId/invites/reject/:userId', rejectedInviteResponse);
-// inviteId is the memberId of those who have been invited
 
 export default inviteRouter;
