@@ -34,7 +34,7 @@ app.use('/api/invite',inviteRouter);
 app.use('/api/users',userRouter);
 app.use('/api/teams',teamRouter);
 app.use('/api/teams',joinRouter);
-app.use('/api/teams/:teamId/members',memberRouter);
+app.use('/api/teams',memberRouter);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
