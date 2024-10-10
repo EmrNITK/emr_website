@@ -138,9 +138,10 @@ const sendRejectionEmail = async (user) => {
 };
 const sendInvitationEmail = async (user, team) => {
   try {
-    // console.log("hehhhhhhhh", user.isAdmin);
+  
     const inviteId = user._id;
     const teamId = team._id;
+
     const acceptUrl = `http://localhost:3000/api/invite/${teamId}/invites/accept/${inviteId}`;
     const rejectUrl = `http://localhost:3000/api/invite/${teamId}/invites/reject/${inviteId}`;
 
@@ -179,6 +180,7 @@ const sendInvitationEmail = async (user, team) => {
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message);
+    throw error;
   }
 };
 const inviteAcceptedEmail = async (user, team) => {
@@ -217,6 +219,7 @@ const inviteAcceptedEmail = async (user, team) => {
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message); // Log any errors
+    throw error;
   }
 };
 const inviteRejectedEmail = async (user, team) => {
@@ -255,6 +258,7 @@ const inviteRejectedEmail = async (user, team) => {
     await transporter.sendMail(mailOptions); // Send the email
   } catch (error) {
     console.error("Error sending rejection email: ", error.message); // Log any errors
+    throw error;
   }
 };
 const sendjoinRequestEmail = async (user, leader) => {
@@ -337,6 +341,7 @@ const sendJoinAcceptanceEmail = async (user, team, leader) => {
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending acceptance email: ", error.message);
+    throw error;
   }
 };
 
