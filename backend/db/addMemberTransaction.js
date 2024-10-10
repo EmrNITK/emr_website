@@ -7,12 +7,13 @@ const addMemberTransaction = async (user, team) => {
     let updatedTeam = new Team({
         ...team,
         _id: team._id,
-        members:[...team.members,user._id]
+        members: [...team.members, user._id]
     });
 
     let updatedUser = new User({
         ...user,
         _id: user._id,
+        isVerified: user.isVerified,
         teamId: team._id,
     });
 
@@ -28,7 +29,7 @@ const addMemberTransaction = async (user, team) => {
         throw err;
     } finally {
         session.endSession();
-        return;
+        return updatedUser;
     }
 };
 
