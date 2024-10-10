@@ -5,7 +5,7 @@ import {
  acceptedInviteByAdmin,
  getVerifiedUser,
  getUserById
-} from "../controllers/user.controller.js";
+} from "../controllers/User.controller.js";
 import { verifyJwt } from "../middlewares/auth.middlewares.js";
 
 const userRouter = express.Router();

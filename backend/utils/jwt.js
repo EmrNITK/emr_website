@@ -7,3 +7,9 @@ export const createToken = (id, email) => {
     expiresIn: "7d",
   });
 };
+
+export const createOTPToken = (email) => {
+  return jwt.sign({ email }, process.env.SECRET, {
+    expiresIn: 300,
+  });
+};

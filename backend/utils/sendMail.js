@@ -255,7 +255,7 @@ const inviteRejectedEmail = async (user, team) => {
     console.error("Error sending rejection email: ", error.message); // Log any errors
   }
 };
-const sendjoinRequestEmail = async (user,leader) => {
+const sendjoinRequestEmail = async (user, leader) => {
   try {
     // console.log("hehhhhhhhh", user.isAdmin);
     const acceptUrl = `http://localhost:3000/teams/:teamId/join_request/:userId/${user._id}`;
@@ -296,17 +296,17 @@ const sendjoinRequestEmail = async (user,leader) => {
             </div>
           </div>`,
     };
-    
+
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message);
     throw error;
   }
 };
-const sendJoinAcceptanceEmail = async (user, team,leader) => {
+const sendJoinAcceptanceEmail = async (user, team, leader) => {
   try {
     const mailOptions = {
-      from: process.env.APP_EMAIL, 
+      from: process.env.APP_EMAIL,
       to: user.email,
       subject: "Team Join Request Accepted",
       html: `
@@ -339,10 +339,10 @@ const sendJoinAcceptanceEmail = async (user, team,leader) => {
 };
 
 
-const sendJoinRejectionEmail = async (user, team,leader) => {
+const sendJoinRejectionEmail = async (user, team) => {
   try {
     const mailOptions = {
-      from: process.env.APP_EMAIL, 
+      from: process.env.APP_EMAIL,
       to: user.email,
       subject: "Team Join Request Accepted",
       html: `
@@ -370,7 +370,46 @@ const sendJoinRejectionEmail = async (user, team,leader) => {
             </div>
           </div>`,
     };
-   
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending acceptance email: ", error.message);
+    throw error;
+  }
+};
+const sendRemoveEmail = async (member, team, leader) => {
+  try {
+    console.log("sending mail to", member);
+    const mailOptions = {
+      from: process.env.APP_EMAIL,
+      to: member.email,
+      subject: "Removed From Team",
+      html: `
+          <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+              <div style="border-bottom:1px solid #eee">
+                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
+                  <img width="200px" src="https://your-image-link.com/image.png" />
+                </a>
+              </div>
+              <p style="font-size:1.1em">Hello ${member.name},</p>
+              <p style="font-size:1.1em">
+                Unfortunately, you have been removed from the team "<strong>${team.name}</strong>" by the leader.
+              </p>
+              <p style="font-size:1.1em">Please look for another team.</p>
+              <ul>
+                <li><strong>Team Name:</strong> ${team.name}</li>
+                <li><strong>Team Leader:</strong> ${leader.name}</li>
+              </ul>
+              <p style="font-size:1.1em">We wish you all the best in your future endeavors!</p>
+              <p style="font-size:0.9em;">Best Regards,<br />${team.name}</p>
+              <p style="font-size:0.9em;">${leader.name}</p>
+              <hr style="border:none;border-top:1px solid #eee" />
+            </div>
+          </div>`,
+
+    };
+
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending acceptance email: ", error.message);
@@ -388,4 +427,5 @@ export {
   sendjoinRequestEmail,
   sendJoinAcceptanceEmail,
   sendJoinRejectionEmail,
+  sendRemoveEmail,
 };

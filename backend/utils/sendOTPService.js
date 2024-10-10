@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import {User} from '../models/User.model.js';
+import User from '../models/User.model.js';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -20,7 +20,7 @@ const generateSixDigitOTP = () => {
   return otp;
 };
 
-const sendOTP = async (email) => {
+const sendOTPService = async (email) => {
   try {
     const otp = generateSixDigitOTP();
 
@@ -36,22 +36,27 @@ const sendOTP = async (email) => {
           <p style="font-size:1.1em">Hello,</p>
           <p>Thank you for choosing our service. Use the following OTP to complete your verification. OTP is valid for <b>5 minutes</b></p>
           <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
-          <p style="font-size:0.9em;">Best Regards,<br />Your Company Name</p>
+          <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
           <hr style="border:none;border-top:1px solid #eee" />
           <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
-            <a href="https://your-new-link.com" style="text-decoration: none; color:#aaa;" target="_blank">Your Company Name</a>
+            <a href="https://your-new-link.com" style="text-decoration: none; color:#aaa;" target="_blank">EMR</a>
             <p>Made with ❤️</p>
             <a href="https://your-social-link.com" style="text-decoration: none; color:#aaa;" target="_blank">@yourSocialHandle</a>
           </div>
         </div>
-      </div>`,
-};
+      </div>`
+    };
 
     await transporter.sendMail(mailOptions);
-    await User.updateOne({ email: email }, { otp: otp });
+    const date = new Date();
+    const expireAt = (date.getTime() + (5 * 60 * 1000));
+    const expireTime = new Date(expireAt);
+
+    await User.updateOne({ email: email }, { otp: otp, otpExpireAt: expireTime });
   } catch (error) {
     console.error("Error sending OTP: ", error.message);
+    throw error;
   }
 };
 
-export { sendOTP };
+export { sendOTPService};
