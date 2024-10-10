@@ -6,7 +6,7 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.TEST_EMAIL,
+    user: process.env.APP_EMAIL,
     pass: process.env.APP_PASSWORD,
   },
 });
@@ -18,7 +18,7 @@ const sendVerificationEmail = async (user, transaction_id) => {
     const rejectUrl = `http://localhost:3000/users/verify/reject/${user._id}`;
 
     const mailOptions = {
-      from: process.env.TEST_EMAIL,
+      from: process.env.APP_EMAIL,
       to: process.env.ADMIN_EMAIL,
       subject: "Verification Request",
       html: `
@@ -47,7 +47,7 @@ const sendVerificationEmail = async (user, transaction_id) => {
         </div>`,
     };
     console.log(
-      `Sending email from: ${process.env.TEST_EMAIL} to: ${process.env.ADMIN_EMAIL}`
+      `Sending email from: ${process.env.APP_EMAIL} to: ${process.env.ADMIN_EMAIL}`
     );
     await transporter.sendMail(mailOptions);
   } catch (error) {
@@ -60,7 +60,7 @@ const sendAcceptanceEmail = async (user) => {
 
     // Email options
     const mailOptions = {
-      from: process.env.TEST_EMAIL,
+      from: process.env.APP_EMAIL,
       to: user.email,
       subject: "Verification Request Accepted - Welcome to the Workshop!",
       html: `
@@ -90,7 +90,7 @@ const sendAcceptanceEmail = async (user) => {
     };
 
     console.log(
-      `Sending email from: ${process.env.TEST_EMAIL} to: ${user.email}`
+      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
     );
     await transporter.sendMail(mailOptions);
   } catch (error) {
@@ -103,7 +103,7 @@ const sendRejectionEmail = async (user) => {
 
     // Email options
     const mailOptions = {
-      from: process.env.TEST_EMAIL,
+      from: process.env.APP_EMAIL,
       to: user.email,
       subject: "Verification Request Rejected",
       html: `
@@ -127,7 +127,7 @@ const sendRejectionEmail = async (user) => {
     };
 
     console.log(
-      `Sending email from: ${process.env.TEST_EMAIL} to: ${user.email}`
+      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
     );
     await transporter.sendMail(mailOptions); // Send the email
   } catch (error) {
@@ -143,7 +143,7 @@ const sendInvitationEmail = async (user, team) => {
     const rejectUrl = `http://localhost:3000/api/invite/${teamId}/invites/reject/${inviteId}`;
 
     const mailOptions = {
-      from: process.env.TEST_EMAIL,
+      from: process.env.APP_EMAIL,
       to: user.email,
       subject: "Verification Request",
       html: `
@@ -172,7 +172,7 @@ const sendInvitationEmail = async (user, team) => {
           </div>`,
     };
     console.log(
-      `Sending email from: ${process.env.TEST_EMAIL} to: ${process.env.ADMIN_EMAIL}`
+      `Sending email from: ${process.env.APP_EMAIL} to: ${process.env.ADMIN_EMAIL}`
     );
     await transporter.sendMail(mailOptions);
   } catch (error) {
@@ -185,7 +185,7 @@ const inviteAcceptedEmail = async (user, team) => {
 
     // Email options
     const mailOptions = {
-      from: process.env.TEST_EMAIL,
+      from: process.env.APP_EMAIL,
       to: user.email,
       subject: "Invitation request accepted",
       html: `
@@ -210,7 +210,7 @@ const inviteAcceptedEmail = async (user, team) => {
     };
 
     console.log(
-      `Sending email from: ${process.env.TEST_EMAIL} to: ${user.email}`
+      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
     );
     await transporter.sendMail(mailOptions);
   } catch (error) {
@@ -223,7 +223,7 @@ const inviteRejectedEmail = async (user, team) => {
 
     // Email options
     const mailOptions = {
-      from: process.env.TEST_EMAIL,
+      from: process.env.APP_EMAIL,
       to: user.email,
       subject: "Verification Request Rejected",
       html: `
@@ -248,22 +248,22 @@ const inviteRejectedEmail = async (user, team) => {
     };
 
     console.log(
-      `Sending email from: ${process.env.TEST_EMAIL} to: ${user.email}`
+      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
     );
     await transporter.sendMail(mailOptions); // Send the email
   } catch (error) {
     console.error("Error sending rejection email: ", error.message); // Log any errors
   }
 };
-const sendjoinRequestEmail = async (user,userr) => {
+const sendjoinRequestEmail = async (user,leader) => {
   try {
-    console.log("hehhhhhhhh", user.isAdmin);
+    // console.log("hehhhhhhhh", user.isAdmin);
     const acceptUrl = `http://localhost:3000/teams/:teamId/join_request/:userId/${user._id}`;
     const rejectUrl = `http://localhost:3000/teams/:teamId/join_request/:userId/${user._id}`;
 
     const mailOptions = {
-      from: userr.email,
-      to: process.env.ADMIN_EMAIL,
+      from: process.env.ADMIN_EMAIL,
+      to: leader.email,
       subject: "Team Join Request",
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
@@ -280,7 +280,7 @@ const sendjoinRequestEmail = async (user,userr) => {
                 <li><strong>Branch:</strong> ${user.branch}</li>
                 <li><strong>College Name:</strong> ${user.collegeName}</li>
                 <li><strong>Mobile No:</strong> ${user.mobileNo}</li>
-                <li><strong>Roll No:</strong> ${user.rollno}</li>
+                <li><strong>Roll No:</strong> ${user.rollNo}</li>
                 <li><strong>Email:</strong> ${user.email}</li>
               </ul>
               <p style="font-size:1.1em">Transaction ID:<br>Please review and accept or reject the request:</p>
@@ -296,18 +296,17 @@ const sendjoinRequestEmail = async (user,userr) => {
             </div>
           </div>`,
     };
-    console.log(
-      `Sending email from: ${process.env.TEST_EMAIL} to: ${process.env.ADMIN_EMAIL}`
-    );
+    
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message);
+    throw error;
   }
 };
 const sendJoinAcceptanceEmail = async (user, team,leader) => {
   try {
     const mailOptions = {
-      from: process.env.TEST_EMAIL, 
+      from: process.env.APP_EMAIL, 
       to: user.email,
       subject: "Team Join Request Accepted",
       html: `
@@ -338,10 +337,12 @@ const sendJoinAcceptanceEmail = async (user, team,leader) => {
     console.error("Error sending acceptance email: ", error.message);
   }
 };
+
+
 const sendJoinRejectionEmail = async (user, team,leader) => {
   try {
     const mailOptions = {
-      from: process.env.TEST_EMAIL, 
+      from: process.env.APP_EMAIL, 
       to: user.email,
       subject: "Team Join Request Accepted",
       html: `
@@ -353,7 +354,7 @@ const sendJoinRejectionEmail = async (user, team,leader) => {
                 </a>
               </div>
               <p style="font-size:1.1em">Hello ${user.name},</p>
-              <p style="font-size:1.1em">Congratulations! Your request to join the team has been rejected.</p>
+              <p style="font-size:1.1em">Unfortunately, Your request to join the team has been rejected.</p>
               <p style="font-size:1.1em">Please look for other team</p>
               <p style="font-size:1.1em">We will team up next time </p>
 
@@ -364,15 +365,16 @@ const sendJoinRejectionEmail = async (user, team,leader) => {
               <p style="font-size:1.1em">You can now participate in team activities and contribute to your team's success!</p>
               
               <p style="font-size:0.9em;">Best Regards,<br />${team.name}</p>
-              <p style="font-size:0.9em;">Best Regards,<br />${leader.name}</p>
+              <p style="font-size:0.9em;"><br />${leader.name}</p>
               <hr style="border:none;border-top:1px solid #eee" />
             </div>
           </div>`,
     };
-    console.log(`Sending acceptance email to: ${user.email}`);
+   
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending acceptance email: ", error.message);
+    throw error;
   }
 };
 
