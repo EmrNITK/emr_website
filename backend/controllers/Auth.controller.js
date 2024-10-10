@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/User.model.js";
-import { createToken } from "../utils/jwt.js";
+import { createToken, createOTPToken } from "../utils/jwt.js";
 import { sendOTPService } from "../utils/sendOTPService.js";
 
 export const register = asyncHandler(async (req, res) => {
@@ -58,8 +58,8 @@ export const logout = (req, res) => {
 
 export const changePassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const userId=req.userId;
-  console.log("userIDD",userId)
+  const userId = req.userId;
+  console.log("userIDD", userId)
   const user = await User.findById(userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -75,20 +75,19 @@ export const changePassword = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "password is changed" });
 });
 
-
 export const sendOTP = asyncHandler(async (req, res) => {
-  // Check if user with given email exists
   const { email } = req.body;
-  const user = User.findOne({ email });
+
+  // Check if user with given email exists
+  const user = await User.findOne({ email });
   if (!user) {
-    res.status(404).json({ message: "User with given email not found" });
+    return res.status(404).json({ message: "User with given email not found" });
   }
 
   // Send OTP to given email
   await sendOTPService(email);
   res.status(200).json({ message: "OTP sent" });
 });
-
 
 export const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
@@ -100,17 +99,18 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   }
 
   // Check if OTP is expired
-  const date = new Date();
-
-  if (date > user.otpExpireAt) {
+  const currentTime = new Date();
+  if (currentTime > user.otpExpireAt) {
+    // Invalidate OTP
     user.otp = null;
     user.otpExpireAt = null;
     await user.save();
     res.status(401).json({ message: "OTP expires" });
   }
+
   // Check if OTP matches
   if (!(otp == user.otp)) {
-    res.status(401).json({ message: "OTP didn't match" });
+    return res.status(401).json({ message: "OTP didn't match" });
   }
 
   // Removes OTP and save user
@@ -118,20 +118,37 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   user.otpExpireAt = null;
   await user.save()
 
-  res.status(200).json({ message: "OTP verified" });
+  const date = new Date();
+  const crntTime = new Date(date.getTime());
+  console.log(crntTime);
+  // Create a token and send it in cookies
+  const token = createOTPToken(email);
+  res
+    .cookie("tempOtpJwt", token, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 300000,
+    })
+    .json({ message: "OTP Verified" });
 });
 
 export const createNewPassword = asyncHandler(async (req, res) => {
-  // Check if user exists
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const { email, newPassword } = req.body;
+  const decodedEmail = req.otpVerificationEmail;
 
+  // Check if user exists
+  const user = await User.findOne({ email });
   if (!user) {
-    res.status(404).json({ message: "User with given email not found" });
+    return res.status(404).json({ message: "User with given email not found" });
+  }
+
+  // Check if token is valid
+  if (!(decodedEmail == email)) {
+    return res.status(401).json({ message: "Unauthorized" })
   }
 
   // Create hash
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   // Update user
   user.password = hashedPassword;
