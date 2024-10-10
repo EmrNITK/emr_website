@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 const sendVerificationEmail = async (user, transaction_id) => {
   try {
-    console.log("hehhhhhhhh", user.isAdmin);
+
     const acceptUrl = `http://localhost:3000/users/verify/accept/${user._id}`;
     const rejectUrl = `http://localhost:3000/users/verify/reject/${user._id}`;
 
@@ -38,7 +38,7 @@ const sendVerificationEmail = async (user, transaction_id) => {
               <a href="${rejectUrl}" style="background-color:red;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Reject</a>
             </div>
 
-            <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+            <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
             <hr style="border:none;border-top:1px solid #eee" />
             <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
               
@@ -52,11 +52,11 @@ const sendVerificationEmail = async (user, transaction_id) => {
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message);
+    throw error;
   }
 };
 const sendAcceptanceEmail = async (user) => {
   try {
-    console.log("hehhhhhhhh", user.email);
 
     // Email options
     const mailOptions = {
@@ -80,7 +80,7 @@ const sendAcceptanceEmail = async (user) => {
                 <li><strong>Location:</strong> [Insert Workshop Location]</li>
               </ul>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -95,6 +95,7 @@ const sendAcceptanceEmail = async (user) => {
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message); // Log any errors
+    throw error;
   }
 };
 const sendRejectionEmail = async (user) => {
@@ -117,7 +118,7 @@ const sendRejectionEmail = async (user) => {
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">We regret to inform you that your verification request has been rejected.</p>
               <p style="font-size:1.1em">If you believe this is an error or have any questions, please feel free to contact us.</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -132,6 +133,7 @@ const sendRejectionEmail = async (user) => {
     await transporter.sendMail(mailOptions); // Send the email
   } catch (error) {
     console.error("Error sending rejection email: ", error.message); // Log any errors
+    throw error;
   }
 };
 const sendInvitationEmail = async (user, team) => {
@@ -163,7 +165,7 @@ const sendInvitationEmail = async (user, team) => {
                 <a href="${rejectUrl}" style="background-color:red;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Reject</a>
               </div>
   
-              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 
@@ -200,7 +202,7 @@ const inviteAcceptedEmail = async (user, team) => {
               <p style="font-size:1.1em">Congratulations! You're now a member of team ${team.name}.</p>
               <p style="font-size:1.1em">We are excited to welcome you to our workshop.</p>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -238,7 +240,7 @@ const inviteRejectedEmail = async (user, team) => {
               <p style="font-size:1.1em">We regret to inform you that since your rejected the invitation to team ${team.name} you will
               not be a part of this team.</p>
               <p style="font-size:1.1em">If you believe this is an error or have any questions, please feel free to contact us.</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -291,7 +293,7 @@ const sendjoinRequestEmail = async (user, leader) => {
                 <a href="${rejectUrl}" style="background-color:red;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Reject</a>
               </div>
       
-              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
             </div>
           </div>`,
@@ -326,7 +328,7 @@ const sendJoinAcceptanceEmail = async (user, team, leader) => {
               </ul>
               <p style="font-size:1.1em">You can now participate in team activities and contribute to your team's success!</p>
               
-              <p style="font-size:0.9em;">Best Regards,<br />EMR SERVER</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
             </div>
           </div>`,
