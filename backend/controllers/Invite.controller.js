@@ -21,10 +21,10 @@ export const sendInvitations = asyncHandler(async (req, res) => {
   // Send invitations to each selected member
   const promises = members.map(async (userId) => {
     const user = await User.findById(userId);
-    const memberEmail = user.email;
+
     if (user) {
       // Send email (You can customize the email content as needed)
-      await sendInvitationEmail(user, team.name);
+      await sendInvitationEmail(user, team);
     }
   });
 
@@ -51,18 +51,9 @@ export const acceptedInviteResponse = asyncHandler(async (req, res) => {
     return res.status(409).json({ message: "Already a member of a team" });
   }
 
-//   // pushing userId into the members array of that team;
-//   team.members.push(userId);
-//   await team.save(); // Save changes to the team
-
-//   // updating teamId of the user
-//   user.teamId = teamId;
-//   await user.save();
-
-
-  await addMemberTransaction(user,team);
+  await addMemberTransaction(user, team);
   await inviteAcceptedEmail(user, team);
-  console.log("Acceptance mail has been sent");
+
   return res
     .status(200)
     .json({ message: "You have joined the team successfully!" });
@@ -70,8 +61,6 @@ export const acceptedInviteResponse = asyncHandler(async (req, res) => {
 
 export const rejectedInviteResponse = asyncHandler(async (req, res) => {
   const { teamId, userId } = req.params;
-  console.log(userId);
-  
 
   const user = await User.findById(userId);
   if (!user) {
@@ -81,12 +70,10 @@ export const rejectedInviteResponse = asyncHandler(async (req, res) => {
   if (!team) {
     return res.status(404).json({ message: "Team not found" });
   }
-  if(team.members.indexOf(userId) != -1){
-    return res.status(403).json({message: "User is already a member of this team"});
+  if (team.members.indexOf(userId) != -1) {
+    return res.status(403).json({ message: "User is already a member of this team" });
   }
   await inviteRejectedEmail(user, team);
-
-  console.log("rejected mail has been sent ");
 
   res.status(403).json({ message: `User ${user.name} has been rejected.` });
 });

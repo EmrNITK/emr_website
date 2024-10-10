@@ -7,7 +7,7 @@ const inviteRouter = express.Router();
 
 // invitation routes
 inviteRouter.post('/:teamId', verifyJwt, sendInvitations);
-inviteRouter.put('/:teamId/invites/accept/:userId', acceptedInviteResponse);
-inviteRouter.post('/:teamId/invites/reject/:userId', rejectedInviteResponse);
+inviteRouter.put('/:teamId/invite/:userId/accept', acceptedInviteResponse);
+inviteRouter.post('/:teamId/invite/:userId/reject', rejectedInviteResponse);
 
 export default inviteRouter;
