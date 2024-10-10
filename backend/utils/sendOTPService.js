@@ -36,10 +36,10 @@ const sendOTPService = async (email) => {
           <p style="font-size:1.1em">Hello,</p>
           <p>Thank you for choosing our service. Use the following OTP to complete your verification. OTP is valid for <b>5 minutes</b></p>
           <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
-          <p style="font-size:0.9em;">Best Regards,<br />Your Company Name</p>
+          <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
           <hr style="border:none;border-top:1px solid #eee" />
           <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
-            <a href="https://your-new-link.com" style="text-decoration: none; color:#aaa;" target="_blank">Your Company Name</a>
+            <a href="https://your-new-link.com" style="text-decoration: none; color:#aaa;" target="_blank">EMR</a>
             <p>Made with ❤️</p>
             <a href="https://your-social-link.com" style="text-decoration: none; color:#aaa;" target="_blank">@yourSocialHandle</a>
           </div>
