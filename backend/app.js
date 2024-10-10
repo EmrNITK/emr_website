@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 // API routes
 app.use('/api/auth',authRouter);
 app.use('/api/teams',teamRouter);
-app.use('/api/invite',inviteRouter);
+app.use('/api/teams',inviteRouter);
 
 app.use('/api/users',userRouter);
 app.use('/api/teams',teamRouter);
