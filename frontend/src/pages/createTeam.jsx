@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import Member from "../components/createTeam/Member.jsx";
+import Member from "../components/createTeamMembers.jsx";
 
 import "./createTeam.css";
 

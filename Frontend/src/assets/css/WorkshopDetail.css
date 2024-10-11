@@ -1,0 +1,52 @@
+.workshop_cards{
+    margin:5vh;
+    display:block;
+    justify-content: center;
+    align-items: center;
+}
+.ca{
+    height:auto;
+    border: 2px solid white;
+    padding:2vh;
+    margin-bottom: 2vh;
+    width:auto;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.106);
+}
+
+.workshop_title > h1{
+    margin-top: 10vh;
+    font-size: 5vh;
+    font-weight: 900;
+    height: 10vh;
+    color:green;
+}
+
+.workshop_text{
+    width:auto;
+    /* position:absolute */
+}
+
+.workshop_wrap   > h4{
+    font-size: 600;
+    font-weight: 800;
+    color:green;
+}
+
+.workshop_wrap{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    height:20vh;
+}
+.ca:hover{
+    background-color: rgba(255, 255, 255, 0.04);
+    transition:all 0.4s;
+}
+
+.disc{
+    position:relative;
+    color:white;
+}
