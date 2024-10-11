@@ -1,0 +1,24 @@
+#root {
+    --primary-box-shadow: rgb(28 28 28/8%) 0px 2px 8px;
+
+    --border-white: rgb(232, 232, 232);
+
+    --primary-bg: rgb(255, 255, 255);
+
+    --zomato-gray: #828282;
+    --tab-green: #009200;
+    --gray: rgb(207, 207, 207);
+    --inactive-text: #696969;
+    --inactive-color: #f8f8f8;
+    --filter-text: #9c9c9c;
+    --heading-text: #49b618;
+    --collection-shadow: rgb(0 0 0/ 8%) 0px 3px 12px;
+    --tag-red: #d92662;
+    --tag-blue: #256fef;
+    --tag-green: #267e3e;
+    --subtitle-text: #363636;
+    --bg-gradient: linear-gradient(0deg,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(0, 0, 0, 0.05) 50%,
+            rgba(0, 0, 0, 0.05) 85%);
+}

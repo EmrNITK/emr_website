@@ -1,0 +1,141 @@
+/* body {
+    margin: 0;
+    background-color: #000000;
+    color: #ffffff;
+  } */
+  
+  .faculty-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #1a1a1a;
+    max-width: 50%;
+    margin: 0 auto;
+    margin-top: 20px;
+  }
+  
+  /* .image-container {
+    flex: 0 0 120px; 
+    overflow: hidden;
+    border-radius: 20px;
+  } */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 100px); /* Define 3 columns each 100px wide */
+    gap: 8px; /* Add some gap between cells */
+    /* Additional styles for the table appearance */
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+
+  .grid-item {
+    /* Additional styles for the table cell appearance */
+    border: 1px solid #ccc;
+    padding: 4px;
+    text-align: center;
+  }
+  faculty-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .faculty-content {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    padding: 10px;
+    background-color: #1a1a1a;
+  }
+  
+  .designation-box {
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px; 
+  }
+  
+  .designation-heading {
+    margin: 0;
+    color: black;
+  }
+  
+  .content-heading {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .content-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 20px;
+    margin-top: 10px;
+  }
+  .content-subheading {
+    text-align: center;
+    color: green;
+    margin: 0; 
+  }
+  .faculty-content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .content-heading {
+    font-size: 24px;
+  }
+
+  .content-subheading {
+    font-size: 20px;
+  }
+
+  table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+  }
+
+  td {
+    padding-right: 10px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    /* Adjust font sizes for smaller screens */
+    .faculty-content {
+      font-size: 14px;
+    }
+
+    .content-heading {
+      font-size: 20px;
+    }
+
+    .content-subheading {
+      font-size: 18px;
+    }
+    .faculty-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 5px;
+      border-radius: 20px;
+      background-color: #1a1a1a;
+      max-width: 90%;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+   .faculty-image {
+      width: 50%;
+      margin-left: auto;
+    }
+    table {
+      display: block;
+    }
+
+    td {
+      margin-bottom: 10px;
+      padding-right: 0;
+    }
+  }

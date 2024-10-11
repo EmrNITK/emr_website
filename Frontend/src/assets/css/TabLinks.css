@@ -1,0 +1,112 @@
+/* .tab-container {
+    background-color: #f2f2f2;
+    padding: 200px;
+    
+  } */
+  
+  .tab-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content :center;
+    /* margin: 200px 20px 20px 20px; */
+  }
+  
+  .tab-link {
+
+    padding: 8px 25px;
+    font-size: 40px;
+    font-weight: 500;
+    background-size :cover ;
+    color: #08490B;
+    /* text-shadow: rgb(51, 123, 33) 1px 1px; */
+    text-decoration: none;
+    margin : 20px;
+    border-radius: 37px;
+    cursor : pointer;
+    
+  }
+  
+  .tab-link:hover {
+    /* background-color: #009200; */
+    border-radius: 37px; 
+    color: #08490B;
+    border : rgb(18, 43, 21) 0.0000001px solid ;
+    
+
+  }
+  
+  .tab-link.active {
+    background-color: #1fca0c;
+    /* color: #fff; */
+  }
+  
+
+
+  /* animated gredient */
+
+  *{
+    padding : 0;
+    margin : 0;
+    box-sizing: border-box;
+
+
+  }
+ 
+  
+
+  .test-container {
+    height: 10%;
+    width : 100%;
+
+background-color: rgb(166, 162, 156);
+
+    /* background : linear-gradient(45deg, #d2001a, #7462ff,#8e4e0a, #23d5ab); */
+    
+    /* background : linear-gradient(45deg, #6157a4,#096b18,#000000, #33843f, #6157a4, #2e5c13,#000000, #438ce0); */
+
+    /* background: url(../images/tabbagg.gif); */
+    /* background-size: cover ; */
+  
+    background-size : 500% 100% ;
+   animation: color 12s ease-in-out infinite;; 
+
+  }
+  @keyframes color {
+
+    0%{
+      background-position: 0 50%;
+    }
+    50%{
+      background-position: 100% 50%;
+    }
+    100%{
+      background-position: 0 50%;
+    }
+  }
+
+
+
+  
+/* Responsive CSS code */
+
+@media screen and (max-width: 768px) {
+  .tab-links {
+    flex-wrap: wrap;
+  }
+
+  .tab-link {
+    font-size: 24px;
+    margin: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tab-link {
+    font-size: 20px;
+    margin: 5px;
+  }
+
+  .test {
+    height: 20vh;
+  }
+}

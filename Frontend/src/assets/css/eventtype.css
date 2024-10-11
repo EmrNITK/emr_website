@@ -1,0 +1,33 @@
+/* .common-background{
+    background-image: url('../images/eventbackground.jpeg');
+    /* background-size: cover; 
+} */
+.about-wrapper{
+    background-color: rgba(255, 255, 255,);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    font-weight: bold;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.flex-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40;
+}
+
+.flex-item-left{
+    padding: 15px 0px 40px;
+    padding-top: 50px;
+    flex: 60%;
+}
+.flex-item-right{
+    padding: 15px 0px 40px;
+    padding-top: 50px;
+    flex: 40%;
+}
+.images{
+    height: 400px;
+    width: 400px;
+}
