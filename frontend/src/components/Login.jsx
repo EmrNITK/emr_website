@@ -5,17 +5,18 @@ import { loginUser } from '../api/apiService';
 
 const Login = () => {
   const { login } = useContext(AuthContext); 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const userData = { username, password };
+      const userData = { email, password };
       const response = await loginUser(userData);
-      login(response); 
-      navigate('/');
+      console.log("response",response.user);
+      login(response.user); 
+      navigate('/workshopinfo');
     } catch (error) {
       setError(error.message);
     }
@@ -53,9 +54,9 @@ const Login = () => {
             <input
               className="w-full p-3 mb-4 border border-gray-300 rounded"
               type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               className="w-full p-3 mb-4 border border-gray-300 rounded"

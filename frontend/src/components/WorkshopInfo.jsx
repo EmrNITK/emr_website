@@ -23,10 +23,10 @@ const WorkshopInfo = () => {
               <br /> Don't miss this chance to enhance your knowledge and build powerful embedded systems!
             </p>
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-              <Link to="/create-team" className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500">
+              <Link to="/workshop/createteam" className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500">
                 Create Team
               </Link>
-              <Link to="/join-team" className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-500">
+              <Link to="/workshop/jointeam" className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-500">
                 Join Team
               </Link>
             </div>

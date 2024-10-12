@@ -1,8 +1,8 @@
-const API_BASE_URL = 'http://your-api-url.com'; // Replace with your actual API URL
+const API_BASE_URL = "http://localhost:3000"; // Replace with your actual API URL
 
 // User Registration
 export const registerUser = async (userData) => {
-  const response = await fetch(`${API_BASE_URL}/register`, {
+  const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ export const registerUser = async (userData) => {
 
 // User Login
 export const loginUser = async (credentials) => {
-  const response = await fetch(`${API_BASE_URL}/login`, {
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -26,13 +26,13 @@ export const loginUser = async (credentials) => {
 
 // Retrieve all Teams
 export const fetchTeams = async () => {
-  const response = await fetch(`${API_BASE_URL}/teams`);
+  const response = await fetch(`${API_BASE_URL}/api/teams`);
   return handleResponse(response);
 };
 
 // Create a new Team
 export const createTeam = async (teamData) => {
-  const response = await fetch(`${API_BASE_URL}/teams`, {
+  const response = await fetch(`${API_BASE_URL}/api/teams`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export const createTeam = async (teamData) => {
 
 // Add members to a Team
 export const addMemberToTeam = async (teamId, memberData) => {
-  const response = await fetch(`${API_BASE_URL}/teams/${teamId}/members`, {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/members`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const addMemberToTeam = async (teamId, memberData) => {
 
 // Update status of a Team member
 export const updateMemberStatus = async (teamId, memberId, status) => {
-  const response = await fetch(`${API_BASE_URL}/teams/${teamId}/members/${memberId}`, {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/members/${memberId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export const updateMemberStatus = async (teamId, memberId, status) => {
 
 // Send invitations to members
 export const sendInvitation = async (teamId, inviteData) => {
-  const response = await fetch(`${API_BASE_URL}/teams/${teamId}/invites`, {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/invites`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -148,5 +148,12 @@ export const fetchUsers = async () => {
   // Retrieve user details
   export const fetchUserDetails = async (userId) => {
     const response = await fetch(`${API_BASE_URL}/users/${userId}`);
+    return handleResponse(response);
+};
+  
+  export const sendOTP = async (email) => {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/forgot_password/otp`
+    );
     return handleResponse(response);
   };
