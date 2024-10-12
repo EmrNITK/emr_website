@@ -1,0 +1,9 @@
+
+
+
+.header-bg{
+    background-image: url('../../assets/images/eventbackground.jpeg');
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    /* padding: 100px; */
+}

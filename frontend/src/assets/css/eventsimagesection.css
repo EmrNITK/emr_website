@@ -1,0 +1,21 @@
+@import "./eventsvariables.css";
+
+
+.image-heading{
+    font-size: 40px;
+    color: var(--heading-text);
+    margin-bottom: 20px;
+}
+.image-sub-heading{
+    font-weight: bolder;
+}
+.image-slider{
+    width: '1000px';
+    height: '600px';
+    background-color: aqua;
+}
+.wrapper{
+    height: 100%;
+    width: 100%;
+    display: block;
+}
