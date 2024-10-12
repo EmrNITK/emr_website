@@ -1,0 +1,78 @@
+.sponsor{
+    margin: 0;
+    padding: 0;
+    color: #ffffff; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: url(../images/dgb1.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .sponsor-robo{
+    position: absolute;
+    bottom: 1%;
+    width: 280px;
+    margin-bottom: 0px;
+    z-index: 2;
+    position: fixed;
+  }
+
+  .sponsor-page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0.75rem;
+    
+  }
+  
+  .page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  
+  .page-header h1 {
+    color: #00cc66; 
+    font-weight: 750;
+    font-size:xx-large;
+  }
+  
+  .page-content {
+    background-color: #2b2b2b; 
+    padding: 1.25rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sponsor-section h2 {
+    color: #00cc66; 
+    margin-bottom: 0.625rem;
+  }
+  
+  .sponsor-section h3 {
+    color: #00cc66; 
+    margin: 1.25rem 0 0.625rem;
+  }
+  
+  .page-footer {
+    text-align: center;
+    margin-top: 1.25rem;
+    color: #00cc66; 
+  }
+
+  .sponsor-mail{
+    text-decoration: none;
+    color: #00cc66;
+    cursor: pointer;
+    border-bottom: 1px solid white;
+  }
+
+  @media screen and (max-width:1150px)
+  {
+    .sponsor-robo{
+      width: 170px;
+    }
+  }

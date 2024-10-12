@@ -1,0 +1,189 @@
+.footer_body{
+    background-color: #1f2937;
+    font-size: 1rem;
+    border: 2px solid transparent;
+    overflow: hidden;
+    border-radius: 10px;
+   
+    
+}
+
+
+.footer_content {
+    display : block;
+    justify-content: center ;
+    align-items: center;
+    padding-top :20px;
+}
+
+.copyright_line{
+    justify-content: center ;
+    align-items: center;
+    display: flex;
+    padding-top: 10px;
+    padding-bottom : 20px;
+}
+
+.copyright {
+    color : rgb(171, 160, 160) ;
+    font-size: 0.7rem;
+}
+
+/* copyright wala emr */
+ .emr {  
+    font-size : 0.9rem;
+}
+
+.footer_map_block{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.footer_map_block > iframe {
+   width: 99%;
+    height: 32vh;
+  
+}
+
+.icons {
+  
+    display: flex;
+    justify-content: center ;
+    align-items: center;
+    
+    /* background-color: white; */
+}
+
+
+.icons >a {
+    /* padding-left: 0.8rem; */
+    padding-top: 10px;
+    padding-left: 10px;
+   
+}
+
+.footer_content > p {
+    font-size: 0.8rem;
+    
+    color :white;
+    padding : 10px;
+
+    
+}
+.follow_us {
+    display: block;
+
+
+}
+.emr_brand > img{
+width: 100px;
+height: 100px;
+
+
+
+}
+.footer_data{
+    display : flex;
+    /* flex-direction: column; */
+    justify-content: space-around;
+    padding-top: 10px;
+}
+
+.footer_upper {
+    display: flex ;
+    justify-content: center;
+    align-items: center;
+}
+
+.address{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.address > p {
+    color : gray;
+    font-size: 0.7rem;
+    padding : 10px;
+   
+}
+.address .mail {
+    display :flex;
+
+}
+
+
+.mail >span {
+    color :grey;
+}
+
+/* Small Devices (Smartphones Portrait) */
+@media (max-width: 599px) {
+    /* Your styles for small devices here */
+    .copyright{
+        justify-content: center ;
+        align-items: center;
+        display: flex;
+        font-size:  0.6rem;
+     
+    }
+
+  }
+  
+@media (max-width: 320px) {
+    /* Your styles for small devices here */
+    .copyright{
+        justify-content: center ;
+        align-items: center;
+        display: flex;
+        font-size:  0.4rem;
+     
+    }
+
+  }
+
+  @media (min-width: 270px) and (max-width: 380px) {
+    .copyright{
+        justify-content: center ;
+        align-items: center;
+        display: flex;
+        font-size:  0.4rem;
+     
+    }
+  }
+  @media (min-width: 150px) and (max-width: 270px) {
+    .copyright{
+        justify-content: center ;
+        align-items: center;
+        display: flex;
+        font-size:  0.3rem;
+     
+    }
+  }
+  
+  /* Medium Devices (Tablets and Small Laptops) */
+  @media (min-width: 600px) and (max-width: 1023px) {
+    /* Your styles for medium devices here */
+  }
+  
+  /* Large Devices (Desktops and Larger Laptops) */
+  @media (min-width: 1024px) {
+    /* Your styles for large devices here */
+  }
+  
+  /* Landscape Orientation */
+  @media (orientation: landscape) {
+    /* Your styles for landscape orientation here */
+  }
+  
+  /* High-DPI (Retina) Displays */
+  @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+    /* Your styles for high-DPI displays here */
+  }
+  
