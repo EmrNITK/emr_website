@@ -17,29 +17,40 @@ import WorkshopDetail from "./components/WorkshopPage/WorkshopDetail";
 import TeamsPage from "./pages/TeamsPage";
 import CreateTeam from "./pages/CreateTeam";
 
+import WorkshopInfo from "./components/WorkshopInfo";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import { AuthProvider } from "./context/AuthContext";
+import ForgotPassword from "./components/ForgotPassword";
+
 const App = () => {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      {/* <Navbar/> */}
-      <StarsCanvas />
+    <AuthProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        {/* <Navbar/> */}
+        <StarsCanvas />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-        <Route path="/team" element={<TeamComp />} />
-        <Route path="/sponsor" element={<SponsorPage />} />
+          <Route path="/team" element={<TeamComp />} />
+          <Route path="/sponsor" element={<SponsorPage />} />
 
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/event" element={<EventPage />} />
-        <Route path="/workshop-details" element={<WorkshopDetail />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/event" element={<EventPage />} />
+          <Route path="/workshop-details" element={<WorkshopDetail />} />
 
-        <Route path="/gallery" element={<GalleryComp />} />
-        <Route path="/workshop" element={<WorkshopPage />} />
-        <Route path="/workshop/createteam" element={<CreateTeam />} />
-        <Route path="/workshop/jointeam" element={<TeamsPage />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="/gallery" element={<GalleryComp />} />
+          <Route path="/workshopinfo" element={<WorkshopInfo />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/workshop/createteam" element={<CreateTeam />} />
+          <Route path="/workshop/jointeam" element={<TeamsPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
 
