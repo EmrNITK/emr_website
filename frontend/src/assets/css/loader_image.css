@@ -1,0 +1,27 @@
+/* .altImage {
+    width: "700px" ;
+    height: "400px";
+    padding-bottom: 130px;
+    /* padding: 130px; */
+   
+/* } */ 
+
+
+
+@keyframes rotateVertical {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+  
+  /* Apply the animation and other styles to the image */
+  .altImage {
+    width: 500px;
+    height: 500px;
+    padding-bottom: 130px;
+    /* Apply the rotation animation */
+    animation: rotateVertical 6s infinite; /* Adjust the animation duration as needed */
+  }

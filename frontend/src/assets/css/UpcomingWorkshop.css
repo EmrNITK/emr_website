@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.upcoming_workshop_block {
+    /* background-color: black; */
+    color: white;
+    padding: 10px 20px 30px;
+    display: grid;
+    place-items: center;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.module::-webkit-scrollbar {
+    display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.module {
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+  }
+
+  /* CSS for the module */
+
+  
+  /* CSS to style the scrollbar */
+  /*  */
+.module_border_wrap {
+    height: 400px;
+    width: 400px;
+    padding: 1rem;
+    position: relative;
+    border-radius: 20px;
+    background: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
+    padding: 3px;
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+/* .module {
+    text-align: center;
+    background: #222;
+    color: white;
+    border-radius: 20px;
+    padding: 5%;
+} */
+.module {
+    
+    overflow-x:hidden;
+    overflow: auto;
+    white-space: nowrap;
+    padding: 10px 100px 10px 30px;
+}
+
+.module img {
+    display: inline-block;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    /* padding:10px; */
+}
+img {
+    --a: 8deg; /* control the angle of rotation (the smaller, the better) */
+    aspect-ratio: 1;
+    transform: perspective(400px) rotate3d(var(--i,1,-1),0,var(--a));
+    mask: 
+      linear-gradient(135deg,#000c 40%,#000,#000c 60%)
+      100% 100%/240% 240%;
+    transition: .4s;
+  }
+  img:hover {
+    --i:-1,1;
+    mask-position: 0 0;
+  }
+
+/* Gltich Animation and text  */
+
+.glitch {
+    font-size: 3rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    position: relative;
+
+    text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+        -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+        0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+
+    animation: glitch 500ms infinite;
+}
+
+.glitch span {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.glitch span:first-child {
+    animation: glitch 650ms infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translate(-0.025em, -0.0125em);
+    /* color: green; */
+    opacity: 0.8;
+}
+
+.glitch span:last-child {
+    animation: glitch 375ms infinite;
+    clip-path: polygon(0 80%, 100% 20%, 100% 100%, 0 100%);
+    transform: translate(0.0125em, 0.025em);
+    /* color: red; */
+    opacity: 0.8;
+}
+
+/* https://web.dev/prefers-reduced-motion/#(bonus)-forcing-reduced-motion-on-all-websites */
+
+@keyframes glitch {
+    0% {
+        text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+            -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+            -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+
+    14% {
+        text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+            -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+            -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+
+    15% {
+        text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+            0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+            -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+
+    49% {
+        text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+            0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+            -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+
+    50% {
+        text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+            0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+
+    99% {
+        text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+            0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+
+    100% {
+        text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75),
+            -0.025em -0.025em 0 rgba(0, 255, 0, 0.75),
+            -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    ::before,
+    ::after {
+        animation-delay: -1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        background-attachment: initial !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0s !important;
+        transition-delay: 0s !important;
+    }
+}
