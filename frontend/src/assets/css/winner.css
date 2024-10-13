@@ -1,0 +1,75 @@
+@import "./eventsvariables.css";
+
+
+.collection-wrapper {
+    /* background-color: var(--inactive-color); */
+    margin-top: 50px;
+}
+
+.collection {
+    padding: 15px 0px 40px;
+}
+
+.collection-subtitle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.collection-subtitle-text {
+    color: var(--subtitle-text);
+    font-size: 18px;
+}
+
+.collection-location {
+    color: var(--zomato-red);
+    display: flex;
+    margin-left: 125px;
+}
+
+.collection-location-caret {
+    color: var(--zomato-red);
+}
+
+.collection-cover {
+    height: 320px;
+    width: 260px;
+    margin-right: 20px;
+    border-radius: 6px;
+    position: relative;
+}
+
+.gradien-bg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: var(--bg-gradient);
+    top: 0;
+    left: 0;
+    border-radius: 6px;
+}
+
+.collection-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.collection-card-title {
+    position: absolute;
+    left: 16px;
+    bottom: 30px;
+    font-size: 18px;
+    color: var(--primary-bg);
+}
+
+.collection-card-subtitle {
+    display: flex;
+    color: var(--primary-bg);
+    position: absolute;
+    left: 100px;
+    bottom: 10px;
+    font-size: 14px;
+}
