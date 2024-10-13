@@ -5,7 +5,7 @@ import { loginUser } from '../api/apiService';
 
 const Login = () => {
   const { login } = useContext(AuthContext); 
-  const [email, setemail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); 
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Login = () => {
       const userData = { email, password };
       const response = await loginUser(userData);
       login(response); 
-      navigate('/workshopinfo');
+      navigate('/workshop');
     } catch (error) {
       setError(error.message);
     }
@@ -53,9 +53,9 @@ const Login = () => {
             <input
               className="w-full p-3 mb-4 border border-gray-300 rounded"
               type="text"
-              placeholder="email"
+              placeholder="Email"
               value={email}
-              onChange={(e) => setemail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               className="w-full p-3 mb-4 border border-gray-300 rounded"

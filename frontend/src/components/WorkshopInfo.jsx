@@ -51,14 +51,20 @@ const WorkshopInfo = () => {
   return (
     <div>
       <Header />
-      <div className="pt-16 flex flex-col items-center justify-center min-h-screen bg-[#1d1b2f]">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
+      <div className="pt-16 flex flex-col items-center justify-center min-h-screen ">
+        <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
           <div className="p-8 w-full md:w-2/3">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Embedded Workshop
             </h1>
-            <p className="text-sm md:text-lg text-gray-700 mb-6">
-              {/* Workshop details... */}
+            <p className="text-sm md:text-lg text-gray-400 mb-6 text-justify font-mono">
+              The Embedded Systems Workshop is an interactive, hands-on training
+              designed to introduce participants to the fundamentals of embedded
+              systems. It covers essential topics such as microcontrollers,
+              sensors, interfacing techniques, and real-time programming.
+              Participants gain practical experience by working on real-world
+              projects, learning how to design and implement embedded solutions
+              effectively.
             </p>
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               <button

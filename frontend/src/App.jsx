@@ -1,9 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
 import { Navbar, StarsCanvas } from "./components";
-
 import Home from "./pages/Home";
 import GalleryComp from "./pages/GalleryPage";
 import SponsorPage from "./components/Sponsor/Sponsor";
@@ -45,7 +43,7 @@ const App = () => {
           <Route path="/workshop-details" element={<WorkshopDetail />} />
 
           <Route path="/gallery" element={<GalleryComp />} />
-          <Route path="/workshopinfo" element={<WorkshopInfo />} />
+          <Route path="/workshop" element={<WorkshopInfo />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

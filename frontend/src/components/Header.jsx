@@ -7,19 +7,19 @@ const Header = () => {
   console.log("user", user);
   console.log("user name", user?.name);
   return (
-    <header className="fixed top-0 left-0 w-full bg-purple-700 p-4 text-white shadow-md z-50 flex justify-between items-center">
-      <h1 className="text-xl sm:text-2xl font-semibold text-yellow-300">
+    <header className="fixed top-0 left-0 w-full p-4 text-white shadow-md z-50 flex justify-between items-center">
+      <h1 className="text-xl sm:text-2xl font-semibold text-white-300">
         Workshop Hub
       </h1>
       <div className="flex items-center space-x-2">
         {user ? (
           <>
-            <span className="mr-2 sm:mr-4 text-yellow-200 text-sm sm:text-base">
+            <span className="mr-2 sm:mr-4 text-white-200 text-sm sm:text-base">
               Hello, {user.name}
             </span>
             <button
               onClick={logout}
-              className="bg-red-500 hover:bg-red-600 px-2 py-1 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base font-semibold"
+              className="bg-green-500 hover:bg-red-600 px-2 py-1 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base font-semibold"
             >
               Logout
             </button>
