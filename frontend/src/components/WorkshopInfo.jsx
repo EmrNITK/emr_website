@@ -6,21 +6,20 @@ const WorkshopInfo = () => {
   return (
     <div>
       <Header />
-
-      <div className="pt-16 flex flex-col items-center justify-center min-h-screen bg-[#1d1b2f]">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
-          <div className="p-8 w-full md:w-2/3"> 
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Embedded Workshop</h1>
-            <p className="text-sm md:text-lg text-gray-700 mb-6">
-              Join us for an immersive Embedded Systems workshop! Whether you're a beginner or a tech enthusiast, this session will introduce you to Embedded C, Microcontrollers, and Arduino with real-world applications.
-              <br />
-              💡 Hands-on Experience: Dive straight into practical projects, where you'll design, program, and troubleshoot embedded systems. You’ll get to work on two exciting projects that bring your concepts to life!
-              <br /><br />
-              ✨ Workshop Highlights:
-              <br /> - Learn Embedded C and microcontroller programming.
-              <br /> - Explore Arduino and sensor integration.
-              <br /> - Build real-world projects to strengthen your skills.
-              <br /> Don't miss this chance to enhance your knowledge and build powerful embedded systems!
+      <div className="pt-16 flex flex-col items-center justify-center min-h-screen ">
+        <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
+          <div className="p-8 w-full md:w-2/3">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+              Embedded Workshop
+            </h1>
+            <p className="text-sm md:text-lg text-gray-400 mb-6 text-justify font-mono">
+              The Embedded Systems Workshop is an interactive, hands-on training
+              designed to introduce participants to the fundamentals of embedded
+              systems. It covers essential topics such as microcontrollers,
+              sensors, interfacing techniques, and real-time programming.
+              Participants gain practical experience by working on real-world
+              projects, learning how to design and implement embedded solutions
+              effectively.
             </p>
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               <Link to="/create-team" className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500">
