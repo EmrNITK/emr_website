@@ -20,6 +20,14 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./components/ForgotPassword";
+import TranssactionVerify from "./pages/TransactionVerify";
+
+
+import WorkshopInfo from "./components/WorkshopInfo";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import { AuthProvider } from "./context/AuthContext";
+import ForgotPassword from "./components/ForgotPassword";
 
 const App = () => {
   return (
@@ -28,13 +36,18 @@ const App = () => {
         <ScrollToTop />
         {/* <Navbar/> */}
         <StarsCanvas />
+
         <Routes>
           <Route path="/" element={<Home />} />
+
           <Route path="/team" element={<TeamComp />} />
           <Route path="/sponsor" element={<SponsorPage />} />
+          <Route path="/transactionverify" element={<TranssactionVerify />} />
+
           <Route path="/blog" element={<Blog />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/workshop-details" element={<WorkshopDetail />} />
+
           <Route path="/gallery" element={<GalleryComp />} />
           <Route path="/workshop" element={<WorkshopInfo />} />
           <Route path="/register" element={<Register />} />

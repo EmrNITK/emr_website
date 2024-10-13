@@ -10,6 +10,7 @@ const createTeamTransaction = async (teamName, user) => {
         ...user,
         _id: user._id,
         isLeader: true,
+        isVerified: user.isVerified,
         teamId: team._id,
     });
 

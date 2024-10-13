@@ -7,12 +7,27 @@ import inviteRouter from "./routes/Invite.router.js";
 import userRouter from "./routes/User.router.js";
 import memberRouter from "./routes/Member.router.js";
 import joinRouter from "./routes/Join.router.js";
-
+import cors from "cors"
 dotenv.config();
 
 const app = express();
+import methodOverride from "method-override";
 
 
+
+// Use method-override middleware
+app.use(methodOverride("_method"));
+
+// CORS Configuration
+const corsOptions = {
+    origin: ['http://localhost:5173'],  // Add your allowed origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed HTTP methods
+    credentials: true,  // Enable credentials (cookies, etc)
+    optionsSuccessStatus: 200,  // Some legacy browsers choke on 204
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 // Body parsing middleware
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
@@ -32,7 +47,7 @@ app.use('/api/teams',teamRouter);
 app.use('/api/teams',inviteRouter);
 
 app.use('/api/users',userRouter);
-app.use('/api/teams',teamRouter);
+// app.use('/api/teams',teamRouter);
 app.use('/api/teams',joinRouter);
 app.use('/api/teams',memberRouter);
 

@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
-
+  console.log("user", user);
+  console.log("user name", user?.name);
   return (
     <header className="fixed top-0 left-0 w-full p-4 text-white shadow-md z-50 flex justify-between items-center">
       <h1 className="text-xl sm:text-2xl font-semibold text-white-300">

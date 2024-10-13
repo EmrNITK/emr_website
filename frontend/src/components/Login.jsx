@@ -14,8 +14,7 @@ const Login = () => {
     try {
       const userData = { email, password };
       const response = await loginUser(userData);
-      console.log("response",response.user);
-      login(response.user); 
+      login(response); 
       navigate('/workshopinfo');
     } catch (error) {
       setError(error.message);

@@ -17,7 +17,7 @@ export const register = asyncHandler(async (req, res) => {
     branch: req.body.branch,
     collegeName: req.body.collegeName,
     mobileNo: req.body.mobileNo,
-    rollNo: req.body.rollno,
+    rollNo: req.body.rollNo,
     email: req.body.email,
     password: hashedPassword,
   });
@@ -44,11 +44,12 @@ export const login = asyncHandler(async (req, res) => {
   res
     .status(200)
     .cookie("jwt", token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 604800000,
+      maxAge: 6048000000,
+      sameSite: "None", // Adjust based on your needs
+      path: "/",
+      secure:"false",
     })
-    .json({ message: "logged in successfully" });
+    .json({ user });
 });
 
 export const logout = (req, res) => {
