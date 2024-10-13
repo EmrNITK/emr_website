@@ -23,12 +23,6 @@ import ForgotPassword from "./components/ForgotPassword";
 import TranssactionVerify from "./pages/TransactionVerify";
 
 
-import WorkshopInfo from "./components/WorkshopInfo";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import { AuthProvider } from "./context/AuthContext";
-import ForgotPassword from "./components/ForgotPassword";
-
 const App = () => {
   return (
     <AuthProvider>
