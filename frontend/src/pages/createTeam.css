@@ -1,18 +1,24 @@
 .create-team-container {
+	padding: 2rem;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	flex-direction: column;
 	width: 100%;
-    padding: 20px;
-    margin-left: 20px;
-	gap: 30px;
+	color: white;
 }
 
-.create-team-header {
+ .create-team-header {
+	width: 80%;
+	border-radius: 1rem;
+	padding: 20px;
 	display: flex;
-	align-items: center;
+	flex-direction: column;
+	align-items: flex-start;
+	border: 1px solid white;
 }
 
+/*
 .create-team-title {
 	font-size: 2rem;
 	user-select: none;
@@ -77,4 +83,4 @@
 	.create-team-input {
 		width: 100%;
 	}
-}
+} */

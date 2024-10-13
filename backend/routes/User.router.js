@@ -4,7 +4,7 @@ import {
   rejectVerification,
   acceptVerification,
   getVerifiedUser,
-  getUserById
+  getUserById,
 } from "../controllers/User.controller.js";
 import { verifyJwt } from "../middlewares/auth.middlewares.js";
 

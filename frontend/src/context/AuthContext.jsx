@@ -1,28 +1,39 @@
-import React, { createContext, useState, useEffect } from 'react';
+// context/AuthContext.js
+
+import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     // Load user from localStorage or set to null
-    const savedUser = localStorage.getItem('user');
+    const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
-  }); 
-  const [isLoggedIn, setIsLoggedIn] = useState(!!user); 
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(!!user);
 
   const login = (userData) => {
-    setUser(userData);
+    console.log("usedata", userData.user);
+    setUser(userData.user);
     setIsLoggedIn(true);
-    // Persist user data in localStorage
-    localStorage.setItem('user', JSON.stringify(userData));
+    // Persist only the user object in localStorage
+    localStorage.setItem("user", JSON.stringify(userData.user));
   };
 
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
+    alert("Logged Out Successfully");
     // Remove user data from localStorage
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
   };
+
+  const updateUser = (updatedUser) => {
+    console.log("updatedUser", updatedUser);
+
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  }
 
   useEffect(() => {
     // Optionally, you can implement additional logic here
@@ -30,10 +41,8 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoggedIn, login, logout,updateUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export default AuthProvider;
