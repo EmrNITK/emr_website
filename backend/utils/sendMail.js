@@ -346,7 +346,7 @@ const sendJoinAcceptanceEmail = async (user, team, leader) => {
 };
 
 
-const sendJoinRejectionEmail = async (user, team) => {
+const sendJoinRejectionEmail = async (user, team,leader) => {
   try {
     const mailOptions = {
       from: process.env.APP_EMAIL,
