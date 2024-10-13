@@ -22,6 +22,8 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./components/ForgotPassword";
+import TranssactionVerify from "./pages/TransactionVerify";
+
 
 const App = () => {
   return (
@@ -36,6 +38,7 @@ const App = () => {
 
           <Route path="/team" element={<TeamComp />} />
           <Route path="/sponsor" element={<SponsorPage />} />
+          <Route path="/transactionverify" element={<TranssactionVerify />} />
 
           <Route path="/blog" element={<Blog />} />
           <Route path="/event" element={<EventPage />} />

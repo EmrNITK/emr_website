@@ -6,7 +6,7 @@ const TeamList = ({ teams, handleJoin }) => {
 	const availableTeams = teams.filter((team) => team.members.length < 4);
 
 	return (
-		<div className="w-screen h-full bg-blue-950 px-10 my-6">
+		<div className="w-screen h-full  px-10 my-6">
 			<h2 className="text-4xl font-bold mb-6 text-center text-white">
 				Available Teams to Join
 			</h2>

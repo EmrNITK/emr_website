@@ -11,7 +11,7 @@ import "react-awesome-button/dist/styles.css";
 const UpcomingWorkshops = () => {
   return (
     <div className="upcoming_workshop_block">
-      <h1 class="glitch">
+      <h1 className="glitch">
         <span aria-hidden="true">Upcoming Events</span>
         {/* Upcoming Event */}
         upcoming Events

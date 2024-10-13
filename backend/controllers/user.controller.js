@@ -28,10 +28,14 @@ export const acceptVerification = asyncHandler(async (req, res) => {
     return res.status(403).json({ message: "User already verified" });
   }
 
-  await User.findByIdAndUpdate(userId, { isVerified: true });
-  await sendAcceptanceEmail(user);
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { isVerified: true },
+    { new: true }
+  );
+  await sendAcceptanceEmail(updatedUser);
 
-  res.json({ message: `User verified successfully` });
+  return res.json({ message: "User verified successfully", user: updatedUser });
 });
 
 export const rejectVerification = asyncHandler(async (req, res) => {
@@ -44,7 +48,8 @@ export const rejectVerification = asyncHandler(async (req, res) => {
 
   await sendRejectionEmail(user);
 
-  res.status(403).json({ message: `User has been rejected.` });
+  // res.status(403).json({ message: `User has been rejected.` });
+   return  res.redirect("http://localhost:5173/transactionverify");
 });
 
 export const getVerifiedUser = asyncHandler(async (req, res) => {

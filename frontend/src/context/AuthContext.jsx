@@ -1,3 +1,5 @@
+// context/AuthContext.js
+
 import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
@@ -11,10 +13,11 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!user);
 
   const login = (userData) => {
-    setUser(userData);
+    console.log("usedata", userData.user);
+    setUser(userData.user);
     setIsLoggedIn(true);
-    // Persist user data in localStorage
-    localStorage.setItem("user", JSON.stringify(userData));
+    // Persist only the user object in localStorage
+    localStorage.setItem("user", JSON.stringify(userData.user));
   };
 
   const logout = () => {
@@ -25,13 +28,20 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
+  const updateUser = (updatedUser) => {
+    console.log("updatedUser", updatedUser);
+
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  }
+
   useEffect(() => {
     // Optionally, you can implement additional logic here
     // (e.g., refresh tokens, etc.)
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoggedIn, login, logout,updateUser }}>
       {children}
     </AuthContext.Provider>
   );

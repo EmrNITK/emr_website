@@ -20,7 +20,7 @@ export const getTeamById = asyncHandler(async (req, res) => {
 
 export const createTeam = asyncHandler(async (req, res) => {
     const userId = req.userId;
-    const name = req.body.name;
+    const name = req.body.name; 
     const isPresent = await Team.findOne({ name: req.body.name });
     const user = await User.findOne({ _id: userId });
 
