@@ -1,22 +1,23 @@
-// context/AuthContext.js
-
 import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    // Load user from localStorage or set to null
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
+    try {
+      const savedUser = localStorage.getItem('user');
+      return savedUser ? JSON.parse(savedUser) : null; // Check if savedUser is valid JSON
+    } catch (error) {
+      console.error("Error parsing user data from localStorage:", error);
+      return null; // Return null if parsing fails
+    }
   });
+
   const [isLoggedIn, setIsLoggedIn] = useState(!!user);
 
   const login = (userData) => {
-    console.log("usedata", userData.user);
     setUser(userData.user);
     setIsLoggedIn(true);
-    // Persist only the user object in localStorage
     localStorage.setItem("user", JSON.stringify(userData.user));
   };
 
@@ -24,16 +25,13 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setIsLoggedIn(false);
     alert("Logged Out Successfully");
-    // Remove user data from localStorage
     localStorage.removeItem("user");
   };
 
   const updateUser = (updatedUser) => {
-    console.log("updatedUser", updatedUser);
-
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
-  }
+  };
 
   useEffect(() => {
     // Optionally, you can implement additional logic here
@@ -41,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, login, logout,updateUser }}>
+    <AuthContext.Provider value={{ user, isLoggedIn, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
