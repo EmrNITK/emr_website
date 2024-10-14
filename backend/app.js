@@ -7,12 +7,14 @@ import inviteRouter from "./routes/Invite.router.js";
 import userRouter from "./routes/User.router.js";
 import memberRouter from "./routes/Member.router.js";
 import joinRouter from "./routes/Join.router.js";
-import cors from "cors";
+import cors from "cors"
 import methodOverride from "method-override";
-
 dotenv.config();
 
 const app = express();
+import methodOverride from "method-override";
+
+
 
 // Cookie parser middleware
 app.use(cookieParser());
@@ -30,10 +32,7 @@ app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true }));
-
-// Method override middleware
-app.use(methodOverride("_method"));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // Root route
 app.get("/", (req, res) => {
@@ -41,12 +40,12 @@ app.get("/", (req, res) => {
 });
 
 // API routes
-app.use("/api/auth", authRouter);
-app.use("/api/teams", teamRouter);
-app.use("/api/teams", inviteRouter);
-app.use("/api/users", userRouter);
-app.use("/api/teams", joinRouter);
-app.use("/api/teams", memberRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
+app.use('/api/teams', teamRouter);
+app.use('/api/teams', inviteRouter);
+app.use('/api/teams', joinRouter);
+app.use('/api/teams', memberRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
