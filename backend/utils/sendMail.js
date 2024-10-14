@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendVerificationEmail = async (user, transaction_id) => {
   try {
     const acceptUrl = `http://localhost:3000/api/users/verify/${user._id}/accept?_method=PUT`;
-    const rejectUrl = `http://localhost:3000/api/users/verify/${user._id}/reject?_method=PUT`;
+    const rejectUrl = `http://localhost:3000/api/users/verify/${user._id}/reject?_method=POST`;
 
     const mailOptions = {
       from: process.env.APP_EMAIL,
@@ -59,8 +59,6 @@ const sendVerificationEmail = async (user, transaction_id) => {
     throw error;
   }
 };
-
-
 const sendAcceptanceEmail = async (user) => {
   try {
 
@@ -267,54 +265,72 @@ const inviteRejectedEmail = async (user, team) => {
     throw error;
   }
 };
-const sendjoinRequestEmail = async (user, leader) => {
+const sendJoinRequestEmail = async (user, team, leader) => {
   try {
-    // console.log("hehhhhhhhh", user.isAdmin);
-    const acceptUrl = `http://localhost:3000/teams/:teamId/join_request/:userId/${user._id}`;
-    const rejectUrl = `http://localhost:3000/teams/:teamId/join_request/:userId/${user._id}`;
+    console.log("Requesting user details:", user);
+    console.log("Team details:", team);
+    console.log("Leader details:", leader);
+
+    const acceptUrl = `http://localhost:3000/api/teams/${team._id}/join/${user._id}/accept?_method=PUT`;
+    const rejectUrl = `http://localhost:3000/api/teams/${team._id}/join/${user._id}/reject?_method=POST`;
+
+    console.log("Accept URL:", acceptUrl);
+    console.log("Reject URL:", rejectUrl);
 
     const mailOptions = {
       from: process.env.ADMIN_EMAIL,
       to: leader.email,
       subject: "Team Join Request",
       html: `
-          <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-            <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
-              <p style="font-size:1.1em">Hello Admin,</p>
-              <p style="font-size:1.1em">${user.name} is requesting to join a team. Here are the details:</p>
-              <ul>
-                <li><strong>Name:</strong> ${user.name}</li>
-                <li><strong>Branch:</strong> ${user.branch}</li>
-                <li><strong>College Name:</strong> ${user.collegeName}</li>
-                <li><strong>Mobile No:</strong> ${user.mobileNo}</li>
-                <li><strong>Roll No:</strong> ${user.rollNo}</li>
-                <li><strong>Email:</strong> ${user.email}</li>
-              </ul>
-              <p style="font-size:1.1em">Transaction ID:<br>Please review and accept or reject the request:</p>
-      
-              <!-- Accept/Reject Buttons -->
-              <div style="margin: 20px 0;">
-                <a href="${acceptUrl}" style="background-color:green;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Accept</a>
-                <a href="${rejectUrl}" style="background-color:red;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Reject</a>
-              </div>
-      
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
-              <hr style="border:none;border-top:1px solid #eee" />
+        <div style="font-family: Helvetica, Arial, sans-serif; min-width: 1000px; overflow: auto; line-height: 2">
+          <div style="margin: 50px auto; width: 70%; padding: 20px 0">
+            <div style="border-bottom: 1px solid #eee">
+              <a href="https://your-website.com" target="_blank" style="font-size: 1.4em; color: #00466a; text-decoration: none; font-weight: 600">
+                <img width="200px" src="https://your-image-link.com/image.png" />
+              </a>
             </div>
-          </div>`,
+            <p style="font-size: 1.1em">Hello ${leader.name},</p>
+            <p style="font-size: 1.1em">${user.name} is requesting to join the team <b>${team.name}</b>. Here are the details:</p>
+            <ul>
+              <li><strong>Name:</strong> ${user.name}</li>
+              <li><strong>Branch:</strong> ${user.branch}</li>
+              <li><strong>College Name:</strong> ${user.collegeName}</li>
+              <li><strong>Mobile No:</strong> ${user.mobileNo}</li>
+              <li><strong>Roll No:</strong> ${user.rollNo}</li>
+              <li><strong>Email:</strong> ${user.email}</li>
+            </ul>
+            <p style="font-size: 1.1em">Please review and accept or reject the request:</p>
+
+            <!-- Accept/Reject Buttons -->
+            <div style="margin: 20px 0;">
+              <form action="${acceptUrl}" method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Accept</button>
+              </form>
+              <form action="${rejectUrl}" method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="POST">
+                <button type="submit" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Reject</button>
+              </form>
+            </div>
+
+            <p style="font-size: 0.9em;">Best Regards,<br />EMR</p>
+            <hr style="border: none; border-top: 1px solid #eee" />
+            <div style="padding: 8px 0; color: #aaa; font-size: 0.8em; line-height: 1; font-weight: 300; float: right"></div>
+          </div>
+        </div>`,
     };
 
+    console.log(
+      `Sending email from: ${process.env.ADMIN_EMAIL} to: ${leader.email}`
+    );
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error("Error sending verification email: ", error.message);
+    console.error("Error sending join request email: ", error.message);
     throw error;
   }
 };
+
+
 const sendJoinAcceptanceEmail = async (user, team, leader) => {
   try {
     const mailOptions = {
@@ -350,8 +366,6 @@ const sendJoinAcceptanceEmail = async (user, team, leader) => {
     throw error;
   }
 };
-
-
 const sendJoinRejectionEmail = async (user, team,leader) => {
   try {
     const mailOptions = {
@@ -429,7 +443,6 @@ const sendRemoveEmail = async (member, team, leader) => {
     throw error;
   }
 };
-
 export {
   sendVerificationEmail,
   sendAcceptanceEmail,
@@ -437,7 +450,7 @@ export {
   sendInvitationEmail,
   inviteAcceptedEmail,
   inviteRejectedEmail,
-  sendjoinRequestEmail,
+  sendJoinRequestEmail,
   sendJoinAcceptanceEmail,
   sendJoinRejectionEmail,
   sendRemoveEmail,

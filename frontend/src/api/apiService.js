@@ -27,11 +27,21 @@ export const loginUser = async (credentials) => {
 };
 
 // Retrieve all Teams
-export const fetchTeams = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/teams`);
+export const fetchTeams = async (teamId) => {
+  const response = await fetch(`${API_BASE_URL}/api/teams/`);
   return handleResponse(response);
 };
-
+export const getTeamById = async (teamId) => {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log("response", response);
+  return handleResponse(response);
+};
 // Create a new Team
 export const createTeam = async (teamName) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/`, {
@@ -40,7 +50,7 @@ export const createTeam = async (teamName) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({name:teamName}),
+    body: JSON.stringify({ name: teamName }),
   });
   return handleResponse(response);
 };
@@ -76,7 +86,7 @@ export const updateMemberStatus = async (teamId, memberId, status) => {
 export const sendInvitation = async (teamId, members) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/`, {
     method: "POST",
-    credentials:"include",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -198,8 +208,7 @@ export const sendOTP = async (email) => {
   return handleResponse(response);
 };
 
-
-export const removeMember = async (teamId,memberId) => {
+export const removeMember = async (teamId, memberId) => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/teams/${teamId}/members/${memberId}`,

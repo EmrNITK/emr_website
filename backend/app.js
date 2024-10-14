@@ -12,30 +12,31 @@ import methodOverride from "method-override";
 dotenv.config();
 
 const app = express();
+import methodOverride from "method-override";
+
+
 
 // Cookie parser middleware
 app.use(cookieParser());
 
-// Use method-override middleware
-app.use(methodOverride("_method"));
-
 // CORS Configuration
+const allowedOrigins = ["http://localhost:5173"];
 const corsOptions = {
-    origin: ['http://localhost:5173'],  // Add your allowed origins
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed HTTP methods
-    credentials: true,  // Enable credentials (cookies, etc)
-    optionsSuccessStatus: 200,  // Some legacy browsers choke on 204
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 };
 
-// Apply CORS middleware
 app.use(cors(corsOptions));
+
 // Body parsing middleware
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // Root route
-app.get('/', (req, res) => {
-    res.send("Server is ready to use!!!");
+app.get("/", (req, res) => {
+  res.send("Server is ready to use!!!");
 });
 
 // API routes
@@ -46,10 +47,12 @@ app.use('/api/teams', inviteRouter);
 app.use('/api/teams', joinRouter);
 app.use('/api/teams', memberRouter);
 
+// Error handling middleware
 app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(statusCode).json({ success: false, statusCode, message });
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  console.error("Error: ", message); // Log the error for debugging
+  res.status(statusCode).json({ success: false, statusCode, message });
 });
 
 export default app;

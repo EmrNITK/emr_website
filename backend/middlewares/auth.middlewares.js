@@ -6,7 +6,7 @@ dotenv.config();
 
 export const verifyJwt = asyncHandler(async (req, res,next) => {
   const token = req.cookies.jwt;
- console.log("Cookies: ", req.cookies);
+//  console.log("Cookies: ", req.cookies);
   if (!token) {
     return res.status(401).json({ message: "unauthorised" });
   }
@@ -19,12 +19,13 @@ export const verifyJwt = asyncHandler(async (req, res,next) => {
 });
 
 export const verifyTempOtpJwt = asyncHandler(async (req, res,next) => {
-  const token = req.cookies.tempOtpJwt;
-
+  const token = req.cookies.tempotpjwt;
+  console.log("temptoken", req.cookies);
+console.log("helllllll");
   if (!token) {
      return  res.status(401).json({ message: "unauthorised" });
   }
-
+console.log("helllllll")
   const decodedtoken = jwt.verify(token, process.env.SECRET);
 
   req.otpVerificationEmail = decodedtoken.email;

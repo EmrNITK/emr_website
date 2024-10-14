@@ -101,7 +101,7 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   // Check if user exists
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(404).json({ message: "User with given email not found" });
+    return res.status(404).json({ message: "User with given email not found" });
   }
 
   // Check if OTP is expired
@@ -111,21 +111,23 @@ export const verifyOTP = asyncHandler(async (req, res) => {
     user.otp = null;
     user.otpExpireAt = null;
     await user.save();
-    res.status(401).json({ message: "OTP expires" });
+    return res.status(401).json({ message: "OTP has expired" });
   }
 
   // Check if OTP matches
-  if (!(otp == user.otp)) {
+  if (otp !== user.otp) {
     return res.status(401).json({ message: "OTP didn't match" });
   }
 
   // Removes OTP and save user
   user.otp = null;
   user.otpExpireAt = null;
-  await user.save()
+  await user.save();
 
   // Create a token and send it in cookies
   const token = createOTPToken(email);
+  console.log("Generated token:", token);
+
   res
     .cookie("tempOtpJwt", token, {
       maxAge: 300000,
@@ -146,10 +148,10 @@ export const createNewPassword = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "User with given email not found" });
   }
-
+  console.log("decoded", decodedEmail, "email", email);
   // Check if token is valid
   if (!(decodedEmail == email)) {
-    return res.status(401).json({ message: "Unauthorized" })
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   // Create hash
