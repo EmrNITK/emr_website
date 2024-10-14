@@ -20,7 +20,8 @@ app.use(cookieParser());
 app.use(methodOverride("_method"));
 
 // CORS Configuration
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = process.env.FRONTEND_URL;
+
 const corsOptions = {
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
