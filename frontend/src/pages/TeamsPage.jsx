@@ -16,7 +16,7 @@ const TeamsPage = () => {
 	useEffect(() => {
 		const fetchTeams = async () => {
 			try {
-				const response = await axios.get("/api/teams");
+				const response = await axios.get("/api/teams/");
 				// console.log("Fetched Teams:", response.data);
 				const data = await response.json();
 				setTeams(data);

@@ -47,7 +47,7 @@ export const login = asyncHandler(async (req, res) => {
       maxAge: 6048000000,
       sameSite: "None", // Adjust based on your needs
       path: "/",
-      secure:"false",
+      secure: "false",
     })
     .json({ user });
 });
@@ -60,7 +60,7 @@ export const logout = (req, res) => {
 export const changePassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const userId = req.userId;
-  console.log("userIDD", userId)
+  console.log("userIDD", userId);
   const user = await User.findById(userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -96,7 +96,7 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   // Check if user exists
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(404).json({ message: "User with given email not found" });
+    return res.status(404).json({ message: "User with given email not found" });
   }
 
   // Check if OTP is expired
@@ -106,31 +106,33 @@ export const verifyOTP = asyncHandler(async (req, res) => {
     user.otp = null;
     user.otpExpireAt = null;
     await user.save();
-    res.status(401).json({ message: "OTP expires" });
+    return res.status(401).json({ message: "OTP has expired" });
   }
 
   // Check if OTP matches
-  if (!(otp == user.otp)) {
+  if (otp !== user.otp) {
     return res.status(401).json({ message: "OTP didn't match" });
   }
 
   // Removes OTP and save user
   user.otp = null;
   user.otpExpireAt = null;
-  await user.save()
+  await user.save();
 
-  const date = new Date();
-  const crntTime = new Date(date.getTime());
-  console.log(crntTime);
   // Create a token and send it in cookies
   const token = createOTPToken(email);
+  console.log("Generated token:", token);
+
   res
-    .cookie("tempOtpJwt", token, {
+    .status(200)
+    .cookie("tempotpjwt", token, {
+      maxAge: 8640000000, // 1 day
       httpOnly: true,
-      secure: true,
-      maxAge: 300000,
+      // secure: false, // Set to true in production when using HTTPS
+      sameSite: "None", // Important for cross-origin requests
+      path: "/",
     })
-    .json({ message: "OTP Verified" });
+    .json({ message: "OTP Verified", token });
 });
 
 export const createNewPassword = asyncHandler(async (req, res) => {
@@ -142,10 +144,10 @@ export const createNewPassword = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "User with given email not found" });
   }
-
+  console.log("decoded", decodedEmail, "email", email);
   // Check if token is valid
   if (!(decodedEmail == email)) {
-    return res.status(401).json({ message: "Unauthorized" })
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   // Create hash

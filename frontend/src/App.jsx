@@ -21,6 +21,8 @@ import Login from "./components/Login";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./components/ForgotPassword";
 import TranssactionVerify from "./pages/TransactionVerify";
+import TeamCard from "./components/TeamCard";
+import TeamDetails from "./Teamdetails";
 
 
 const App = () => {
@@ -28,12 +30,13 @@ const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
-        {/* <Navbar/> */}
+        {/* <Navbar /> */}
         <StarsCanvas />
 
         <Routes>
           <Route path="/" element={<Home />} />
-
+          <Route path="/teamcard" element={<TeamCard />} />
+          <Route path="/teamdetails" element={<TeamDetails />} />
           <Route path="/team" element={<TeamComp />} />
           <Route path="/sponsor" element={<SponsorPage />} />
           <Route path="/transactionverify" element={<TranssactionVerify />} />

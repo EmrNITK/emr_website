@@ -10,12 +10,15 @@ export const getAllTeams = asyncHandler(async (req, res) => {
 })
 
 export const getTeamById = asyncHandler(async (req, res) => {
-    const teamId = req.params.teamId;
-    const team = await Team.findById(teamId);
+     try {
+    const team = await Team.findById(req.params.teamId).populate('members');
     if (!team) {
-        res.status(404).json({ "message": "Team Not Found" });
+      return res.status(404).json({ message: 'Team not found' });
     }
-    res.status(200).json({ team });
+    res.json({ team });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching team details', error });
+  }
 });
 
 export const createTeam = asyncHandler(async (req, res) => {

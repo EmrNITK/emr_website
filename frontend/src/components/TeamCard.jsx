@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 const TeamCard = ({ team, handleJoin }) => {
 	const [message, setMessage] = useState("");
+	console.log("TEAM",team)
 
 	return (
 		<div className="bg-white p-3 rounded-lg shadow-lg">
@@ -16,7 +17,7 @@ const TeamCard = ({ team, handleJoin }) => {
 						<p className="text-gray-500">No members yet.</p>
 					) : (
 						<ul className="text-sm list-disc list-inside text-purple-950 ">
-							{team.leader.email}
+							{team.leader?.email}
 						</ul>
 					)}
 				</div>
@@ -27,7 +28,7 @@ const TeamCard = ({ team, handleJoin }) => {
 					</div>
 				)}
 				<button
-					onClick={() => handleJoin(team.name)}
+					onClick={() => handleJoin(team._id)}
 					className={`text-sm h-10 px-4 rounded-3xl text-white ${
 						team.members.length >= 4
 							? "bg-gray-400 cursor-not-allowed"
