@@ -17,6 +17,6 @@ authRouter.post("/forgot_password/otp",sendOTP);
 authRouter.post("/forgot_password/verify",verifyOTP);
 authRouter.post("/forgot_password/new",verifyTempOtpJwt,createNewPassword);
 
-authRouter.post("/change_password",verifyJwt,changePassword);
+authRouter.post("/change-password",verifyJwt,changePassword);
 
 export default authRouter;
