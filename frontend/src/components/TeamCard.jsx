@@ -6,7 +6,7 @@ const TeamCard = ({ team, handleJoin }) => {
 	console.log("TEAM",team)
 
 	return (
-		<div className="bg-white p-3 rounded-lg shadow-lg">
+		<div className=" p-3 rounded-lg shadow-lg">
 			<div className="flex flex-row justify-between">
 				<h3 className="text-lg font-semibold text-red-500 mb-2">
 					{team.name}
