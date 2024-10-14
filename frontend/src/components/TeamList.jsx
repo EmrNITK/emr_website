@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import TeamCard from "./TeamCard";
-
+import Header from "./Header";
 const TeamList = () => {
   const [teams, setTeams] = useState([]);
   const [message, setMessage] = useState("");
@@ -61,26 +61,39 @@ const TeamList = () => {
   const availableTeams = teams.filter((team) => team.members.length < 4);
 
   return (
-    <div className="w-screen h-full px-10 my-6">
-      <h2 className="text-4xl font-bold mb-6 text-center text-white">
-        Available Teams to Join
-      </h2>
-      {loading && (
-        <p className="text-center text-xl text-gray-400">Loading...</p>
-      )}
-      {!loading && availableTeams.length === 0 ? (
-        <p className="text-center text-xl text-gray-400 ">
-          No available teams to join. You can create one!
-        </p>
-      ) : (
-        <div className="flex flex-col gap-4 flex-grow">
-          {availableTeams.map((team) => (
-            <TeamCard key={team._id} team={team} handleJoin={handleJoin} />
-          ))}
-        </div>
-      )}
-      {message && <p className="mt-4 text-center text-green-500">{message}</p>}
-    </div>
+    <>
+      <Header />
+      <div className="w-screen h-full px-10 my-6 mt-20">
+        <h2 className="text-4xl font-bold mb-6 text-center text-white">
+          Available Teams to Join
+        </h2>
+        {loading && (
+          <p className="text-center text-xl text-gray-400">Loading...</p>
+        )}
+        {!loading && availableTeams.length === 0 ? (
+          <p className="text-center text-xl text-gray-400 ">
+            No available teams to join. You can create one!
+          </p>
+        ) : (
+          <div className="grid grid-cols-4 gap-4 flex-grow overflow-auto">
+            {availableTeams.map((team) => {
+              if (team.members.length < 4) {
+                return (
+                  <TeamCard
+                    key={team._id}
+                    team={team}
+                    handleJoin={handleJoin}
+                  />
+                );
+              }
+            })}
+          </div>
+        )}
+        {message && (
+          <p className="mt-4 text-center text-green-500">{message}</p>
+        )}
+      </div>
+    </>
   );
 };
 

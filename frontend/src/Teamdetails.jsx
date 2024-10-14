@@ -58,7 +58,7 @@ const TeamDetails = ({ teamId }) => {
             {team.members.map((member) => (
               <li
                 key={member._id}
-                className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                className="flex items-center justify-between p-4 bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm font-bold text-xl rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
               >
                 <div className="flex flex-col">
                   <span className="font-bold text-blue-600">{member.name}</span>
