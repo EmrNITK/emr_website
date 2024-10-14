@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import Header from "../components/Header.jsx";
 import { useNavigate } from "react-router-dom";
 
-export default () => {
+const CreateTeam = () => {
   const { user: loggedInUser } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [teamName, setTeamName] = useState("");
@@ -98,36 +98,38 @@ export default () => {
           </div>
 
           <div class="w-full lg:w-4/5 border border-white rounded-xl p-2 m-0 grid grid-cols-[auto,1fr,1fr] gap-4 overflow-auto ">
-            {getAvaialbeUsers().length
-              ? getAvaialbeUsers().map((user) => {
-                  return (
+            {getAvaialbeUsers().length ? (
+              getAvaialbeUsers().map((user) => {
+                return (
+                  <div
+                    key={user._id}
+                    className={`col-span-3 grid grid-cols-subgrid gap-4 justify-items-start p-2 m-0`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="w-auto col-start-1 col-end-2"
+                      onClick={(e) => {
+                        toggleTeam(e.target.checked, user._id);
+                      }}
+                    />
                     <div
-                      key={user._id}
-                      className={`col-span-3 grid grid-cols-subgrid gap-4 justify-items-start p-2 m-0`}
+                      id="name"
+                      className="text-xs lg:text-lg flex-grow col-start-2 col-end-3"
                     >
-                      <input
-                        type="checkbox"
-                        className="w-auto col-start-1 col-end-2"
-                        onClick={(e) => {
-                          toggleTeam(e.target.checked, user._id);
-                        }}
-                      />
-                      <div
-                        id="name"
-                        className="text-xs lg:text-lg flex-grow col-start-2 col-end-3"
-                      >
-                        {user.name}
-                      </div>
-                      <div
-                        id="email"
-                        className="text-xs lg:text-lg flex-grow col-start-3 col-end-4"
-                      >
-                        {user.email}
-                      </div>
+                      {user.name}
                     </div>
-                  );
-                })
-              : <div className="text-red-400 bold-text">No available users</div>}
+                    <div
+                      id="email"
+                      className="text-xs lg:text-lg flex-grow col-start-3 col-end-4"
+                    >
+                      {user.email}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-red-400 bold-text">No available users</div>
+            )}
           </div>
           <button
             type="submit"
@@ -143,3 +145,5 @@ export default () => {
     </>
   );
 };
+
+export default CreateTeam;
