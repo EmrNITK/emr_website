@@ -267,4 +267,19 @@ export const changePassword = async (email, newPassword) => {
   console.log("response", response);
   return handleResponse(response);
 };
+  export const changePasswordUser = async (passwordData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/change-password`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passwordData),
+      }
+    );
+    console.log("response", response);
+    return handleResponse(response);
+  };
 
