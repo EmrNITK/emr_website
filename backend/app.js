@@ -7,7 +7,9 @@ import inviteRouter from "./routes/Invite.router.js";
 import userRouter from "./routes/User.router.js";
 import memberRouter from "./routes/Member.router.js";
 import joinRouter from "./routes/Join.router.js";
-import cors from "cors"
+import cors from "cors";
+import methodOverride from "method-override";
+
 dotenv.config();
 
 const app = express();
