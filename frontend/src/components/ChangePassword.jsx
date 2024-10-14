@@ -19,7 +19,7 @@ const ChangePassword = () => {
       const response = await changePasswordUser(passwordData);
       console.log("response", response);
         setSuccessMessage("Password changed successfully!");
-      alert("password changed successfully")  // Display success message
+    alert("password changed successfully")  
      navigate('/login')
     } catch (error) {
       setError(error.message); // Set error message if the request fails
