@@ -26,6 +26,7 @@ export const register = asyncHandler(async (req, res) => {
   res.status(200).json(registerUser);
 });
 
+
 export const login = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -42,33 +43,36 @@ export const login = asyncHandler(async (req, res) => {
 
   const token = createToken(user._id, user.email);
   res
-    .status(200)
     .cookie("jwt", token, {
       maxAge: 6048000000,
       sameSite: "None", // Adjust based on your needs
       path: "/",
-      secure:"false",
+      secure: "false"
     })
     .json({ user });
 });
+
 
 export const logout = (req, res) => {
   res.clearCookie("jwt");
   res.status(200).json({ message: "logged out succesfully" });
 };
 
+
 export const changePassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
+
   const userId = req.userId;
-  console.log("userIDD", userId)
   const user = await User.findById(userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
+
   const ismatch = bcrypt.compare(currentPassword, user.password);
   if (!ismatch) {
     res.status(401).json({ message: "currentPassword is incorrect" });
   }
+
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   user.password = hashedPassword;
@@ -89,6 +93,7 @@ export const sendOTP = asyncHandler(async (req, res) => {
   await sendOTPService(email);
   res.status(200).json({ message: "OTP sent" });
 });
+
 
 export const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
@@ -119,19 +124,18 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   user.otpExpireAt = null;
   await user.save()
 
-  const date = new Date();
-  const crntTime = new Date(date.getTime());
-  console.log(crntTime);
   // Create a token and send it in cookies
   const token = createOTPToken(email);
   res
     .cookie("tempOtpJwt", token, {
-      httpOnly: true,
-      secure: true,
       maxAge: 300000,
+      sameSite: "None", // Adjust based on your needs
+      path: "/",
+      secure: "false"
     })
-    .json({ message: "OTP Verified" });
+    .json({ user });
 });
+
 
 export const createNewPassword = asyncHandler(async (req, res) => {
   const { email, newPassword } = req.body;
