@@ -10,6 +10,7 @@ export const register = asyncHandler(async (req, res) => {
   if (isPresent) {
     res.status(409).json({ message: "User already exists" });
   }
+  
 
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   const user = await User.create({
@@ -68,16 +69,16 @@ export const changePassword = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  const ismatch = bcrypt.compare(currentPassword, user.password);
+  const ismatch = await bcrypt.compare(currentPassword, user.password);
   if (!ismatch) {
-    res.status(401).json({ message: "currentPassword is incorrect" });
+    return res.status(403).json({ message: "currentPassword is incorrect" });
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   user.password = hashedPassword;
   await user.save();
-  res.status(200).json({ message: "password is changed" });
+  return res.status(200).json({ message: "password is changed" });
 });
 
 export const sendOTP = asyncHandler(async (req, res) => {
@@ -93,7 +94,6 @@ export const sendOTP = asyncHandler(async (req, res) => {
   await sendOTPService(email);
   res.status(200).json({ message: "OTP sent" });
 });
-
 
 export const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
@@ -133,11 +133,10 @@ export const verifyOTP = asyncHandler(async (req, res) => {
       maxAge: 300000,
       sameSite: "None", // Adjust based on your needs
       path: "/",
-      secure: "false"
+      secure: "false",
     })
     .json({ user });
 });
-
 
 export const createNewPassword = asyncHandler(async (req, res) => {
   const { email, newPassword } = req.body;

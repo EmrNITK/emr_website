@@ -23,6 +23,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import TranssactionVerify from "./pages/TransactionVerify";
 import TeamCard from "./components/TeamCard";
 import TeamDetails from "./Teamdetails";
+import ChangePassword from "./components/ChangePassword";
 
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/transactionverify" element={<TranssactionVerify />} />
 
           <Route path="/blog" element={<Blog />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/workshop-details" element={<WorkshopDetail />} />
 

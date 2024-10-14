@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { verifyUser } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-
+import Header from "../components/Header"
 const VerifyTransaction = () => {
   const [transactionId, setTransactionId] = useState("");
   const [error, setError] = useState("");
@@ -44,8 +44,10 @@ const VerifyTransaction = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-900">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full">
+    <div>
+      <Header />
+    <div className="flex items-center justify-center h-screen ">
+      <div className="p-8 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-2xl font-bold text-white text-center mb-6">
           Verify Transaction
         </h2>
@@ -65,6 +67,7 @@ const VerifyTransaction = () => {
         </button>
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
       </div>
+    </div>
     </div>
   );
 };

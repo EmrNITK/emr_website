@@ -82,13 +82,20 @@ const Login = () => {
               className="text-blue-500 hover:underline"
             >
               Forgot your password?
+              </Link>
+               <div className="mt-4 text-center">
+            <Link
+              to="/change-password"
+              className="text-blue-500 hover:underline"
+            >
+              change your password?
             </Link>
           </div>
         </div>
       </div>
       </div>
     </div >
-   
+   </div>
   );
 };
 
