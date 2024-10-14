@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { changePassword, verifyOTP,sendOTP } from "../api/apiService";
+import {useNavigate} from 'react-router-dom';
 import Header from "../components/Header";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -14,9 +16,7 @@ const ForgotPassword = () => {
   const handleSendOTP = async () => {
     setLoading(true);
     try {
-      await axios.post("http://localhost:3000/api/auth/forgot_password/otp", {
-        email,
-      });
+      await sendOTP(email);
       setMessage("OTP has been sent to your email.");
       setStep(2); // Move to OTP verification step
     } catch (error) {
@@ -29,27 +29,7 @@ const ForgotPassword = () => {
   const handleVerifyOTP = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/auth/forgot_password/verify",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            otp,
-          }),
-          credentials: "include", // To include cookies in the request
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json(); // Parse error response data
-        throw new Error(errorData.message || "Invalid OTP. Please try again.");
-      }
-
-      const data = await response.json(); // If you expect some data back
+      await verifyOTP(email,otp);
       setMessage("OTP verified. You can now reset your password.");
       setStep(3); // Move to password reset step
     } catch (error) {
@@ -67,37 +47,9 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/auth/forgot_password/new",
-        {
-          method: "POST",
-          withCredentials: true,
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            newPassword,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json(); // Parse error response data
-        throw new Error(
-          errorData.message || "Failed to reset password. Please try again."
-        );
-      }
-
+      await changePassword(email,newPassword)
       setMessage("Password has been successfully reset.");
-      // Reset fields
-      setEmail("");
-      setOtp("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setStep(1);
+      navigate("/login");
     } catch (error) {
       setMessage(error.message);
     } finally {
