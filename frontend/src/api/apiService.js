@@ -84,13 +84,16 @@ export const updateMemberStatus = async (teamId, memberId, status) => {
 
 // Send invitations to members
 export const sendInvitation = async (teamId, members) => {
+  console.log("inside send ",members);
+  console.log(JSON.stringify(members))
+  console.log(JSON.stringify({members}))
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(members),
+    body: JSON.stringify({members}),
   });
   return handleResponse(response);
 };
