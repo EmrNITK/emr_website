@@ -203,10 +203,6 @@ export const fetchUserDetails = async (userId) => {
   return handleResponse(response);
 };
 
-export const sendOTP = async (email) => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/forgot_password/otp`);
-  return handleResponse(response);
-};
 
 export const removeMember = async (teamId, memberId) => {
   try {
@@ -233,3 +229,42 @@ export const removeMember = async (teamId, memberId) => {
     throw error; // Re-throw the error for further handling if needed
   }
 };
+
+export const sendOTP = async (email) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/forgot_password/otp`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+  return handleResponse(response);
+};
+
+export const verifyOTP = async (email, otp) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/forgot_password/verify`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, otp }),
+  });
+  console.log("response", response);
+  return handleResponse(response);
+};
+
+export const changePassword = async (email, newPassword) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/forgot_password/new`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, newPassword }),
+  });
+  console.log("response", response);
+  return handleResponse(response);
+};
+
