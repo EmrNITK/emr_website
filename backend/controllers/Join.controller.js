@@ -1,20 +1,27 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import User from '../models/User.model.js';
 import Team from '../models/Team.model.js';
-import { sendJoinRejectionEmail, sendJoinAcceptanceEmail, sendjoinRequestEmail } from "../utils/sendMail.js"
+import {
+  sendJoinRejectionEmail,
+  sendJoinAcceptanceEmail,
+  sendJoinRequestEmail,
+} from "../utils/sendMail.js";
 
 export const joinRequest = asyncHandler(async (req, res) => {
-    console.log(req);
+    // console.log(req);
     const teamId = req.params.teamId;
     const userId = req.userId;
-
+// console.log("teamId", teamId, "userIdfrom join request", userId);
     const user = await User.findById(userId);
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
+    if (user.teamId) {
+        return res.status(403).json({ message: "User already a member of team" });
+    }
 
     const team = await Team.findById(teamId);
-    console.log(teamId,team);
+    // console.log(teamId,team);
     // Check if team exists
     if (!team) {
         res.status(404).json({ message: "Team not found" });
@@ -34,12 +41,11 @@ export const joinRequest = asyncHandler(async (req, res) => {
     const leaderId = team.leader.toString();
     const leader = await User.findById(leaderId);
 
+console.log("fromjoinconnnntroller")
+    await sendJoinRequestEmail(user, team, leader);
 
-    await sendjoinRequestEmail(user, leader);
-
-    res.status(200).json({ message: "Join request sent successfully" });
+   return  res.status(200).json({ message: "Join request sent successfully" });
 });
-
 
 export const rejectJoinRequest = asyncHandler(async (req, res) => {
     const memberId = req.params.memberId;
@@ -67,11 +73,11 @@ export const rejectJoinRequest = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Reject join request" });
 });
 
-
 export const acceptJoinRequest = asyncHandler(async (req, res) => {
+    console.log("membervvvvvvvvvvvvvvvvvvivteamid")
     const memberId = req.params.memberId;
     const teamId = req.params.teamId;
-
+     console.log("membervvvvvvvvvvvvvvvvvvivteamid", teamId, memberId);
     const member = await User.findById(memberId);
     if (!member) {
         return res.status(404).json({ success: false, message: "User not found" });
@@ -104,6 +110,6 @@ export const acceptJoinRequest = asyncHandler(async (req, res) => {
 
     await sendJoinAcceptanceEmail(member, team, leader);
 
-    res.status(200).json({ message: "Member added successfully" });
+    return res.json({ message: "Member added successfully" });
 
 });

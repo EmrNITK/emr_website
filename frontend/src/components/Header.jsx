@@ -16,6 +16,12 @@ const Header = () => {
             <span className="mr-2 sm:mr-4 text-white-200 text-sm sm:text-base">
               Hello, {user.name}
             </span>
+            <Link
+              to="/teamdetails"
+              className="px-2 sm:px-4 py-1 sm:py-2 bg-blue-500 hover:bg-blue-600 rounded-md text-sm sm:text-base font-semibold"
+            >
+              YOUR TEAM
+            </Link>
             <button
               onClick={logout}
               className="bg-green-500 hover:bg-red-600 px-2 py-1 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base font-semibold"
