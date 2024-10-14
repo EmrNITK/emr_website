@@ -1,7 +1,8 @@
-const API_BASE_URL = "http://localhost:3000"; // Replace with your actual API URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Replace with your actual API URL
 
 // User Registration
 export const registerUser = async (userData) => {
+  console.log(import.meta.env);
   const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
     method: "POST",
     headers: {
