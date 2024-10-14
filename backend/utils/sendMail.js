@@ -146,8 +146,8 @@ const sendInvitationEmail = async (user, team) => {
     const inviteId = user._id;
     const teamId = team._id;
 
-    const acceptUrl = `http://localhost:3000/api/invite/${teamId}/invites/accept/${inviteId}`;
-    const rejectUrl = `http://localhost:3000/api/invite/${teamId}/invites/reject/${inviteId}`;
+    const acceptUrl = `http://localhost:3000/api/teams/${teamId}/invite/${inviteId}/accept?_method=PUT`;
+    const rejectUrl = `http://localhost:3000/api/teams/${teamId}/invite/${inviteId}/reject?_method=POST`;
 
     const mailOptions = {
       from: process.env.APP_EMAIL,
@@ -165,10 +165,17 @@ const sendInvitationEmail = async (user, team) => {
               <p style="font-size:1.1em">You're requested to join ${team.name}</B> <BR>Please review and accept or reject the request:</p>
   
               <!-- Accept/Reject Buttons -->
-              <div style="margin: 20px 0;">
-                <a href="${acceptUrl}" style="background-color:green;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Accept</a>
-                <a href="${rejectUrl}" style="background-color:red;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Reject</a>
-              </div>
+               <div style="margin: 20px 0;">
+              <form action="${acceptUrl}" method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Accept</button>
+              </form>
+              <form action="${rejectUrl}" method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Reject</button>
+              </form>
+            </div>
+
   
               <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
