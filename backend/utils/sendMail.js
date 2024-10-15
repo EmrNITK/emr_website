@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
 
 const sendVerificationEmail = async (user, transaction_id) => {
   try {
-    const acceptUrl = `http://localhost:3000/api/users/verify/${user._id}/accept?_method=PUT`;
-    const rejectUrl = `http://localhost:3000/api/users/verify/${user._id}/reject?_method=POST`;
+    const acceptUrl = `${process.env.BACKEND_DOMAIN}/api/users/verify/${user._id}/accept?_method=PUT`;
+    const rejectUrl = `${process.env.BACKEND_DOMAIN}/api/users/verify/${user._id}/reject?_method=POST`;
 
     const mailOptions = {
       from: process.env.APP_EMAIL,
@@ -146,8 +146,8 @@ const sendInvitationEmail = async (user, team) => {
     const inviteId = user._id;
     const teamId = team._id;
 
-    const acceptUrl = `http://localhost:3000/api/teams/${teamId}/invite/${inviteId}/accept?_method=PUT`;
-    const rejectUrl = `http://localhost:3000/api/teams/${teamId}/invite/${inviteId}/reject?_method=POST`;
+    const acceptUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${teamId}/invite/${inviteId}/accept?_method=PUT`;
+    const rejectUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${teamId}/invite/${inviteId}/reject?_method=POST`;
 
     const mailOptions = {
       from: process.env.APP_EMAIL,
@@ -278,8 +278,8 @@ const sendJoinRequestEmail = async (user, team, leader) => {
     console.log("Team details:", team);
     console.log("Leader details:", leader);
 
-    const acceptUrl = `http://localhost:3000/api/teams/${team._id}/join/${user._id}/accept?_method=PUT`;
-    const rejectUrl = `http://localhost:3000/api/teams/${team._id}/join/${user._id}/reject?_method=POST`;
+    const acceptUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/accept?_method=PUT`;
+    const rejectUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/reject?_method=POST`;
 
     console.log("Accept URL:", acceptUrl);
     console.log("Reject URL:", rejectUrl);

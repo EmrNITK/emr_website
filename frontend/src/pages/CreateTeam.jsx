@@ -57,8 +57,9 @@ const CreateTeam = () => {
       console.log("team id", teamId);
       console.log("selected members", selectedMembers);
       await sendInvitation(teamId, selectedMembers);
-    } catch (error) {
+    } catch (err) {
       console.error(err);
+      alert(err.message)
       setError(err.message || "An error occurred during team creation.");
     } finally {
       setLoading(false);
