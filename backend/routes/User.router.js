@@ -11,8 +11,8 @@ import { verifyJwt } from "../middlewares/auth.middlewares.js";
 const userRouter = express.Router();
 
 userRouter.post("/verify", verifyJwt, sendMailToAdmin);
-userRouter.put("/verify/:userId/accept", acceptVerification);
-userRouter.post("/verify/:userId/reject", rejectVerification);
+userRouter.get('/verify/:userId/accept', acceptVerification);
+userRouter.get("/verify/:userId/reject", rejectVerification);
 
 userRouter.get("/", verifyJwt, getVerifiedUser);
 userRouter.get("/:userId", verifyJwt, getUserById);
