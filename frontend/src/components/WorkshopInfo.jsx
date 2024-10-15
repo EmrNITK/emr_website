@@ -35,7 +35,9 @@ const WorkshopInfo = () => {
     console.log("userr", userVerified, user);
     if (user && userVerified) {
       navigate("/workshop/createteam");
-    } else {
+    } else  if(!user){
+      navigate("/login");
+    }else{
       navigate("/transactionverify");
     }
   };

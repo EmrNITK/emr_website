@@ -12,7 +12,8 @@ const TeamDetails = ({ teamId }) => {
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
-        const data = await getTeamById(updateUser.teamId?.toString());
+        console.log(updateUser);
+        const data = await getTeamById(updateUser?.teamId?.toString());
         setTeam(data.team);
       } catch (err) {
         setError(err.message || "Error fetching team details");

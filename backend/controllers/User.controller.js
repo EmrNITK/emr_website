@@ -1,6 +1,9 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/User.model.js";
 import { sendVerificationEmail, sendAcceptanceEmail, sendRejectionEmail } from "../utils/sendMail.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const sendMailToAdmin = asyncHandler(async (req, res) => {
   const userId = req.userId;
@@ -35,7 +38,7 @@ export const acceptVerification = asyncHandler(async (req, res) => {
   );
   await sendAcceptanceEmail(updatedUser);
 
-  return res.json({ message: "User verified successfully", user: updatedUser });
+  return  res.redirect(`${process.env.FRONTEND_DOMAIN}/workshop`);
 });
 
 export const rejectVerification = asyncHandler(async (req, res) => {
@@ -49,7 +52,7 @@ export const rejectVerification = asyncHandler(async (req, res) => {
   await sendRejectionEmail(user);
 
   // res.status(403).json({ message: `User has been rejected.` });
-   return  res.redirect("http://localhost:5173/transactionverify");
+   return  res.redirect(`${process.env.FRONTEND_DOMAIN}/transactionverify`);
 });
 
 export const getVerifiedUser = asyncHandler(async (req, res) => {
