@@ -21,8 +21,8 @@ const VerifyTransaction = () => {
     }
 
     try {
-      const userData = { transactionId };
-      const response = await verifyUser(userData);
+      // const userData = { transactionId };
+      const response = await verifyUser(transactionId);
 
       console.log("Verifying transaction ID:", transactionId);
 
