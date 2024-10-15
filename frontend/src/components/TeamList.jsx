@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import TeamCard from "./TeamCard";
 import Header from "./Header";
+const API_BASE_URL = import.meta.env.API_BASE_URL;
 const TeamList = () => {
   const [teams, setTeams] = useState([]);
   const [message, setMessage] = useState("");
@@ -13,7 +14,7 @@ const TeamList = () => {
     const fetchTeams = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:3000/api/teams/", {
+        const response = await axios.get(`${API_BASE_URL}/api/teams/`, {
           withCredentials: true, // Include cookies if needed
         });
         setTeams(response.data.teams);
@@ -32,7 +33,7 @@ const TeamList = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/teams/${teamId}/join/`,
+        `${API_BASE_URL}/api/teams/${teamId}/join/`,
         {},
         { withCredentials: true }
       );
