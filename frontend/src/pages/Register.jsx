@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/apiService";
+import Header from '../components/Header';
 
 const Register = () => {
   const { login } = useContext(AuthContext);
@@ -66,6 +67,8 @@ const Register = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="flex justify-center items-center h-screen ">
       <div className="flex flex-col md:flex-row max-w-4xl w-full md:w-4/5">
         <div className="relative md:w-1/2 w-full p-8 flex items-center justify-center bg-center">
@@ -146,6 +149,7 @@ const Register = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
