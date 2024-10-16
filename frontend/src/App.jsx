@@ -18,11 +18,12 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./pages/ForgotPassword";
-import TranssactionVerify from "./pages/TransactionVerify";
+import TransactionVerify from "./pages/TransactionVerify";
 import TeamCard from "./components/TeamCard";
 import TeamDetails from "./pages/TeamDetails";
 import ChangePassword from "./components/ChangePassword";
 import ProtectedRoute from "./components/ProtectedRoute";
+import VerifiedRoute from "./components/VerifiedRoute";
 
 const App = () => {
   return (
@@ -50,7 +51,9 @@ const App = () => {
             path="/teamcard"
             element={
               <ProtectedRoute>
-                <TeamCard />
+                <VerifiedRoute>
+                  <TeamCard />
+                </VerifiedRoute>
               </ProtectedRoute>
             }
           />
@@ -58,7 +61,9 @@ const App = () => {
             path="/teamdetails"
             element={
               <ProtectedRoute>
-                <TeamDetails />
+                <VerifiedRoute>
+                  <TeamDetails />
+                </VerifiedRoute>
               </ProtectedRoute>
             }
           />
@@ -66,7 +71,7 @@ const App = () => {
             path="/transactionverify"
             element={
               <ProtectedRoute>
-                <TranssactionVerify />
+                <TransactionVerify />
               </ProtectedRoute>
             }
           />
@@ -82,7 +87,9 @@ const App = () => {
             path="/workshop/createteam"
             element={
               <ProtectedRoute>
-                <CreateTeam />
+                <VerifiedRoute>
+                  <CreateTeam />
+                </VerifiedRoute>
               </ProtectedRoute>
             }
           />
@@ -90,7 +97,9 @@ const App = () => {
             path="/workshop/jointeam"
             element={
               <ProtectedRoute>
-                <JoinTeamPage />
+                <VerifiedRoute>
+                  <JoinTeamPage />
+                </VerifiedRoute>
               </ProtectedRoute>
             }
           />
