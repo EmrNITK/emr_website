@@ -5,21 +5,21 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const verifyJwt = asyncHandler(async (req, res,next) => {
-  const token = req.cookies.jwt;
-//  console.log("Cookies: ", req.cookies);
+  const token = req.headers['authorization']?.split(' ')[1];
+
   if (!token) {
     return res.status(401).json({ message: "unauthorised" });
   }
 
   const decodedtoken = jwt.verify(token, process.env.SECRET);
-  console.log(decodedtoken);
+ 
   req.userId = decodedtoken.id;
 
   next();
 });
 
 export const verifyTempOtpJwt = asyncHandler(async (req, res,next) => {
-  const token = req.cookies.tempOtpJwt;
+  const token = req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
      return  res.status(401).json({ message: "unauthorised" });
