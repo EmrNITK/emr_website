@@ -11,7 +11,7 @@ export const getAllTeams = asyncHandler(async (req, res) => {
 
 export const getTeamById = asyncHandler(async (req, res) => {
      try {
-    const team = await Team.findById(req.params.teamId).populate('members');
+    const team = await Team.findById(req.params.teamId).populate('members').populate('leader');
     if (!team) {
       return res.status(404).json({ message: 'Team not found' });
     }

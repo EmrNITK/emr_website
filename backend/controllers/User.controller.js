@@ -20,44 +20,53 @@ export const sendMailToAdmin = asyncHandler(async (req, res) => {
 });
 
 export const acceptVerification = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  if (req.query._method === 'PUT') {
+    const { userId } = req.params;
 
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.isVerified) {
+      return res.status(403).json({ message: "User already verified" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { isVerified: true },
+      { new: true }
+    );
+    await sendAcceptanceEmail(updatedUser);
+
+    return res.status(200).json({ message: "User verification done.." });
   }
-
-  if (user.isVerified) {
-    return res.status(403).json({ message: "User already verified" });
+  else {
+    res.status(404).json({ message: 'Bad request' });
   }
-
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    { isVerified: true },
-    { new: true }
-  );
-  await sendAcceptanceEmail(updatedUser);
-
-  return  res.redirect(`${process.env.FRONTEND_DOMAIN}/workshop`);
 });
 
 export const rejectVerification = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  if (req.query._method === 'POST') {
+    const { userId } = req.params;
 
-  const user = await User.findOne({ _id: userId });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await sendRejectionEmail(user);
+
+    res.status(403).json({ message: `User has been rejected.` });
   }
-
-  await sendRejectionEmail(user);
-
-  // res.status(403).json({ message: `User has been rejected.` });
-   return  res.redirect(`${process.env.FRONTEND_DOMAIN}/transactionverify`);
+  else {
+    res.status(404).json({ message: 'Bad Request' });
+  }
 });
 
 export const getVerifiedUser = asyncHandler(async (req, res) => {
   const user = await User.find({});
-  
+
   const verifiedUsers = user.filter(users => users.isVerified === true);
 
   res.status(200).json(verifiedUsers);
@@ -69,7 +78,7 @@ export const getUserById = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" })
   }
-  
+
   res.status(200).json(user);
 });
 

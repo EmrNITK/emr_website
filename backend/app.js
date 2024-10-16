@@ -20,8 +20,8 @@ app.use(cookieParser());
 app.use(methodOverride("_method"));
 
 // CORS Configuration
-const allowedOrigins = process.env.FRONTEND_DOMAIN;
-
+const allowedOrigins = process.env.FRONTEND_DOMAIN_PROD || process.env.FRONTEND_DOMAIN_DEV;
+console.log(allowedOrigins);
 const corsOptions = {
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],

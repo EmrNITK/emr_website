@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const BACKEND_DOMAIN = process.env.BACKEND_DOMAIN_DEV || process.env.BACKEND_DOMAIN_PROD;
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -11,10 +13,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendVerificationEmail = async (user, transaction_id) => {
+const sendVerificationEmail = async (user, transactionId) => {
   try {
-    const acceptUrl = `${process.env.BACKEND_DOMAIN}/api/users/verify/${user._id}/accept?_method=PUT`;
-    const rejectUrl = `${process.env.BACKEND_DOMAIN}/api/users/verify/${user._id}/reject?_method=POST`;
+    console.log(BACKEND_DOMAIN);
+    // Generate Accept and Reject URLs
+    const acceptUrl = `${BACKEND_DOMAIN}/api/users/verify/${user._id}/accept?_method=PUT`;
+    const rejectUrl = `${BACKEND_DOMAIN}/api/users/verify/${user._id}/reject?_method=POST`;
 
     const mailOptions = {
       from: process.env.APP_EMAIL,
@@ -23,24 +27,13 @@ const sendVerificationEmail = async (user, transaction_id) => {
       html: `
         <div style="font-family: Helvetica, Arial, sans-serif; min-width: 1000px; overflow: auto; line-height: 2">
           <div style="margin: 50px auto; width: 70%; padding: 20px 0">
-            <div style="border-bottom: 1px solid #eee">
-              <a href="https://your-website.com" target="_blank" style="font-size: 1.4em; color: #00466a; text-decoration: none; font-weight: 600">
-                <img width="200px" src="https://your-image-link.com/image.png" />
-              </a>
-            </div>
             <p style="font-size: 1.1em">Hello Admin,</p>
-            <p style="font-size: 1.1em">A new user, ${user.name}, has requested verification having Transaction ID <b>${transaction_id}</b>. <br>Please review and accept or reject the request:</p>
+            <p style="font-size: 1.1em">A new user, ${user.name}, has requested verification with Transaction ID <b>${transactionId}</b>. <br>Please review and accept or reject the request:</p>
 
-            <!-- Accept/Reject Buttons -->
+            <!-- Accept/Reject Links -->
             <div style="margin: 20px 0;">
-              <form action="${acceptUrl}" method="POST" style="display: inline;">
-                <input type="hidden" name="_method" value="PUT">
-                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Accept</button>
-              </form>
-              <form action="${rejectUrl}" method="POST" style="display: inline;">
-                <input type="hidden" name="_method" value="PUT">
-                <button type="submit" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Reject</button>
-              </form>
+              <a href="${acceptUrl}" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none;">Accept</a>
+              <a href="${rejectUrl}" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; margin-left: 10px;">Reject</a>
             </div>
 
             <p style="font-size: 0.9em;">Best Regards,<br />EMR</p>
@@ -59,6 +52,7 @@ const sendVerificationEmail = async (user, transaction_id) => {
     throw error;
   }
 };
+
 const sendAcceptanceEmail = async (user) => {
   try {
 
@@ -70,16 +64,10 @@ const sendAcceptanceEmail = async (user) => {
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">Congratulations! Your verification has been accepted.</p>
               <p style="font-size:1.1em">We are excited to welcome you to our workshop. Here are the details:</p>
               <ul>
-                <li><strong>Transaction ID:</strong></li>
                 <li><strong>Workshop Date:</strong> [Insert Workshop Date]</li>
                 <li><strong>Location:</strong> [Insert Workshop Location]</li>
               </ul>
@@ -114,11 +102,6 @@ const sendRejectionEmail = async (user) => {
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">We regret to inform you that your verification request has been rejected.</p>
               <p style="font-size:1.1em">If you believe this is an error or have any questions, please feel free to contact us.</p>
@@ -142,38 +125,27 @@ const sendRejectionEmail = async (user) => {
 };
 const sendInvitationEmail = async (user, team) => {
   try {
-  
+
     const inviteId = user._id;
     const teamId = team._id;
 
-    const acceptUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${teamId}/invite/${inviteId}/accept?_method=PUT`;
-    const rejectUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${teamId}/invite/${inviteId}/reject?_method=POST`;
+    const acceptUrl = `${BACKEND_DOMAIN}/api/teams/${teamId}/invite/${inviteId}/accept?_method=PUT`;
+    const rejectUrl = `${BACKEND_DOMAIN}/api/teams/${teamId}/invite/${inviteId}/reject?_method=POST`;
 
     const mailOptions = {
       from: process.env.APP_EMAIL,
       to: user.email,
-      subject: "Verification Request",
+      subject: "Invitation to Join Team",
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
               <p style="font-size:1.1em">Hello ${user.name},</p>
-              <p style="font-size:1.1em">You're requested to join ${team.name}</B> <BR>Please review and accept or reject the request:</p>
+              <p style="font-size:1.1em">You're requested to join <b> Team: ${team.name}</b> <br>Please review and accept or reject the request:</p>
   
-              <!-- Accept/Reject Buttons -->
-               <div style="margin: 20px 0;">
-              <form action="${acceptUrl}" method="POST" style="display: inline;">
-                <input type="hidden" name="_method" value="PUT">
-                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Accept</button>
-              </form>
-              <form action="${rejectUrl}" method="POST" style="display: inline;">
-                <input type="hidden" name="_method" value="PUT">
-                <button type="submit" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Reject</button>
-              </form>
+             <!-- Accept/Reject Links -->
+            <div style="margin: 20px 0;">
+              <a href="${acceptUrl}" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none;">Accept</a>
+              <a href="${rejectUrl}" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; margin-left: 10px;">Reject</a>
             </div>
 
   
@@ -194,7 +166,7 @@ const sendInvitationEmail = async (user, team) => {
     throw error;
   }
 };
-const inviteAcceptedEmail = async (user, team) => {
+const inviteAcceptedEmail = async (leader, user, team) => {
   try {
     console.log("hehhhhhhhh", user.email);
 
@@ -202,15 +174,11 @@ const inviteAcceptedEmail = async (user, team) => {
     const mailOptions = {
       from: process.env.APP_EMAIL,
       to: user.email,
+      cc: leader.email,
       subject: "Invitation request accepted",
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">Congratulations! You're now a member of team ${team.name}.</p>
               <p style="font-size:1.1em">We are excited to welcome you to our workshop.</p>
@@ -233,26 +201,20 @@ const inviteAcceptedEmail = async (user, team) => {
     throw error;
   }
 };
-const inviteRejectedEmail = async (user, team) => {
+const inviteRejectedEmail = async (leader, user, team) => {
   try {
     console.log("Sending rejection email to", user.email);
 
     // Email options
     const mailOptions = {
       from: process.env.APP_EMAIL,
-      to: user.email,
-      subject: "Verification Request Rejected",
+      to: leader.email,
+      subject: "Invtation Request Rejected",
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
-              <p style="font-size:1.1em">Hello ${user.name},</p>
-              <p style="font-size:1.1em">We regret to inform you that since your rejected the invitation to team ${team.name} you will
-              not be a part of this team.</p>
+              <p style="font-size:1.1em">Hello ${leader.name},</p>
+              <p style="font-size:1.1em">We regret to inform you that ${user.name} has rejected the invitation to join your team : <b>${team.name} </b>.</p>
               <p style="font-size:1.1em">If you believe this is an error or have any questions, please feel free to contact us.</p>
               <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
@@ -274,16 +236,10 @@ const inviteRejectedEmail = async (user, team) => {
 };
 const sendJoinRequestEmail = async (user, team, leader) => {
   try {
-    console.log("Requesting user details:", user);
-    console.log("Team details:", team);
-    console.log("Leader details:", leader);
+    const acceptUrl = `${BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/accept?_method=PUT`;
+    const rejectUrl = `${BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/reject?_method=POST`;
 
-    const acceptUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/accept?_method=PUT`;
-    const rejectUrl = `${process.env.BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/reject?_method=POST`;
-
-    console.log("Accept URL:", acceptUrl);
-    console.log("Reject URL:", rejectUrl);
-
+    
     const mailOptions = {
       from: process.env.ADMIN_EMAIL,
       to: leader.email,
@@ -291,11 +247,7 @@ const sendJoinRequestEmail = async (user, team, leader) => {
       html: `
         <div style="font-family: Helvetica, Arial, sans-serif; min-width: 1000px; overflow: auto; line-height: 2">
           <div style="margin: 50px auto; width: 70%; padding: 20px 0">
-            <div style="border-bottom: 1px solid #eee">
-              <a href="https://your-website.com" target="_blank" style="font-size: 1.4em; color: #00466a; text-decoration: none; font-weight: 600">
-                <img width="200px" src="https://your-image-link.com/image.png" />
-              </a>
-            </div>
+           
             <p style="font-size: 1.1em">Hello ${leader.name},</p>
             <p style="font-size: 1.1em">${user.name} is requesting to join the team <b>${team.name}</b>. Here are the details:</p>
             <ul>
@@ -309,15 +261,10 @@ const sendJoinRequestEmail = async (user, team, leader) => {
             <p style="font-size: 1.1em">Please review and accept or reject the request:</p>
 
             <!-- Accept/Reject Buttons -->
+           <!-- Accept/Reject Links -->
             <div style="margin: 20px 0;">
-              <form action="${acceptUrl}" method="POST" style="display: inline;">
-                <input type="hidden" name="_method" value="PUT">
-                <button type="submit" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Accept</button>
-              </form>
-              <form action="${rejectUrl}" method="POST" style="display: inline;">
-                <input type="hidden" name="_method" value="POST">
-                <button type="submit" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Reject</button>
-              </form>
+              <a href="${acceptUrl}" style="background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none;">Accept</a>
+              <a href="${rejectUrl}" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; margin-left: 10px;">Reject</a>
             </div>
 
             <p style="font-size: 0.9em;">Best Regards,<br />EMR</p>
@@ -347,11 +294,7 @@ const sendJoinAcceptanceEmail = async (user, team, leader) => {
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
+              
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">Congratulations! Your request to join the team has been accepted.</p>
               <p style="font-size:1.1em">Here are the details:</p>
@@ -373,20 +316,16 @@ const sendJoinAcceptanceEmail = async (user, team, leader) => {
     throw error;
   }
 };
-const sendJoinRejectionEmail = async (user, team,leader) => {
+const sendJoinRejectionEmail = async (user, team, leader) => {
   try {
     const mailOptions = {
       from: process.env.APP_EMAIL,
       to: user.email,
-      subject: "Team Join Request Accepted",
+      subject: "Team Join Request Rejected",
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
+              
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">Unfortunately, Your request to join the team has been rejected.</p>
               <p style="font-size:1.1em">Please look for other team</p>
@@ -396,10 +335,8 @@ const sendJoinRejectionEmail = async (user, team,leader) => {
                 <li><strong>Team Name:</strong> ${team.name}</li>
                  <li><strong>Team Leader:</strong> ${leader.name}</li>
               </ul>
-              <p style="font-size:1.1em">You can now participate in team activities and contribute to your team's success!</p>
               
-              <p style="font-size:0.9em;">Best Regards,<br />${team.name}</p>
-              <p style="font-size:0.9em;"><br />${leader.name}</p>
+              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
             </div>
           </div>`,
@@ -411,6 +348,7 @@ const sendJoinRejectionEmail = async (user, team,leader) => {
     throw error;
   }
 };
+
 const sendRemoveEmail = async (member, team, leader) => {
   try {
     console.log("sending mail to", member);
@@ -421,11 +359,7 @@ const sendRemoveEmail = async (member, team, leader) => {
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
-              <div style="border-bottom:1px solid #eee">
-                <a href="https://your-website.com" target="_blank" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">
-                  <img width="200px" src="https://your-image-link.com/image.png" />
-                </a>
-              </div>
+              
               <p style="font-size:1.1em">Hello ${member.name},</p>
               <p style="font-size:1.1em">
                 Unfortunately, you have been removed from the team "<strong>${team.name}</strong>" by the leader.
