@@ -18,24 +18,24 @@ const Hero = () => {
         className="flex-[0.75]  p-0 rounded-2xl"
       >
         {/* EMR home hero text */}
-        <section className={`relative w-full h-[35vh] bg-transparent mx-auto`}>
+        <section className={`relative w-full h-[35vh] text-center bg-transparent mx-auto`}>
           <div
-            className={`absolute inset-0 top-[10px]  max-w-7xl mx-auto ${styles} flex flex-row items-start gap-1`}
+            className={`absolute inset-0 top-[10px] justify-center max-w-7xl text-center mx-auto ${styles} flex flex-row items-start gap-1`}
           >
-            <div className="flex flex-col justify-center items-center mt-30">
-              <h1 className={`${styles.heroHeadText} text-white mt-30`}>
+            <div className="flex flex-col text-center items-center mt-30">
+              <h1 className={`${styles.heroHeadText} text-center text-white mt-30`}>
                 <span className="text-[#bfbfbf]">E</span>
                 <span className="text-[#009f069e]">M</span>
                 <span className="text-[#bfbfbf]">R</span>
               </h1>
               <div>
                 <p
-                  className={`${styles.heroSubText} mt-0 text-white-100 text-[25px]`}
+                  className={`${styles.heroSubText} mt-0 text-white-100 text-center text-[25px]`}
                 >
                   Embedded System and Robotics Club{" "}
                   <br className="sm:block hidden" />
                 </p>
-                <div className="mt-2 text-secondary text-[15px] max-w-3xl max-h-3xl">
+                <div className="mt-2 text-secondary  text-[15px]  text-center max-w-3xl max-h-3xl">
                   Vision "Engineering Education should orient towards
                   Innovation"
                 </div>
