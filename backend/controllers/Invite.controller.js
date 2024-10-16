@@ -14,29 +14,51 @@ export const sendInvitations = asyncHandler(async (req, res) => {
   const { teamId } = req.params;
   const { members } = req.body; // array of ids of users to be invited to join team
 
+  // Fetch the team
   const team = await Team.findById(teamId);
   if (!team) {
     return res.status(404).json({ message: "Team not found" });
   }
 
+  // Check if the team already has 4 members
   if (team.members.length >= 4) {
-    return res.status(403).json({ message: "Can't add more than 4 member in a team" });
+    return res.status(403).json({ message: "Can't add more than 4 members in a team" });
   }
 
-  // Send invitations to each selected member
+  const alreadyInTeam = [];
+  const invitedMembers = [];
+
+  // Send invitations to each selected member if they're not already in a team
   const promises = members.map(async (userId) => {
     const user = await User.findById(userId);
 
     if (user) {
-      // Send email (You can customize the email content as needed)
-      await sendInvitationEmail(user, team);
+      if (user.teamId) {
+        // If user already has a team, skip the invitation
+        alreadyInTeam.push(user);
+      } else {
+        // Send email (You can customize the email content as needed)
+        await sendInvitationEmail(user, team);
+        invitedMembers.push(user);
+      }
     }
   });
 
   await Promise.all(promises);
 
-  res.status(200).json({ message: "Invitations sent successfully!" });
+  // Prepare response messages
+
+  const responseMessage = {
+    invitedMembers: invitedMembers.map(user => ({ id: user._id, name: user.name, email: user.email })),
+  };
+
+  if (alreadyInTeam.length > 0) {
+    responseMessage.alreadyInTeam = alreadyInTeam.map(user => ({ id: user._id, name: user.name, email: user.email }));
+  }
+
+  res.status(200).json(responseMessage);
 });
+
 
 // for handling accept response from the invite email
 export const acceptInvitation = asyncHandler(async (req, res) => {
@@ -59,7 +81,7 @@ export const acceptInvitation = asyncHandler(async (req, res) => {
 
     const leader = await User.findById(team.leader.toString());
     if (!leader) {
-      return res.status(404).json({ message: "Team leadre not found" });
+      return res.status(404).json({ message: "Team leader not found" });
     }
 
     if (team.members.length >= 4) {
