@@ -1,8 +1,16 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Replace with your actual API URL
 
+// Handle API Response
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Something went wrong");
+  }
+  return await response.json();
+};
+
 // User Registration
 export const registerUser = async (userData) => {
-  console.log(import.meta.env);
   const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
     method: "POST",
     headers: {
@@ -23,15 +31,22 @@ export const loginUser = async (credentials) => {
     },
     body: JSON.stringify(credentials),
   });
-  console.log("response", response);
+  
   return handleResponse(response);
 };
 
 // Retrieve all Teams
-export const fetchTeams = async (teamId) => {
-  const response = await fetch(`${API_BASE_URL}/api/teams/`);
+export const getAllTeams = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/teams/`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   return handleResponse(response);
 };
+
 export const getTeamById = async (teamId) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}`, {
     method: "GET",
@@ -40,9 +55,10 @@ export const getTeamById = async (teamId) => {
       "Content-Type": "application/json",
     },
   });
-  console.log("response", response);
+
   return handleResponse(response);
 };
+
 // Create a new Team
 export const createTeam = async (teamName) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/`, {
@@ -85,16 +101,16 @@ export const updateMemberStatus = async (teamId, memberId, status) => {
 
 // Send invitations to members
 export const sendInvitation = async (teamId, members) => {
-  console.log("inside send ",members);
+  console.log("inside send ", members);
   console.log(JSON.stringify(members))
-  console.log(JSON.stringify({members}))
+  console.log(JSON.stringify({ members }))
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({members}),
+    body: JSON.stringify({ members }),
   });
   return handleResponse(response);
 };
@@ -102,7 +118,7 @@ export const sendInvitation = async (teamId, members) => {
 // Accept or Reject Invitation
 export const respondToInvitation = async (teamId, inviteId, userResponse) => {
   const response = await fetch(
-    `${API_BASE_URL}/teams/${teamId}/invites/${inviteId}`,
+    `${API_BASE_URL}/api/teams/${teamId}/invites/${inviteId}`,
     {
       method: "PUT",
       headers: {
@@ -116,8 +132,12 @@ export const respondToInvitation = async (teamId, inviteId, userResponse) => {
 
 // Request to join a Team
 export const joinTeam = async (teamId) => {
-  const response = await fetch(`${API_BASE_URL}/teams/${teamId}/join`, {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/join`, {
     method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   return handleResponse(response);
 };
@@ -129,7 +149,7 @@ export const respondToJoinRequest = async (
   userResponse
 ) => {
   const response = await fetch(
-    `${API_BASE_URL}/teams/${teamId}/join/${joinRequestId}`,
+    `${API_BASE_URL}/api/teams/${teamId}/join/${joinRequestId}`,
     {
       method: "PUT",
       headers: {
@@ -141,14 +161,7 @@ export const respondToJoinRequest = async (
   return handleResponse(response);
 };
 
-// Handle API Response
-const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Something went wrong");
-  }
-  return await response.json();
-};
+
 
 // User Verification
 export const verifyUser = async (transactionId) => {
@@ -203,7 +216,7 @@ export const fetchUsers = async () => {
 
 // Retrieve user details
 export const fetchUserDetails = async (userId) => {
-  const response = await fetch(`${API_BASE_URL}/users/${userId}`);
+  const response = await fetch(`${API_BASE_URL}/api/users/${userId}`);
   return handleResponse(response);
 };
 
@@ -271,19 +284,19 @@ export const changePassword = async (email, newPassword) => {
   console.log("response", response);
   return handleResponse(response);
 };
-  export const changePasswordUser = async (passwordData) => {
-    const response = await fetch(
-      `${API_BASE_URL}/api/auth/change-password`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passwordData),
-      }
-    );
-    console.log("response", response);
-    return handleResponse(response);
-  };
+export const changePasswordUser = async (passwordData) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/auth/change-password`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passwordData),
+    }
+  );
+  console.log("response", response);
+  return handleResponse(response);
+};
 
