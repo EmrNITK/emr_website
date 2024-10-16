@@ -56,7 +56,7 @@ const TeamList = () => {
       {user?.teamId ? <Navigate to="/workshop" /> : <></>}
       <Header />
       <div className="w-screen h-full px-10 my-6 mt-20">
-        <h2 className="text-2xl font-bold mb-6 text-center text-white">
+        <h2 className="text-2xl pt-12 font-bold mb-6 text-center text-white">
           Available Teams to Join
         </h2>
 

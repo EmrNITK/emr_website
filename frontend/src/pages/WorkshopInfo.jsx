@@ -36,7 +36,7 @@ const WorkshopInfo = () => {
       <div className="pt-16 flex flex-col items-center justify-center min-h-screen ">
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
           <div className="p-8 w-full md:w-2/3">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <h1 className="text-3xl md:text-4xl pt-10 font-bold mb-4">
               Embedded Workshop
             </h1>
             <p className="text-sm md:text-lg text-gray-400 mb-6 text-justify font-mono">
