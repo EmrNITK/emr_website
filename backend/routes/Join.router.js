@@ -5,8 +5,8 @@ import { acceptJoinRequest, joinRequest, rejectJoinRequest } from '../controller
 const joinRouter = express.Router();
 
 joinRouter.post('/:teamId/join/', verifyJwt, joinRequest);
-joinRouter.put('/:teamId/join/:memberId/accept', acceptJoinRequest);
-joinRouter.post('/:teamId/join/:memberId/reject', rejectJoinRequest);
+joinRouter.get('/:teamId/join/:memberId/accept', acceptJoinRequest);
+joinRouter.get('/:teamId/join/:memberId/reject', rejectJoinRequest);
 
 
 export default joinRouter;

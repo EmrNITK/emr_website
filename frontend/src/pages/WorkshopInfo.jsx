@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "./Header";
+import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
 import { getUserById } from "../api/apiService"; // Adjust the path as necessary
 
@@ -11,17 +11,12 @@ const WorkshopInfo = () => {
 
   // Fetch updated user data from the backend
   useEffect(() => {
-    console.log("Inside useEffect");
     const fetchUpdatedUserData = async () => {
       try {
-        console.log("inside try catch", "user", user);
         if (user && user._id) {
-          console.log("Inside try catch");
           const updatedUser = await getUserById(user._id);
           setUserVerified(updatedUser.isVerified);
           updateUser(updatedUser);
-
-          console.log("Updated User:", updatedUser); // Log updated user details
         }
       } catch (error) {
         console.error("Error fetching updated user data:", error);
@@ -32,7 +27,6 @@ const WorkshopInfo = () => {
   }, []);
 
   const handleCreateTeamClick = () => {
-    console.log("userr", userVerified, user);
     if (user && userVerified) {
       navigate("/workshop/createteam");
     } else {
@@ -66,20 +60,35 @@ const WorkshopInfo = () => {
               projects, learning how to design and implement embedded solutions
               effectively.
             </p>
-            <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-              <button
-                onClick={handleCreateTeamClick}
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
-              >
-                Create Team
-              </button>
-              <button
-                onClick={handleJoinTeamClick}
-                className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-500"
-              >
-                Join Team
-              </button>
-            </div>
+            {user?.teamId ? (
+              <>
+                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                  <button
+                    onClick={handleCreateTeamClick}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
+                  >
+                    {user?.isLeader ? "Manage Team" : "Create Team"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                  <button
+                    onClick={handleCreateTeamClick}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
+                  >
+                    {user?.isLeader ? "Manage Team" : "Create Team"}
+                  </button>
+                  <button
+                    onClick={handleJoinTeamClick}
+                    className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-500"
+                  >
+                    Join Team
+                  </button>
+                </div>
+              </>
+            )}
           </div>
           <div className="w-full md:w-1/3 p-4 flex justify-center items-center">
             <img

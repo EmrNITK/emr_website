@@ -20,10 +20,7 @@ app.use(cookieParser());
 app.use(methodOverride("_method"));
 
 // CORS Configuration
-const allowedOrigins = [
-  "https://web-dev-3-0-awor.vercel.app", 
-  "http://localhost:5173", 
-];
+const allowedOrigins = process.env.FRONTEND_DOMAIN;
 
 const corsOptions = {
     origin: allowedOrigins,
