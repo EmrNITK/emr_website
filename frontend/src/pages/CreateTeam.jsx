@@ -126,10 +126,14 @@ const CreateTeam = () => {
         <></>
       )}
       <Header />
+      <br />
+      <br />
+      <br />
 
+      
       {!user.teamId ? (
         <>
-          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8  grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 mt-12">
+          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8  grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 pt-22">
             <h1 className="text-2xl font-bold text-center col-span-3">
               Create Team
             </h1>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getTeamById } from "../api/apiService";
+import { getTeamById, removeMember } from "../api/apiService";
 import { AuthContext } from "../context/AuthContext";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
@@ -29,6 +29,15 @@ const TeamDetails = () => {
     fetchTeamDetails();
   }, []);
 
+  const handleDelete = async (teamId, _id) => {
+    setTeam((prevTeam) => ({
+      ...prevTeam,
+      members: prevTeam.members.filter((member) => member._id !== _id),
+    }));
+    removeMember(teamId, _id)
+  }
+
+
   if (loading)
     return (
       <div className="flex items-center justify-center h-screen text-blue-600">
@@ -47,9 +56,9 @@ const TeamDetails = () => {
               <h1 className="text-3xl font-bold text-blue-700">
                 Team: {team.name}
               </h1>
-              <p className="text-lg font-sans font-semibold text-gray-800">
+              <i className="text-lg font-sans flex items-center justify-center font-semibold text-white-100">
                 Leader: {team.leader.name}
-              </p>
+              </i>
             </div>
             <div>
               <h3 className="text-xl font-bold text-white-900 mb-4">
@@ -59,29 +68,97 @@ const TeamDetails = () => {
                 {team.members.map((member) => (
                   <li
                     key={member._id}
-                    className="flex items-center justify-between p-4 bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm font-bold text-xl rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+                    className="flex items-center justify-between p-4 bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm font-bold text-xl rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
                   >
-                    <div className="flex flex-col">
-                      <span className="font-bold text-blue-600">
-                        {member.name}
-                      </span>
-                      <span className="text-gray-500 font-semibold text-sm">
-                        Email: {member.email}
-                      </span>
-                      <span className="text-gray-600 font-normal text-xs">
-                        Branch: {member.branch}
-                      </span>
-                      <span className="text-gray-600 font-normal text-xs">
-                        College: {member.collegeName}
-                      </span>
-                      <span className="text-gray-600 font-normal text-xs">
-                        Roll No: {member.rollNo}
-                      </span>
+                    <div className="block md:flex justify-center md:justify-end items-center">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-blue-600">
+                          {member.name}
+                        </span>
+                        <span className="text-gray-500 font-semibold text-sm">
+                          Email: {member.email}
+                        </span>
+                        <span className="text-gray-600 font-normal text-xs">
+                          Branch: {member.branch}
+                        </span>
+                        <span className="text-gray-600 font-normal text-xs">
+                          College: {member.collegeName}
+                        </span>
+                        <span className="text-gray-600 font-normal text-xs">
+                          Roll No: {member.rollNo}
+                        </span>
+                      </div>
+                      <div className="md:hidden flex justify-center items-center mt-4 md:justify-end">
+                        {user.isLeader && user.rollNo != member.rollNo &&
+                          <button
+                            className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2"
+
+                            // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
+                            onClick={() => handleDelete(member.teamId, member._id)}
+                          >
+                            Delete Member
+                          </button>
+
+                        }
+                      </div>
+                      {/* Additional member-specific actions can be added here */}
                     </div>
-                    {/* Additional member-specific actions can be added here */}
+                    <div className="md:flex hidden justify-center items-center mt-4 md:justify-end">
+                      {user.isLeader && user.rollNo != member.rollNo &&
+                        <button
+                          className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2"
+
+                          // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
+                          onClick={() => handleDelete(member.teamId, member._id)}
+                        >
+                          Delete Member
+                        </button>
+
+                      }
+                    </div>
                   </li>
                 ))}
               </ul>
+              <div className="md:flex hidden justify-center items-center mt-4 md:justify-end"></div>
+              {user.isLeader &&
+                <>
+                  
+                    {team.members.length <=3 ?
+                    <Link
+                    to="/workshop/createteam"
+                  >
+                      <button
+                      className="bg-green-500 hover:bg-green-600 rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2"
+
+                      // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
+                      onClick={() => handleDelete(member.teamId, member._id)}
+                    >
+                      Add Members
+                    </button>
+                    </Link>
+                     :
+                    <button
+                    className="bg-gray-700  rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2"
+
+                    // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
+                    onClick={() => alert("Team is already Complete")}
+                  >
+                    Add Members
+                  </button>
+                  }
+                  
+                  {/* <button
+                    className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2 mb-4"
+
+                    // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
+                    onClick={() => handleDelete(member.teamId, member._id)}
+                  >
+                    Delete Team
+                  </button> */}
+
+                </>
+
+              }
             </div>
           </div>
         </>
