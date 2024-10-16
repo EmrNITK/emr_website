@@ -147,13 +147,8 @@ const CreateTeam = () => {
       
       {!user.teamId ? (
         <>
-<<<<<<< HEAD
-          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8  grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 pt-22">
-            <h1 className="text-2xl font-bold text-center col-span-3">
-=======
           <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 pt-16 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between  gap-y-6 mt-120">
             <h1 className="text-2xl pt-12 font-bold text-center col-span-3">
->>>>>>> cc76141e6993fc18e4aac5768e0c70bf6c7a3ba5
               Create Team
             </h1>
             <form className="col-start-2 col-end-3 w-full gap-y-4 grid">

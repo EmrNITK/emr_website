@@ -88,3 +88,26 @@ export const deleteMember =asyncHandler(async(req,res)=>{
 
   res.status(200).json({ "message": "Member successfully removed from the team" });
 })
+
+export const deleteTeam = asyncHandler(async (req, res) => {
+  const teamId = req.params.teamId;
+  const team = await Team.findById(teamId).populate('members');
+
+  if (!team) {
+    return res.status(404).json({ message: "Team not found" });
+  }
+
+  await Promise.all(
+    team.members.map(async (member) => {
+      const user = await User.findById(member._id);
+      if (user) {
+        user.teamId = null;
+        await user.save();
+      }
+    })
+  );
+
+  await team.remove();
+
+  res.status(200).json({ message: "Team and its members were successfully deleted" });
+});

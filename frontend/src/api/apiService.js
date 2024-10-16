@@ -305,3 +305,28 @@ export const changePasswordUser = async (passwordData) => {
   return handleResponse(response);
 };
 
+export const deleteTeam = async (teamId) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/teams/${teamId}/delete_team`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to delete the team:", error);
+    throw error;
+  }
+};
