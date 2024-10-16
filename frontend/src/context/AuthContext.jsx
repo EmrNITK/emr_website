@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     setUser(userData.user);
     setIsLoggedIn(true);
     localStorage.setItem("user", JSON.stringify(userData.user));
+    localStorage.setItem("token", userData.token);
   };
 
   const logout = () => {
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false);
     alert("Logged Out Successfully");
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   const updateUser = (updatedUser) => {
