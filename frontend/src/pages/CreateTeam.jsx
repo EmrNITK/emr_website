@@ -26,7 +26,7 @@ const CreateTeam = () => {
         const users = await fetchUsers();
         setVerifiedUsers(users);
 
-        if (user.teamId._id) {
+        if (user?.teamId?._id) {
           const { team } = await getTeamById(user.teamId._id);
           console.log(team);
           setTeam(team);
@@ -66,6 +66,7 @@ const CreateTeam = () => {
     try {
       const response = await createTeam(teamName);
       const teamId = response.team._id;
+      console.log(teamId);
       const updatedUser = { ...user, teamId };
       updateUser(updatedUser);
       setMessage("Team created successfully");
@@ -104,10 +105,23 @@ const CreateTeam = () => {
     setLoading(true);
     try {
       const teamId = team._id;
-      console.log(teamId);
-      await sendInvitation(teamId, selectedMembers);
-      setMessage("Invitations sent successfully!!");
-      setError("");
+
+      const response = await sendInvitation(teamId, selectedMembers);
+
+      if (response.alreadyInTeam) {
+        {
+          const msg = "Following users are already in a team ";
+          let members = "";
+          response.alreadyInTeam.forEach((member) => {
+            members += `  ${member.name}-(${member.email})`;
+          });
+          setError(msg + members);
+          setMessage("");
+        }
+      } else {
+        setMessage("Invitations sent successfully!!");
+        setError("");
+      }
     } catch (error) {
       console.error(error);
       setError(error.message || "An error occurred during team creation.");
@@ -120,7 +134,7 @@ const CreateTeam = () => {
   return (
     <>
       {/* Redirect if user has a teamId but isn't leader or team has >=4 members */}
-      { (user.teamId && !user.isLeader) || team.members?.length >= 4 ? (
+      {(user.teamId && !user.isLeader) || team.members?.length >= 4 ? (
         <Navigate to="/workshop" replace />
       ) : (
         <></>
