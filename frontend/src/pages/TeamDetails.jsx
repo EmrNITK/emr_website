@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import { Link } from "react-router-dom";
 
 const TeamDetails = () => {
-  const { user } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
   const [team, setTeam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -14,11 +14,9 @@ const TeamDetails = () => {
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
-        if (user.teamId) {
-          const { team } = await getTeamById(user.teamId);
-          console.log(team);
-          setTeam(team);
-        }
+        await updateUser();
+        const { team } = await getTeamById(user.teamId._id);
+        setTeam(team);
       } catch (err) {
         setError(err.message || "Error fetching team details");
       } finally {
@@ -39,9 +37,9 @@ const TeamDetails = () => {
   return (
     <div>
       <Header />
-      
-        {team ? (
-          <>
+
+      {team ? (
+        <>
           <div className="max-w-2xl mx-auto shadow-lg rounded-lg p-6 mt-20">
             <div className="flex flex-col mb-4">
               <h1 className="text-3xl font-bold text-blue-700">
@@ -83,36 +81,42 @@ const TeamDetails = () => {
                 ))}
               </ul>
             </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex flex-col text-center justify-center w-full mt-20 h-[80vh] ">
-          <div className="text-center text-red-500">
-            No Team Found
           </div>
-            <div className="text-center">
-              <div>
-              
+        </>
+      ) : (
+        <div className="flex flex-col text-center justify-center w-full mt-20 h-[80vh] ">
+          <div className="text-center text-red-500">No Team Found</div>
+          <div className="text-center">
+            <div>
               <Link
                 to="/workshop/createteam"
                 className="text-blue-500 hover:text-white text-sm underline"
               >
                 Create Team
               </Link>
-              </div>
-             <div>
-             <Link
-                to="/workshop/joinnteam"
+            </div>
+            <div>
+              <Link
+                to="/workshop/jointeam"
                 className="text-blue-500 hover:text-white text-sm underline"
               >
                 Join Team
               </Link>
-             </div>
             </div>
           </div>
-        )}
-      </div>
-    
+        </div>
+      )}
+      {message && (
+        <p className="font-mono text-sm mt-4 text-center text-green-500">
+          {message}
+        </p>
+      )}
+      {error && (
+        <p className="font-mono text-sm mt-4 text-center text-red-500">
+          {error}
+        </p>
+      )}
+    </div>
   );
 };
 
