@@ -9,7 +9,7 @@ teamRouter.get('/:teamId', verifyJwt, getTeamById);
 teamRouter.post('/', verifyJwt, createTeam);
 teamRouter.put('/:teamId/', verifyJwt, updateTeam);
 teamRouter.delete('/:teamId/delete_member', verifyJwt, deleteMember);
-teamRouter.delete('/:teamId/delete_team', verifyJwt, deleteTeam);
+teamRouter.delete('/delete_team/:teamId', verifyJwt, deleteTeam);
 
 
 

@@ -93,6 +93,8 @@ export const deleteTeam = asyncHandler(async (req, res) => {
   const teamId = req.params.teamId;
   const team = await Team.findById(teamId).populate('members');
 
+  console.log(team, "backend")
+
   if (!team) {
     return res.status(404).json({ message: "Team not found" });
   }
@@ -100,6 +102,7 @@ export const deleteTeam = asyncHandler(async (req, res) => {
   await Promise.all(
     team.members.map(async (member) => {
       const user = await User.findById(member._id);
+      console.log(user)
       if (user) {
         user.teamId = null;
         await user.save();

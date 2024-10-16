@@ -307,8 +307,9 @@ export const changePasswordUser = async (passwordData) => {
 
 export const deleteTeam = async (teamId) => {
   try {
+    console.log("teamId", teamId);
     const response = await fetch(
-      `${API_BASE_URL}/api/teams/${teamId}/delete_team`,
+      `${API_BASE_URL}/api/teams/delete_team/${teamId}`,
       {
         method: "DELETE",
         credentials: "include",

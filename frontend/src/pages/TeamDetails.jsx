@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getTeamById, removeMember } from "../api/apiService";
+import { getTeamById, removeMember, deleteTeam } from "../api/apiService";
 import { AuthContext } from "../context/AuthContext";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
@@ -36,8 +36,9 @@ const TeamDetails = () => {
     }));
     removeMember(teamId)
   }
-  const handleDeleteTeam = async (teamId, _id) => {
-    removeMember(teamId)
+  const handleDeleteTeam = async (teamId) => {
+    console.log(teamId)
+    deleteTeam(teamId)
   }
 
 
@@ -149,18 +150,18 @@ const TeamDetails = () => {
                     Add Members
                   </button>
                   }
-                  <Link
+                  {/* <Link
                     to="/workshop"
-                  >
+                  > */}
 
                   <button
                     className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2 mb-4"
                     
-                    onClick={() => handleDeleteTeam(member.teamId)}
+                    // onClick={() => handleDeleteTeam(user?._id)}
                     >
                     Delete Team
                   </button>
-                    </Link>
+                    {/* </Link> */}
 
                 </>
 
