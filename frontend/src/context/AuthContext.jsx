@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-
+import { getUserById } from "../api/apiService";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -28,9 +28,11 @@ export const AuthProvider = ({ children }) => {
     alert("Logged Out Successfully");
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("tempOtpJwt");
   };
 
-  const updateUser = (updatedUser) => {
+  const updateUser = async () => {
+    const updatedUser = await getUserById(user._id);
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
   };
