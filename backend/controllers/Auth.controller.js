@@ -10,7 +10,7 @@ export const register = asyncHandler(async (req, res) => {
   if (isPresent) {
     res.status(409).json({ message: "User already exists" });
   }
-  
+
 
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   const user = await User.create({
@@ -44,18 +44,11 @@ export const login = asyncHandler(async (req, res) => {
 
   const token = createToken(user._id, user.email);
   res
-    .cookie("jwt", token, {
-      maxAge: 6048000000,
-      sameSite: "None", // Adjust based on your needs
-      path: "/",
-      secure: "false"
-    })
-    .json({ user });
+    .json({ user: user, token });
 });
 
 
 export const logout = (req, res) => {
-  res.clearCookie("jwt");
   res.status(200).json({ message: "logged out succesfully" });
 };
 
@@ -129,13 +122,7 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   console.log("Generated token:", token);
 
   res
-    .cookie("tempOtpJwt", token, {
-      maxAge: 300000,
-      sameSite: "None", // Adjust based on your needs
-      path: "/",
-      secure: "false",
-    })
-    .json({ user });
+    .json({ user, token });
 });
 
 export const createNewPassword = asyncHandler(async (req, res) => {
