@@ -31,7 +31,7 @@ export const loginUser = async (credentials) => {
     },
     body: JSON.stringify(credentials),
   });
-  
+
   return handleResponse(response);
 };
 
@@ -42,6 +42,7 @@ export const getAllTeams = async () => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
   });
   return handleResponse(response);
@@ -53,6 +54,7 @@ export const getTeamById = async (teamId) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
   });
 
@@ -66,6 +68,7 @@ export const createTeam = async (teamName) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
     body: JSON.stringify({ name: teamName }),
   });
@@ -78,6 +81,7 @@ export const addMemberToTeam = async (teamId, memberData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
     body: JSON.stringify(memberData),
   });
@@ -101,14 +105,13 @@ export const updateMemberStatus = async (teamId, memberId, status) => {
 
 // Send invitations to members
 export const sendInvitation = async (teamId, members) => {
-  console.log("inside send ", members);
-  console.log(JSON.stringify(members))
-  console.log(JSON.stringify({ members }))
+
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
     body: JSON.stringify({ members }),
   });
@@ -137,6 +140,7 @@ export const joinTeam = async (teamId) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
   });
   return handleResponse(response);
@@ -170,6 +174,7 @@ export const verifyUser = async (transactionId) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
     body: JSON.stringify({ transactionId }), // Send transactionId in the request body
   });
@@ -186,6 +191,7 @@ export const getUserById = async (userId) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
     });
 
@@ -209,14 +215,9 @@ export const fetchUsers = async () => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
   });
-  return handleResponse(response);
-};
-
-// Retrieve user details
-export const fetchUserDetails = async (userId) => {
-  const response = await fetch(`${API_BASE_URL}/api/users/${userId}`);
   return handleResponse(response);
 };
 
@@ -230,6 +231,7 @@ export const removeMember = async (teamId, memberId) => {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
       }
     );
@@ -278,12 +280,14 @@ export const changePassword = async (email, newPassword) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('tempOtpJwt')}`
     },
     body: JSON.stringify({ email, newPassword }),
   });
   console.log("response", response);
   return handleResponse(response);
 };
+
 export const changePasswordUser = async (passwordData) => {
   const response = await fetch(
     `${API_BASE_URL}/api/auth/change-password`,
@@ -292,6 +296,7 @@ export const changePasswordUser = async (passwordData) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify(passwordData),
     }
