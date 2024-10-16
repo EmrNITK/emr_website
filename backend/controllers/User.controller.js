@@ -74,7 +74,7 @@ export const getVerifiedUser = asyncHandler(async (req, res) => {
 
 export const getUserById = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).populate('teamId');
   if (!user) {
     return res.status(404).json({ message: "User not found" })
   }
