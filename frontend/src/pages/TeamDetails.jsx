@@ -34,7 +34,10 @@ const TeamDetails = () => {
       ...prevTeam,
       members: prevTeam.members.filter((member) => member._id !== _id),
     }));
-    removeMember(teamId, _id)
+    removeMember(teamId)
+  }
+  const handleDeleteTeam = async (teamId, _id) => {
+    removeMember(teamId)
   }
 
 
@@ -146,15 +149,18 @@ const TeamDetails = () => {
                     Add Members
                   </button>
                   }
-                  
+                  <Link
+                    to="/workshop"
+                  >
+
                   <button
                     className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2 mb-4"
-
-                    // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
-                    onClick={() => handleDelete(member.teamId, member._id)}
-                  >
+                    
+                    onClick={() => handleDeleteTeam(member.teamId)}
+                    >
                     Delete Team
                   </button>
+                    </Link>
 
                 </>
 
