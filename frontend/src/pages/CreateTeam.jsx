@@ -26,7 +26,7 @@ const CreateTeam = () => {
         const users = await fetchUsers();
         setVerifiedUsers(users);
 
-        if (user.teamId._id) {
+        if (user?.teamId?._id) {
           const { team } = await getTeamById(user.teamId._id);
           console.log(team);
           setTeam(team);
@@ -66,6 +66,7 @@ const CreateTeam = () => {
     try {
       const response = await createTeam(teamName);
       const teamId = response.team._id;
+      console.log(teamId);
       const updatedUser = { ...user, teamId };
       updateUser(updatedUser);
       setMessage("Team created successfully");
@@ -104,10 +105,23 @@ const CreateTeam = () => {
     setLoading(true);
     try {
       const teamId = team._id;
-      console.log(teamId);
-      await sendInvitation(teamId, selectedMembers);
-      setMessage("Invitations sent successfully!!");
-      setError("");
+
+      const response = await sendInvitation(teamId, selectedMembers);
+
+      if (response.alreadyInTeam) {
+        {
+          const msg = "Following users are already in a team ";
+          let members = "";
+          response.alreadyInTeam.forEach((member) => {
+            members += `  ${member.name}-(${member.email})`;
+          });
+          setError(msg + members);
+          setMessage("");
+        }
+      } else {
+        setMessage("Invitations sent successfully!!");
+        setError("");
+      }
     } catch (error) {
       console.error(error);
       setError(error.message || "An error occurred during team creation.");
@@ -120,7 +134,7 @@ const CreateTeam = () => {
   return (
     <>
       {/* Redirect if user has a teamId but isn't leader or team has >=4 members */}
-      { (user.teamId && !user.isLeader) || team.members?.length >= 4 ? (
+      {(user.teamId && !user.isLeader) || team.members?.length >= 4 ? (
         <Navigate to="/workshop" replace />
       ) : (
         <></>
@@ -133,8 +147,13 @@ const CreateTeam = () => {
       
       {!user.teamId ? (
         <>
+<<<<<<< HEAD
           <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8  grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 pt-22">
             <h1 className="text-2xl font-bold text-center col-span-3">
+=======
+          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 pt-16 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between  gap-y-6 mt-120">
+            <h1 className="text-2xl pt-12 font-bold text-center col-span-3">
+>>>>>>> cc76141e6993fc18e4aac5768e0c70bf6c7a3ba5
               Create Team
             </h1>
             <form className="col-start-2 col-end-3 w-full gap-y-4 grid">
@@ -215,7 +234,7 @@ const CreateTeam = () => {
         </>
       ) : (
         <>
-          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8  grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 mt-12">
+          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-16  grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 mt-12">
             <h1 className="text-2xl font-bold text-center col-span-3">
               Invite Members
             </h1>
