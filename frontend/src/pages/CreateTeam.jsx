@@ -119,7 +119,12 @@ const CreateTeam = () => {
   };
   return (
     <>
-      {team.members?.length >= 4 ? <Navigate to="/workshop" /> : <></>}
+      {/* Redirect if user has a teamId but isn't leader or team has >=4 members */}
+      { (user.teamId && !user.isLeader) || team.members?.length >= 4 ? (
+        <Navigate to="/workshop" replace />
+      ) : (
+        <></>
+      )}
       <Header />
 
       {!user.teamId ? (
