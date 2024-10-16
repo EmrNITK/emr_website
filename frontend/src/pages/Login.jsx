@@ -71,24 +71,30 @@ const Login = () => {
               }}
             >
               <input
-                className="w-full p-4 mb-4 border border-gray-700 rounded-lg bg-transparent border-b border-gray-300 focus:outline-none"
+                className="w-full p-4 mb-4 border border-gray-700 rounded-lg bg-transparent border-b  focus:outline-none"
                 type="text"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
-                className="w-full p-4 mb-4 border border-gray-600 rounded-lg bg-transparent border-b border-gray-300 focus:outline-none"
+                className="w-full p-4 mb-4 border border-gray-600 rounded-lg bg-transparent border-b focus:outline-none"
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
-                className="w-full bg-blue-500 text-white py-3 rounded"
+                className="w-full bg-blue-500 hover:bg-blue-400 text-white py-3 rounded my-2"
                 type="submit"
               >
                 Sign in
+              </button>
+              <button
+                className="w-full bg-green-500 hover:bg-green-400 text-white py-3 rounded"
+                type="submit"
+              >
+                Register Now
               </button>
             </form>
             {error && <p className="mt-2 font-mono text-red-500 mb-4 text-sm">{error}</p>}
