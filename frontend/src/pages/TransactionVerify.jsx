@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { verifyUser } from "../api/apiService";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Header from "../components/Header";
+import { AuthContext } from "../context/AuthContext";
 
 const VerifyTransaction = () => {
+  const { user } = useContext(AuthContext);
   const [transactionId, setTransactionId] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -35,6 +37,7 @@ const VerifyTransaction = () => {
   return (
     <div>
       <Header />
+      {user.isVerified ? <Navigate to="/workshop" /> : <></>}
       <div className="flex items-center justify-center h-screen ">
         <div className="p-12 rounded-lg shadow-lg max-w-md w-full bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg ">
           <h2 className="text-2xl font-bold text-white text-center mb-6">
@@ -55,7 +58,9 @@ const VerifyTransaction = () => {
             {loading ? "Verifying..." : "Verify"}
           </button>
           {error && (
-            <p className="mt-4 font-mono text-red-500 text-center text-sm">{error}</p>
+            <p className="mt-4 font-mono text-red-500 text-center text-sm">
+              {error}
+            </p>
           )}
           {message && (
             <div className="text-center">
