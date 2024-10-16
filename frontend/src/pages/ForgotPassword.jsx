@@ -49,7 +49,8 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      await verifyOTP(email, otp);
+      const {token}= await verifyOTP(email, otp);
+      localStorage.setItem('tempOtpJwt',token);
       setMessage("OTP verified. You can now reset your password.");
       setError("");
       setStep(3); // Move to password reset step
