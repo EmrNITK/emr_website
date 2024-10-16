@@ -15,8 +15,10 @@ const TeamDetails = () => {
     const fetchTeamDetails = async () => {
       try {
         await updateUser();
-        const { team } = await getTeamById(user.teamId._id);
-        setTeam(team);
+        if (user.teamId) {
+          const { team } = await getTeamById(user?.teamId?._id);
+          setTeam(team);
+        }
       } catch (err) {
         setError(err.message || "Error fetching team details");
       } finally {
