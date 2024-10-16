@@ -34,46 +34,67 @@ export const sendInvitations = asyncHandler(async (req, res) => {
 });
 
 // for handling accept response from the invite email
-export const acceptedInviteResponse = asyncHandler(async (req, res) => {
-  const { teamId, userId } = req.params;
-  // inviteId is the userId of the invited user;
-  const team = await Team.findById(teamId);
-  if (!team) {
-    return res.status(404).json({ message: "Team not found" });
+export const acceptInvitation = asyncHandler(async (req, res) => {
+  if (req.query._method === 'PUT') {
+    const { teamId, userId } = req.params;
+    // inviteId is the userId of the invited user;
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.teamId) {
+      return res.status(409).json({ message: "Already a member of a team" });
+    }
+
+    const leader = await User.findById(team.leader.toString());
+    if (!leader) {
+      return res.status(404).json({ message: "Team leadre not found" });
+    }
+
+    await addMemberTransaction(user, team);
+    await inviteAcceptedEmail(leader,user, team);
+
+    return res
+      .status(200)
+      .json({ message: "You have joined the team successfully!" });
+  } else {
+    res.status(404).json({ message: 'Bad request' });
   }
-
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  if (user.teamId) {
-    return res.status(409).json({ message: "Already a member of a team" });
-  }
-
-  await addMemberTransaction(user, team);
-  await inviteAcceptedEmail(user, team);
-
-  return res
-    .status(200)
-    .json({ message: "You have joined the team successfully!" });
 });
 
-export const rejectedInviteResponse = asyncHandler(async (req, res) => {
-  const { teamId, userId } = req.params;
+export const rejectInvitation = asyncHandler(async (req, res) => {
+  if (req.query._method === 'POST'
+  ) {
+    const { teamId, userId } = req.params;
 
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-  const team = await Team.findById(teamId);
-  if (!team) {
-    return res.status(404).json({ message: "Team not found" });
-  }
-  if (team.members.indexOf(userId) != -1) {
-    return res.status(403).json({ message: "User is already a member of this team" });
-  }
-  await inviteRejectedEmail(user, team);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-  res.status(403).json({ message: `User ${user.name} has been rejected.` });
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+    if (team.members.indexOf(userId) != -1) {
+      return res.status(403).json({ message: "User is already a member of this team" });
+    }
+
+    const leader = await User.findById(team.leader.toString());
+    if (!leader) {
+      return res.status(404).json({ message: "Team leadre not found" });
+    }
+
+    await inviteRejectedEmail(leader,user, team);
+
+    res.status(403).json({ message: `You have rejected the invitation.` });
+  } else {
+    res.status(404).json({ message: 'Bad request' });
+  }
 });
