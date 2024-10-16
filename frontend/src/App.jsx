@@ -10,18 +10,19 @@ import Blog from "./pages/Blog";
 import EventPage from "./pages/eventpage";
 import ScrollToTop from "./ScrollToTop";
 import WorkshopDetail from "./components/WorkshopPage/WorkshopDetail";
-import TeamsPage from "./pages/TeamsPage";
+import JoinTeamPage from "./pages/JoinTeamPage";
 import CreateTeam from "./pages/CreateTeam";
 
-import WorkshopInfo from "./components/WorkshopInfo";
-import Register from "./components/Register";
-import Login from "./components/Login";
+import WorkshopInfo from "./pages/WorkshopInfo";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
-import ForgotPassword from "./components/ForgotPassword";
+import ForgotPassword from "./pages/ForgotPassword";
 import TranssactionVerify from "./pages/TransactionVerify";
 import TeamCard from "./components/TeamCard";
-import TeamDetails from "./Teamdetails";
+import TeamDetails from "./pages/TeamDetails";
 import ChangePassword from "./components/ChangePassword";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -33,24 +34,66 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/teamcard" element={<TeamCard />} />
-          <Route path="/teamdetails" element={<TeamDetails />} />
-          <Route path="/team" element={<TeamComp />} />
           <Route path="/sponsor" element={<SponsorPage />} />
-          <Route path="/transactionverify" element={<TranssactionVerify />} />
-
           <Route path="/blog" element={<Blog />} />
-          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/team" element={<TeamComp />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/workshop-details" element={<WorkshopDetail />} />
-
           <Route path="/gallery" element={<GalleryComp />} />
+
           <Route path="/workshop" element={<WorkshopInfo />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/workshop/createteam" element={<CreateTeam />} />
-          <Route path="/workshop/jointeam" element={<TeamsPage />} />
+
+          <Route
+            path="/teamcard"
+            element={
+              <ProtectedRoute>
+                <TeamCard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/teamdetails"
+            element={
+              <ProtectedRoute>
+                <TeamDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transactionverify"
+            element={
+              <ProtectedRoute>
+                <TranssactionVerify />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/change-password"
+            element={
+              <ProtectedRoute>
+                <ChangePassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workshop/createteam"
+            element={
+              <ProtectedRoute>
+                <CreateTeam />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workshop/jointeam"
+            element={
+              <ProtectedRoute>
+                <JoinTeamPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
