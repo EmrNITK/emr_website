@@ -19,7 +19,7 @@ export const register = asyncHandler(async (req, res) => {
     collegeName: req.body.collegeName,
     mobileNo: req.body.mobileNo,
     rollNo: req.body.rollNo,
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
     password: hashedPassword,
   });
 
@@ -29,7 +29,7 @@ export const register = asyncHandler(async (req, res) => {
 
 
 export const login = asyncHandler(async (req, res) => {
-  const email = req.body.email;
+  const email = req.body.email.toLowerCase();
   const password = req.body.password;
   const user = await User.findOne({ email: email });
 
@@ -76,23 +76,26 @@ export const changePassword = asyncHandler(async (req, res) => {
 
 export const sendOTP = asyncHandler(async (req, res) => {
   const { email } = req.body;
-
+  const userEmail = email.toLowerCase();
   // Check if user with given email exists
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: userEmail });
   if (!user) {
     return res.status(404).json({ message: "User with given email not found" });
   }
 
   // Send OTP to given email
-  await sendOTPService(email);
+  await sendOTPService(userEmail);
   res.status(200).json({ message: "OTP sent" });
 });
 
 export const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
-
+  const userEmail = email.toLowerCase();
   // Check if user exists
-  const user = await User.findOne({ email });
+  const user = await User.findOne({
+    email: userEmail
+  });
+
   if (!user) {
     return res.status(404).json({ message: "User with given email not found" });
   }
@@ -107,6 +110,7 @@ export const verifyOTP = asyncHandler(async (req, res) => {
     return res.status(401).json({ message: "OTP has expired" });
   }
 
+  console.log(user);
   // Check if OTP matches
   if (otp !== user.otp) {
     return res.status(401).json({ message: "OTP didn't match" });
@@ -118,7 +122,7 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   await user.save();
 
   // Create a token and send it in cookies
-  const token = createOTPToken(email);
+  const token = createOTPToken(user.email);
   console.log("Generated token:", token);
 
   res
@@ -127,16 +131,17 @@ export const verifyOTP = asyncHandler(async (req, res) => {
 
 export const createNewPassword = asyncHandler(async (req, res) => {
   const { email, newPassword } = req.body;
+  const userEmail = email.toLowerCase();
   const decodedEmail = req.otpVerificationEmail;
 
   // Check if user exists
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: userEmail });
   if (!user) {
     return res.status(404).json({ message: "User with given email not found" });
   }
-  console.log("decoded", decodedEmail, "email", email);
+
   // Check if token is valid
-  if (!(decodedEmail == email)) {
+  if (!(decodedEmail == userEmail)) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 

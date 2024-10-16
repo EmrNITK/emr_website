@@ -15,6 +15,7 @@ export const joinRequest = asyncHandler(async (req, res) => {
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
+
     if (user.teamId) {
         return res.status(403).json({ message: "User already a member of team" });
     }
@@ -80,6 +81,10 @@ export const acceptJoinRequest = asyncHandler(async (req, res) => {
         const member = await User.findById(memberId);
         if (!member) {
             return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        if (member.teamId) {
+            return res.status(403).json({ message: "Already member of a team" });
         }
 
         const team = await Team.findById(teamId);
