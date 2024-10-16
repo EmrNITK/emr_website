@@ -7,7 +7,7 @@ import {
 } from "../api/apiService.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 import Header from "../components/Header.jsx";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 
 const CreateTeam = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -26,8 +26,9 @@ const CreateTeam = () => {
         const users = await fetchUsers();
         setVerifiedUsers(users);
 
-        if (user.teamId) {
-          const { team } = await getTeamById(user.teamId);
+        if (user.teamId._id) {
+          const { team } = await getTeamById(user.teamId._id);
+          console.log(team);
           setTeam(team);
           setTeamName(team.name);
         }
@@ -118,7 +119,9 @@ const CreateTeam = () => {
   };
   return (
     <>
+      {team.members?.length >= 4 ? <Navigate to="/workshop" /> : <></>}
       <Header />
+
       {!user.teamId ? (
         <>
           <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8  grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 mt-12">

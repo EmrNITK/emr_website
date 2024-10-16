@@ -2,21 +2,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
-import { getUserById } from "../api/apiService"; // Adjust the path as necessary
 
 const WorkshopInfo = () => {
   const { user, updateUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [userVerified, setUserVerified] = useState(false); // Initialize as boolean
 
   // Fetch updated user data from the backend
   useEffect(() => {
     const fetchUpdatedUserData = async () => {
       try {
-        if (user && user._id) {
-          const updatedUser = await getUserById(user._id);
-          setUserVerified(updatedUser.isVerified);
-          updateUser(updatedUser);
+        if (user) {
+          await updateUser();
         }
       } catch (error) {
         console.error("Error fetching updated user data:", error);
@@ -27,19 +23,11 @@ const WorkshopInfo = () => {
   }, []);
 
   const handleCreateTeamClick = () => {
-    if (user && userVerified) {
-      navigate("/workshop/createteam");
-    } else {
-      navigate("/transactionverify");
-    }
+    navigate("/workshop/createteam");
   };
 
   const handleJoinTeamClick = () => {
-    if (user && userVerified) {
-      navigate("/workshop/jointeam");
-    } else {
-      navigate("/transactionverify");
-    }
+    navigate("/workshop/jointeam");
   };
 
   return (
@@ -60,25 +48,27 @@ const WorkshopInfo = () => {
               projects, learning how to design and implement embedded solutions
               effectively.
             </p>
-            {user?.teamId ? (
+            {/* {Show Manage Team button if user is leader and member in team < 4} */}
+            {user?.teamId?.members?.length<4 && user?.isLeader ? (
               <>
                 <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
                   <button
                     onClick={handleCreateTeamClick}
                     className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
                   >
-                    {user?.isLeader ? "Manage Team" : "Create Team"}
+                    Manage Team
                   </button>
                 </div>
               </>
-            ) : (
+              // {Show both buttons if user doesn't have teamId field}
+            ) : !user?.teamId ? (
               <>
                 <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
                   <button
                     onClick={handleCreateTeamClick}
                     className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
                   >
-                    {user?.isLeader ? "Manage Team" : "Create Team"}
+                    Create Team
                   </button>
                   <button
                     onClick={handleJoinTeamClick}
@@ -88,6 +78,9 @@ const WorkshopInfo = () => {
                   </button>
                 </div>
               </>
+              // {Show nothing if user has a teamId and isn't leader}
+            ) : (
+              <></>
             )}
           </div>
           <div className="w-full md:w-1/3 p-4 flex justify-center items-center">
