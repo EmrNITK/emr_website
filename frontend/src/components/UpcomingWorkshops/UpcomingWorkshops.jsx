@@ -17,7 +17,20 @@ const UpcomingWorkshops = () => {
         upcoming Events
         <span aria-hidden="true"></span>
       </h1>
-      <div className="Image_Boxes">
+{/* 
+------------------ use {below} code  when not any Upcoming Event ------------------
+*/}
+
+<h1>Soon . . .</h1>
+
+{/* 
+------------------ use {above} code  when not any Upcoming Event ------------------
+*/}
+
+
+
+
+      {/* <div className="Image_Boxes">
         <div className="module">
           <a href="https://forms.gle/GH3S5rTzicJxdzye7">
             <img alt="Bit_Coding" className="module_border_wrap " src={pic2} width="500" height="1000"></img>
@@ -35,7 +48,7 @@ const UpcomingWorkshops = () => {
           <img alt="Upcoming workshop4" className="module_border_wrap " src={pic1} width="500" height="1000"></img>
           </a>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
