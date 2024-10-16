@@ -1,11 +1,13 @@
 // src/components/TeamList.js
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TeamCard from "../components/TeamCard";
 import Header from "../components/Header";
 import { getAllTeams, joinTeam } from "../api/apiService";
-import { p } from "maath/dist/misc-19a3ec46.esm";
+import { AuthContext } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const TeamList = () => {
+  const { user } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -51,6 +53,7 @@ const TeamList = () => {
 
   return (
     <>
+      {user?.teamId ? <Navigate to="/workshop" /> : <></>}
       <Header />
       <div className="w-screen h-full px-10 my-6 mt-20">
         <h2 className="text-2xl font-bold mb-6 text-center text-white">
