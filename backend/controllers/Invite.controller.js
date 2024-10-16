@@ -18,6 +18,11 @@ export const sendInvitations = asyncHandler(async (req, res) => {
   if (!team) {
     return res.status(404).json({ message: "Team not found" });
   }
+
+  if (team.members.length >= 4) {
+    return res.status(403).json({ message: "Can't add more than 4 member in a team" });
+  }
+
   // Send invitations to each selected member
   const promises = members.map(async (userId) => {
     const user = await User.findById(userId);
@@ -57,8 +62,12 @@ export const acceptInvitation = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Team leadre not found" });
     }
 
+    if (team.members.length >= 4) {
+      return res.status(403).json({ message: "Can't add more than 4 member in a team" });
+    }
+
     await addMemberTransaction(user, team);
-    await inviteAcceptedEmail(leader,user, team);
+    await inviteAcceptedEmail(leader, user, team);
 
     return res
       .status(200)
@@ -91,7 +100,7 @@ export const rejectInvitation = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Team leadre not found" });
     }
 
-    await inviteRejectedEmail(leader,user, team);
+    await inviteRejectedEmail(leader, user, team);
 
     res.status(403).json({ message: `You have rejected the invitation.` });
   } else {
