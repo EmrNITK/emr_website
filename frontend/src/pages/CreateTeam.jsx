@@ -23,6 +23,7 @@ const CreateTeam = () => {
   useEffect(() => {
     const getUsers = async () => {
       try {
+        await updateUser();
         const users = await fetchUsers();
         setVerifiedUsers(users);
 
@@ -65,12 +66,14 @@ const CreateTeam = () => {
     setLoading(true);
     try {
       const response = await createTeam(teamName);
+      console.log(response.team);
       const teamId = response.team._id;
       console.log(teamId);
       const updatedUser = { ...user, teamId };
       updateUser(updatedUser);
       setMessage("Team created successfully");
       setError("");
+      setTeam(response.team);
       if (selectedMembers.length > 0) {
         await sendInvitation(teamId, selectedMembers);
         setMessage("Invitations sent successfully");
@@ -105,6 +108,7 @@ const CreateTeam = () => {
     setLoading(true);
     try {
       const teamId = team._id;
+      console.log(teamId);
 
       const response = await sendInvitation(teamId, selectedMembers);
 
@@ -144,7 +148,6 @@ const CreateTeam = () => {
       <br />
       <br />
 
-      
       {!user.teamId ? (
         <>
           <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 pt-16 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between  gap-y-6 mt-120">
