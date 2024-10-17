@@ -25,7 +25,7 @@ import img15 from "../../assets/images/ProfileImage2/BHAGESH.jpg";
 import img16 from "../../assets/images/ProfileImage2/GARV BHATIA.jpg";
 import img17 from "../../assets/images/ProfileImage2/NIKHIL JAIN.jpg";
 import img18 from "../../assets/images/ProfileImage2/ANUPRIYA BIRMAN.jpeg";
-import img19 from "../../assets/images/ProfileImage2/AKSHAT MANGAL.jpg";
+import img19 from "../../assets/images/ProfileImage2/Akshat_profile.jpg";
 import img20 from "../../assets/images/ProfileImage2/VISHWAS KAPOOR.jpg";
 import img21 from "../../assets/images/ProfileImage2/SHELJA SHARMA.jpeg";
 
@@ -104,6 +104,14 @@ const cardData = [
     role: "Recent Tech Head",
   },
   {
+    name: "Akshat Mangal",
+    insta: "https://www.instagram.com/akshat209141/",
+    linkedin: "https://www.linkedin.com/in/akshat-mangal-812aba223/",
+    github: "https://github.com/akshat209141",
+    image: img19,
+    role: "Member",
+  },
+  {
     name: "Sumit Kumar",
     insta: "https://www.instagram.com/its_sumit_kumar1906/",
     linkedin: "https://www.linkedin.com/in/sumit-kumar-1a59b9228/",
@@ -176,14 +184,7 @@ const cardData = [
     image: img18,
     role: "Member",
   },
-  {
-    name: "Akshat Mangal",
-    insta: "https://www.instagram.com/akshat209141/",
-    linkedin: "https://www.linkedin.com/in/akshat-mangal-812aba223/",
-    github: "https://github.com/akshat209141",
-    image: img19,
-    role: "Member",
-  },
+  
   {
     name: "Vishwas Kapoor",
     insta: "https://www.instagram.com/_leftover._/",
