@@ -104,6 +104,14 @@ const cardData = [
     role: "Recent Tech Head",
   },
   {
+    name: "Akshat Mangal",
+    insta: "https://www.instagram.com/akshat209141/",
+    linkedin: "https://www.linkedin.com/in/akshat-mangal-812aba223/",
+    github: "https://github.com/akshat209141",
+    image: img19,
+    role: "Member",
+  },
+  {
     name: "Sumit Kumar",
     insta: "https://www.instagram.com/its_sumit_kumar1906/",
     linkedin: "https://www.linkedin.com/in/sumit-kumar-1a59b9228/",
@@ -176,14 +184,7 @@ const cardData = [
     image: img18,
     role: "Member",
   },
-  {
-    name: "Akshat Mangal",
-    insta: "https://www.instagram.com/akshat209141/",
-    linkedin: "https://www.linkedin.com/in/akshat-mangal-812aba223/",
-    github: "https://github.com/akshat209141",
-    image: img19,
-    role: "Member",
-  },
+  
   {
     name: "Vishwas Kapoor",
     insta: "https://www.instagram.com/_leftover._/",
