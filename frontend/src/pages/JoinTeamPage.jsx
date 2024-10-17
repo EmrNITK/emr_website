@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
 const TeamList = () => {
-  const { user } = useContext(AuthContext);
+  const { user,updateUser } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -17,6 +17,7 @@ const TeamList = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
+        await updateUser();
         const { teams } = await getAllTeams();
         console.log(teams);
         setTeams(teams);
@@ -65,7 +66,7 @@ const TeamList = () => {
             No available teams to join. You can create one!
           </p>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow overflow-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow overflow-y-auto max-h-[70vh]">
             {availableTeams.map((team) => {
               return (
                 <TeamCard key={team._id} team={team} handleJoin={handleJoin} />
