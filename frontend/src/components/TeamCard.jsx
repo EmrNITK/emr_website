@@ -10,9 +10,9 @@ const TeamCard = ({ team, handleJoin }) => {
         {team.members.length === 0 ? (
           <p className="text-gray-800">No members yet.</p>
         ) : (
-          <ul className="text-sm list-disc list-inside text-gray-400  ">
+          <i className="text-sm list-disc list-inside text-gray-400  ">
             {team.leader?.email}
-          </ul>
+          </i>
         )}
       </div>
       <p className="font-sans text-sm text-white-750 mb-4 lg:mb-0">

@@ -33,7 +33,7 @@ const WorkshopInfo = () => {
   return (
     <div>
       <Header />
-      <div className="pt-16 flex flex-col items-center justify-center min-h-screen ">
+      <div className="pt-16 flex flex-col items-center justify-center min-h-screen mt-22">
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
           <div className="p-8 w-full md:w-2/3">
             <h1 className="text-3xl md:text-4xl pt-10 font-bold mb-4">

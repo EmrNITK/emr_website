@@ -56,10 +56,15 @@ const TeamList = () => {
     <>
       {user?.teamId ? <Navigate to="/workshop" /> : <></>}
       <Header />
-      <div className="w-screen h-full px-10 my-6 mt-20">
+      <div className="w-screen h-full px-10 my-6 mt-24">
         <h2 className="text-2xl pt-12 font-bold mb-6 text-center text-white">
           Available Teams to Join
         </h2>
+        {message && (
+          <p className="font-mono text-sm mt-4 text-center mb-4 text-green-500">
+            {message}
+          </p>
+        )}
 
         {!loading && availableTeams.length === 0 ? (
           <p className="text-center text-xl text-gray-400 ">
@@ -69,15 +74,12 @@ const TeamList = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow overflow-y-auto max-h-[70vh]">
             {availableTeams.map((team) => {
               return (
+                <>
                 <TeamCard key={team._id} team={team} handleJoin={handleJoin} />
+                </>
               );
             })}
           </div>
-        )}
-        {message && (
-          <p className="font-mono text-sm mt-4 text-center text-green-500">
-            {message}
-          </p>
         )}
         {error && (
           <p className="font-mono text-sm mt-4 text-center text-red-500">
