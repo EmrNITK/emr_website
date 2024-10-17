@@ -9,7 +9,6 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import Header from "../components/Header.jsx";
 import { useNavigate, Link, Navigate } from "react-router-dom";
 
-
 const CreateTeam = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [verifiedUsers, setVerifiedUsers] = useState([]);
@@ -18,6 +17,7 @@ const CreateTeam = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
 
   const [selectedMembers, setSelectedMembers] = useState([]); // Array of ids of selected members
   const [searchQuery, setSearchQuery] = useState(""); // State to track search input
@@ -25,6 +25,7 @@ const CreateTeam = () => {
   useEffect(() => {
     const getUsers = async () => {
       try {
+        setFetching(true);
         await updateUser();
         const users = await fetchUsers();
         setVerifiedUsers(users);
@@ -36,6 +37,8 @@ const CreateTeam = () => {
         }
       } catch (error) {
         console.error("Error:", error);
+      } finally {
+        setFetching(false);
       }
     };
     getUsers();
@@ -150,7 +153,7 @@ const CreateTeam = () => {
 
       {!user.teamId ? (
         <>
-          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 pt-16 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between  gap-y-6 mt-120">
+          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-4 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between  gap-y-6 mt-120">
             <h1 className="text-2xl pt-12 font-bold text-center col-span-3">
               Create Team
             </h1>
@@ -187,7 +190,11 @@ const CreateTeam = () => {
                 </div>
 
                 {/* Users List */}
-                {getAvailableUsers().length ? (
+                {fetching ? (
+                  <div className="col-span-full text-center font-mono text-red-400 font-bold">
+                    Loading Users...
+                  </div>
+                ) : getAvailableUsers().length ? (
                   getAvailableUsers().map((user) => {
                     return (
                       <div
@@ -197,7 +204,9 @@ const CreateTeam = () => {
                         <input
                           type="checkbox"
                           className="w-auto"
-                          onClick={(e) => toggleTeam(e.target.checked, user._id)}
+                          onClick={(e) =>
+                            toggleTeam(e.target.checked, user._id)
+                          }
                         />
                         <div className="text-xs lg:text-lg flex-grow">
                           {user.name}
@@ -238,7 +247,7 @@ const CreateTeam = () => {
         </>
       ) : (
         <>
-          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-16 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between p-4 gap-y-6 mt-12">
+          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between gap-y-6 mt-12">
             <h1 className="text-2xl font-bold text-center col-span-3">
               Invite Members
             </h1>
@@ -271,7 +280,11 @@ const CreateTeam = () => {
                 </div>
 
                 {/* Users List */}
-                {getAvailableUsers().length ? (
+                {fetching ? (
+                  <div className="col-span-full text-center font-mono text-red-400 font-bold">
+                    Loading Users...
+                  </div>
+                ) :getAvailableUsers().length ? (
                   getAvailableUsers().map((user) => {
                     return (
                       <div
@@ -281,7 +294,9 @@ const CreateTeam = () => {
                         <input
                           type="checkbox"
                           className="w-auto"
-                          onClick={(e) => toggleTeam(e.target.checked, user._id)}
+                          onClick={(e) =>
+                            toggleTeam(e.target.checked, user._id)
+                          }
                         />
                         <div className="text-xs lg:text-lg flex-grow">
                           {user.name}
@@ -316,7 +331,7 @@ const CreateTeam = () => {
           )}
           {message && (
             <div className="text-center">
-              <p className="font-mono text-sm mt-4 text-green-500">{message}</p>
+              <p className="font-mono text-sm text-green-500">{message}</p>
               <div className="font-mono text-center">
                 <Link
                   to="/teamdetails"

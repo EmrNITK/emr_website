@@ -9,6 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Validate input fields
@@ -30,12 +31,15 @@ const Login = () => {
     }
 
     try {
+      setLoading(true);
       const userData = { email, password };
       const response = await loginUser(userData);
       login(response);
       navigate("/workshop");
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,7 +57,7 @@ const Login = () => {
             }}
           >
             <div>
-              <h1 className="text-3xl font-bold mb-4">Welcome Page</h1>
+              <h1 className="text-3xl font-bold mb-4">Welcome</h1>
               <p className="text-lg font-bold mb-3">
                 Sign in to continue access to our amazing platform.
               </p>
@@ -63,7 +67,7 @@ const Login = () => {
           {/* Right side form */}
           <div className="w-full md:w-1/2 p-8 rounded-b-lg md:rounded-r-lg md:rounded-l-none">
             <h2 className="text-2xl font-bold mb-6">Sign in</h2>
-            
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -88,16 +92,21 @@ const Login = () => {
                 className="w-full bg-blue-500 hover:bg-blue-400 text-white py-3 rounded my-2"
                 type="submit"
               >
-                Sign in
+                {loading?"Signing in..": "Sign in"}
               </button>
-              <button
-                className="w-full bg-green-500 hover:bg-green-400 text-white py-3 rounded"
-                type="submit"
+              <Link to="/register">
+              <div
+                className="w-full text-center bg-green-500 hover:bg-green-400 text-white py-3 rounded"
               >
                 Register Now
-              </button>
+              </div>
+              </Link>
             </form>
-            {error && <p className="mt-2 font-mono text-red-500 mb-4 text-sm">{error}</p>}
+            {error && (
+              <p className="mt-2 font-mono text-red-500 mb-4 text-sm">
+                {error}
+              </p>
+            )}
             {/* Forgot Password link */}
             <div className="mt-4 text-center">
               <Link
