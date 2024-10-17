@@ -14,6 +14,7 @@ const Register = () => {
   const [mobileNo, setMobileNo] = useState("");
   const [rollNo, setRollNo] = useState("");
   const [error, setError] = useState("");
+  const [loading,setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Validate input fields
@@ -49,6 +50,7 @@ const Register = () => {
     }
 
     try {
+      setLoading(true);
       const userData = {
         name,
         email,
@@ -63,6 +65,8 @@ const Register = () => {
       navigate("/login");
     } catch (error) {
       setError(error.message);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -141,7 +145,7 @@ const Register = () => {
               className="w-full bg-blue-500 text-white py-3 rounded"
               type="submit"
             >
-              Register
+              {loading?"Creating Account...":"Register"}
             </button>
           </form>
 

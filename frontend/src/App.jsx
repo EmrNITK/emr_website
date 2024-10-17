@@ -25,7 +25,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import VerifiedRoute from "./components/VerifiedRoute";
 import UserOptions from "./UserOptions";
 
-// const { user, logout } = useContext(AuthContext);
 
 const App = () => {
   return (
@@ -34,11 +33,11 @@ const App = () => {
         <ScrollToTop />
         {/* <Navbar /> */}
         <StarsCanvas />
-        <ProtectedRoute>
-          <VerifiedRoute>
-            <UserOptions />
-          </VerifiedRoute>
-        </ProtectedRoute>
+      
+          
+          
+        
+        <UserOptions />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sponsor" element={<SponsorPage />} />

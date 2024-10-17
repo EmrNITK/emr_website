@@ -32,6 +32,7 @@ const TeamDetails = () => {
 
   const handleDeleteMember = async (memberId) => {
     const teamId = user?.teamId?._id;
+    
     try {
       setLoading(true);
       const response = await removeMember(teamId, memberId);
@@ -45,7 +46,6 @@ const TeamDetails = () => {
       console.error(error);
       setError(error.message || "An error occurred during deleting member.");
       setMessage("");
-      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ const TeamDetails = () => {
       setError("");
     } catch (error) {
       console.error(error);
-      setLoading(false);
+
       setError(error.message || "An error occurred during deleting team.");
       setMessage("");
     } finally {
@@ -123,24 +123,12 @@ const TeamDetails = () => {
                       {user.isLeader && user.rollNo != member.rollNo && (
                         <button
                           className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base  font-semibold px-4 sm:px-1 py-2 md:px-4 md:py-2"
-                          // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
                           onClick={() => handleDeleteMember(member._id)}
                         >
                           Remove
                         </button>
                       )}
                     </div>
-                    {/* <div className="md:flex hidden justify-center items-center mt-4 md:justify-end">
-                      {user.isLeader && user.rollNo != member.rollNo && (
-                        <button
-                          className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base  font-semibold mx-1 md:mx-4 px-4 sm:px-1 py-2 md:px-4 md:py-2"
-                          // className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold text-sm"
-                          onClick={() => handleDeleteMember(member._id)}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div> */}
                   </li>
                 ))}
               </ul>
@@ -197,11 +185,17 @@ const TeamDetails = () => {
           </div>
         </div>
       )}
-      {message && (
-        <p className="font-mono text-sm text-center text-green-500">
-          {loading ? "Removing..." : message}
-        </p>
-      )}
+
+      {loading ? (
+          <p className="font-mono text-sm text-center text-green-500">
+            Removing...
+          </p>
+        ) :
+        message ? (
+          <p className="font-mono text-sm text-center text-green-500">
+            {message}
+          </p>
+        ):<></>}
       {error && (
         <p className="font-mono text-sm text-center text-red-500">{error}</p>
       )}
