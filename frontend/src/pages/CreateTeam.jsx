@@ -248,7 +248,7 @@ const CreateTeam = () => {
         </>
       ) : (
         <>
-          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-8 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between gap-y-6 mt-12">
+          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-8 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between gap-y-6 mt-12">
             <h1 className="text-2xl font-bold text-center col-span-3">
               Invite Members
             </h1>
