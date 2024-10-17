@@ -90,6 +90,7 @@ export const deleteTeam = asyncHandler(async (req, res) => {
       console.log(user)
       if (user) {
         user.teamId = null;
+        user.isLeader = false;
         await user.save();
       }
     })
