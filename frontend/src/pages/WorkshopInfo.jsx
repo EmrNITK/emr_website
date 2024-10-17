@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
+import FooterComp from "../components/Footer/FooterComp";
 
 const WorkshopInfo = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -92,6 +93,7 @@ const WorkshopInfo = () => {
           </div>
         </div>
       </div>
+      <FooterComp/>
     </div>
   );
 };

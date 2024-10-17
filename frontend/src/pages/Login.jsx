@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/apiService";
 import Header from "../components/Header";
+import FooterComp from "../components/Footer/FooterComp";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -46,7 +47,7 @@ const Login = () => {
   return (
     <div>
       <Header />
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen md:mt-2 mt-20">
         <div className="flex flex-col md:flex-row max-w-4xl shadow-lg w-full md:w-4/5">
           <div
             className="md:w-1/2 w-full p-8 text-white flex items-center bg-opacity-50 rounded-t-lg md:rounded-l-lg md:rounded-t-none"
@@ -120,6 +121,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <FooterComp />
     </div>
   );
 };

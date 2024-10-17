@@ -3,6 +3,8 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/apiService";
 import Header from '../components/Header';
+import { StarsCanvas } from "../components";
+import FooterComp from "../components/Footer/FooterComp";
 
 const Register = () => {
   const { login } = useContext(AuthContext);
@@ -73,7 +75,7 @@ const Register = () => {
   return (
     <>
     <Header/>
-    <div className="flex justify-center items-center h-screen ">
+    <div className="flex justify-center items-center h-screen mt-28 md:mt-10">
       <div className="flex flex-col md:flex-row max-w-4xl w-full md:w-4/5">
         <div className="relative md:w-1/2 w-full p-8 flex items-center justify-center bg-center">
           <div className="absolute inset-0 bg-gray-800 bg-opacity-0"></div>
@@ -84,7 +86,7 @@ const Register = () => {
 
         <div className="w-full md:w-1/2 p-8">
           <h2 className="text-2xl font-bold mb-6">Sign up</h2>
-
+          {error && <p className="mt-4 font-mono text-sm text-red-500 mb-4">{error}</p>}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -134,7 +136,7 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
-              className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent border-b border-gray-300 focus:outline-none"
+              className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent border-b  focus:outline-none"
               type="password"
               placeholder="Password"
               value={password}
@@ -149,10 +151,11 @@ const Register = () => {
             </button>
           </form>
 
-          {error && <p className="mt-4 font-mono text-sm text-red-500 mb-4">{error}</p>}
+          
         </div>
       </div>
     </div>
+    <FooterComp/>
     </>
   );
 };

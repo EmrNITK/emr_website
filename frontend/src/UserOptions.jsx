@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import Profile from "./assets/profile.webp";
@@ -8,6 +8,7 @@ const SpeedDial = () => {
   const { user, logout } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const speedDialRef = useRef(null);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -22,10 +23,9 @@ const SpeedDial = () => {
     { name: "Home", func: () => handleNavigate("/") },
     { name: "My Team", func: () => handleNavigate("/teamdetails") },
     { name: "Logout", func: handleLogout },
-    { name: "Workshop Hub", func: ()=>handleNavigate("/workshop") },
+    { name: "Workshop Hub", func: () => handleNavigate("/workshop") },
   ];
 
-  // If the user is an admin, add the "Dashboard" option
   if (user?.isAdmin) {
     options.unshift({
       name: "Dashboard",
@@ -33,12 +33,38 @@ const SpeedDial = () => {
     });
   }
 
+  const handleClickOutside = (e) => {
+    if (speedDialRef.current && !speedDialRef.current.contains(e.target)) {
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
   return (
     <>
       {user && (
         <div>
-          <div className="speed-dial">
-            <div className="speed-dial-icon" onClick={() => setOpen(!open)}>
+          {/* Backdrop */}
+          {open && <div className="backdrop backdrop-open" onClick={() => setOpen(false)}></div>}
+
+          <div
+            className="speed-dial"
+            onMouseEnter={() => setOpen(true)}  // Open on hover
+            onMouseLeave={() => setOpen(false)} // Close when the mouse leaves
+            ref={speedDialRef}
+          >
+            <div className="speed-dial-icon">
               <img src={Profile} alt="Profile" className="avatar" />
             </div>
 

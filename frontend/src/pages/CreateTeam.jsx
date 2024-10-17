@@ -8,6 +8,7 @@ import {
 import { AuthContext } from "../context/AuthContext.jsx";
 import Header from "../components/Header.jsx";
 import { useNavigate, Link, Navigate } from "react-router-dom";
+import FooterComp from "../components/Footer/FooterComp.jsx";
 
 const CreateTeam = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -153,12 +154,12 @@ const CreateTeam = () => {
 
       {!user.teamId ? (
         <>
-          <section className="w-full md:w-3/5 lg:w-2/5 mx-auto px-4 py-4 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between  gap-y-6 mt-120">
-            <h1 className="text-2xl pt-12 font-bold text-center col-span-3">
+          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-4 items-center justify-between  gap-y-6 mt-120">
+            <h1 className="text-2xl pt-12 font-bold text-center mb-8 col-span-3">
               Create Team
             </h1>
             <form className="col-start-2 col-end-3 w-full gap-y-4 grid">
-              <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+              <div className="flex mb-8 flex-col lg:flex-row gap-4 items-start lg:items-center">
                 <label
                   className="block text-xl font-large text-white-700"
                   htmlFor="team-name"
@@ -169,7 +170,7 @@ const CreateTeam = () => {
                   id="team-name"
                   type="text"
                   placeholder="Enter team name"
-                  className="bg-transparent border-b border-gray-300 focus:outline-none w-full lg:w-2/5"
+                  className="bg-transparent border-b  border-gray-300 focus:outline-none w-full lg:w-2/5"
                   onChange={(e) => {
                     setTeamName(e.target.value);
                   }}
@@ -344,6 +345,7 @@ const CreateTeam = () => {
           )}
         </>
       )}
+      <FooterComp />
     </>
   );
 };

@@ -72,8 +72,8 @@
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(15px);
-  z-index: 9;
+  backdrop-filter: blur(10px);
+  z-index: 9999;
   display: none; /* Hidden by default */
 }
 
@@ -85,7 +85,7 @@
 @media (max-width: 600px) {
   .speed-dial {
     bottom: 4vh;
-  right: 4vh;
+    right: 8vh;
   }
 
   .speed-dial-icon {
@@ -96,6 +96,6 @@
   .speed-dial-action {
     padding: 0.2rem 0.1rem;
     margin: 0.4rem;
-    font-size:medium;
+    font-size: medium;
   }
 }

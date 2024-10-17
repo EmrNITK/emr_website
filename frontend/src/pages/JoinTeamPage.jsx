@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import { getAllTeams, joinTeam } from "../api/apiService";
 import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import FooterComp from "../components/Footer/FooterComp";
 
 const TeamList = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -63,7 +64,7 @@ const TeamList = () => {
     <>
       {user?.teamId ? <Navigate to="/workshop" /> : <></>}
       <Header />
-      <div className="w-screen h-full px-10 my-6 mt-24">
+      <div className="w-screen min-h-screen px-10 my-6 mt-24">
         <h2 className="text-2xl pt-12 font-bold mb-6 text-center text-white">
           Available Teams to Join
         </h2>
@@ -116,6 +117,7 @@ const TeamList = () => {
           </p>
         )}
       </div>
+      <FooterComp />
     </>
   );
 };
