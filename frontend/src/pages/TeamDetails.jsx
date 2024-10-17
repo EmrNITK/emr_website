@@ -3,6 +3,7 @@ import { getTeamById, removeMember, deleteTeam } from "../api/apiService";
 import { AuthContext } from "../context/AuthContext";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
+import FooterComp from "../components/Footer/FooterComp";
 
 const TeamDetails = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -199,6 +200,7 @@ const TeamDetails = () => {
       {error && (
         <p className="font-mono text-sm text-center text-red-500">{error}</p>
       )}
+  <FooterComp />
     </div>
   );
 };

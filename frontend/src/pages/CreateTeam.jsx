@@ -155,9 +155,20 @@ const CreateTeam = () => {
       {!user.teamId ? (
         <>
           <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-4 items-center justify-between  gap-y-6 mt-120">
+        
             <h1 className="text-2xl pt-12 font-bold text-center mb-8 col-span-3">
               Create Team
             </h1>
+            {error && (
+            <p className="font-mono text-sm my-4 text-red-500 text-center">
+              {error}
+            </p>
+          )}
+          {message && (
+            <div className="text-center">
+              <p className="font-mono text-sm my-4 text-green-500">{message}</p>
+            </div>
+          )}
             <form className="col-start-2 col-end-3 w-full gap-y-4 grid">
               <div className="flex mb-8 flex-col lg:flex-row gap-4 items-start lg:items-center">
                 <label
@@ -235,23 +246,32 @@ const CreateTeam = () => {
               </button>
             </form>
           </section>
-          {error && (
+          
+        </>
+      ) : (
+        <>
+          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-8 items-center justify-between gap-y-6 mt-12">
+            <h1 className="text-2xl font-bold text-center col-span-3">
+              Invite Members
+            </h1>
+            {error && (
             <p className="font-mono text-sm mt-4 text-red-500 text-center">
               {error}
             </p>
           )}
           {message && (
             <div className="text-center">
-              <p className="font-mono text-sm mt-4 text-green-500">{message}</p>
+              <p className="font-mono text-sm text-green-500">{message}</p>
+              <div className="font-mono text-center">
+                <Link
+                  to="/teamdetails"
+                  className="text-blue-500 hover:text-white text-sm underline"
+                >
+                  Go to your team
+                </Link>
+              </div>
             </div>
           )}
-        </>
-      ) : (
-        <>
-          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-8 grid grid-rows-[auto,1fr] grid-cols-[auto,1fr,auto] items-center justify-between gap-y-6 mt-12">
-            <h1 className="text-2xl font-bold text-center col-span-3">
-              Invite Members
-            </h1>
             <form className="col-start-2 col-end-3 w-full gap-y-4 grid">
               <div className="flex flex-col lg:flex-row gap-4  lg:items-center ">
                 <label
@@ -325,24 +345,7 @@ const CreateTeam = () => {
               </button>
             </form>
           </section>
-          {error && (
-            <p className="font-mono text-sm mt-4 text-red-500 text-center">
-              {error}
-            </p>
-          )}
-          {message && (
-            <div className="text-center">
-              <p className="font-mono text-sm text-green-500">{message}</p>
-              <div className="font-mono text-center">
-                <Link
-                  to="/teamdetails"
-                  className="text-blue-500 hover:text-white text-sm underline"
-                >
-                  Go to your team
-                </Link>
-              </div>
-            </div>
-          )}
+          
         </>
       )}
       <FooterComp />

@@ -73,6 +73,16 @@ const TeamList = () => {
             {message}
           </p>
         )}
+        {error && (
+          <p className="font-mono text-sm mt-4 text-center text-red-500">
+            {error}
+          </p>
+        )}
+        {loading && (
+          <p className="font-mono text-sm mt-4 text-center text-white">
+            Sending Join Request....
+          </p>
+        )}
 
         {feching ? (
           <div className="text-center font-mono text-red-400 font-bold">
@@ -106,16 +116,7 @@ const TeamList = () => {
             })}
           </div>
         )}
-        {error && (
-          <p className="font-mono text-sm mt-4 text-center text-red-500">
-            {error}
-          </p>
-        )}
-        {loading && (
-          <p className="font-mono text-sm mt-4 text-center text-white">
-            Sending Join Request....
-          </p>
-        )}
+        
       </div>
       <FooterComp />
     </>

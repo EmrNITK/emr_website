@@ -3,6 +3,7 @@ import { verifyUser } from "../api/apiService";
 import { Link, Navigate } from "react-router-dom";
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
+import FooterComp from "../components/Footer/FooterComp";
 
 const VerifyTransaction = () => {
   const { user } = useContext(AuthContext);
@@ -79,6 +80,7 @@ const VerifyTransaction = () => {
           )}
         </div>
       </div>
+      <FooterComp />
     </div>
   );
 };
