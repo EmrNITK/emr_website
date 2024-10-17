@@ -223,30 +223,19 @@ export const fetchUsers = async () => {
 
 
 export const removeMember = async (teamId, memberId) => {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/teams/${teamId}/members/${memberId}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-      }
-    );
-
-    // Handle the response
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
+  const response = await fetch(
+    `${API_BASE_URL}/api/teams/${teamId}/members/${memberId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
     }
+  );
 
-    const data = await response.json();
-    return data; // Return the updated user data
-  } catch (error) {
-    console.error("Failed to fetch updated user:", error);
-    throw error; // Re-throw the error for further handling if needed
-  }
+  return handleResponse(response);
 };
 
 export const sendOTP = async (email) => {
@@ -306,28 +295,17 @@ export const changePasswordUser = async (passwordData) => {
 };
 
 export const deleteTeam = async (teamId) => {
-  try {
-    console.log("teamId", teamId);
-    const response = await fetch(
-      `${API_BASE_URL}/api/teams/delete_team/${teamId}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
+  const response = await fetch(
+    `${API_BASE_URL}/api/teams/${teamId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
     }
+  );
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Failed to delete the team:", error);
-    throw error;
-  }
+  return handleResponse(response);
 };
