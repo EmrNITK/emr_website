@@ -25,7 +25,7 @@ import img15 from "../../assets/images/ProfileImage2/BHAGESH.jpg";
 import img16 from "../../assets/images/ProfileImage2/GARV BHATIA.jpg";
 import img17 from "../../assets/images/ProfileImage2/NIKHIL JAIN.jpg";
 import img18 from "../../assets/images/ProfileImage2/ANUPRIYA BIRMAN.jpeg";
-import img19 from "../../assets/images/ProfileImage2/AKSHAT MANGAL.jpg";
+import img19 from "../../assets/images/ProfileImage2/Akshat_profile.jpg";
 import img20 from "../../assets/images/ProfileImage2/VISHWAS KAPOOR.jpg";
 import img21 from "../../assets/images/ProfileImage2/SHELJA SHARMA.jpeg";
 
