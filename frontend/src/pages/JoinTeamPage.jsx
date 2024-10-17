@@ -7,16 +7,19 @@ import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
 const TeamList = () => {
-  const { user,updateUser } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [feching, setFetching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch teams on component mount
   useEffect(() => {
     const fetchTeams = async () => {
       try {
+        setFetching(true);
         await updateUser();
         const { teams } = await getAllTeams();
         console.log(teams);
@@ -25,7 +28,7 @@ const TeamList = () => {
         setError("Failed to fetch teams. Please try again.");
         setMessage("");
       } finally {
-        setLoading(false);
+        setFetching(false);
       }
     };
 
@@ -50,7 +53,11 @@ const TeamList = () => {
     }
   };
 
-  const availableTeams = teams.filter((team) => team.members.length < 4);
+  const availableTeams = teams.filter(
+    (team) =>
+      team.members.length < 4 &&
+      team.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -66,16 +73,33 @@ const TeamList = () => {
           </p>
         )}
 
-        {!loading && availableTeams.length === 0 ? (
+        {feching ? (
+          <div className="text-center font-mono text-red-400 font-bold">
+            Loading Teams...
+          </div>
+        ) : availableTeams.length === 0 ? (
           <p className="text-center text-xl text-gray-400 ">
             No available teams to join. You can create one!
           </p>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow overflow-y-auto max-h-[70vh]">
+          <div className="w-full md:w-[60vw] lg:w-[80vw] mx-auto grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow overflow-y-auto max-h-[60vh]">
+            <div className="col-span-full mx-6 my-2">
+              <input
+                id="search"
+                type="text"
+                placeholder="Search by Name"
+                className="bg-transparent border px-4 py-2 rounded-md border-gray-300 focus:outline-none w-full"
+                onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+              />
+            </div>
             {availableTeams.map((team) => {
               return (
                 <>
-                <TeamCard key={team._id} team={team} handleJoin={handleJoin} />
+                  <TeamCard
+                    key={team._id}
+                    team={team}
+                    handleJoin={handleJoin}
+                  />
                 </>
               );
             })}
