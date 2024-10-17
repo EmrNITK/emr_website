@@ -12,11 +12,10 @@ import ScrollToTop from "./ScrollToTop";
 import WorkshopDetail from "./components/WorkshopPage/WorkshopDetail";
 import JoinTeamPage from "./pages/JoinTeamPage";
 import CreateTeam from "./pages/CreateTeam";
-
 import WorkshopInfo from "./pages/WorkshopInfo";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider} from "./context/AuthContext";
 import ForgotPassword from "./pages/ForgotPassword";
 import TransactionVerify from "./pages/TransactionVerify";
 import TeamCard from "./components/TeamCard";
@@ -24,6 +23,9 @@ import TeamDetails from "./pages/TeamDetails";
 import ChangePassword from "./components/ChangePassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import VerifiedRoute from "./components/VerifiedRoute";
+import UserOptions from "./UserOptions";
+
+// const { user, logout } = useContext(AuthContext);
 
 const App = () => {
   return (
@@ -32,7 +34,11 @@ const App = () => {
         <ScrollToTop />
         {/* <Navbar /> */}
         <StarsCanvas />
-
+        <ProtectedRoute>
+          <VerifiedRoute>
+            <UserOptions />
+          </VerifiedRoute>
+        </ProtectedRoute>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sponsor" element={<SponsorPage />} />
