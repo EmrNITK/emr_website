@@ -81,8 +81,6 @@ const TeamDetails = () => {
     <div>
       <Header />
       <div className="min-h-[100vh]">
-
-
         {team ? (
           <>
             <div className="max-w-2xl mx-auto shadow-lg rounded-lg p-6 mt-20">
@@ -99,7 +97,9 @@ const TeamDetails = () => {
                   Team Members:
                 </h3>
                 {!error && (
-                  <p className="font-mono text-sm text-center text-red-500">{error}</p>
+                  <p className="font-mono text-sm text-center text-red-500">
+                    {error}
+                  </p>
                 )}
                 <ul className="space-y-3 overflow-y-auto max-h-[50vh]">
                   {team.members.map((member) => (
@@ -116,6 +116,9 @@ const TeamDetails = () => {
                         </span>
                         <span className="text-gray-600 font-normal text-xs">
                           Branch: {member.branch}
+                        </span>
+                        <span className="text-gray-600 font-normal text-xs">
+                          Year: {member?.year ?? "Not provided"}
                         </span>
                         <span className="text-gray-600 font-normal text-xs">
                           College: {member.collegeName}
@@ -196,13 +199,13 @@ const TeamDetails = () => {
           <p className="font-mono text-sm text-center text-green-500">
             Removing...
           </p>
-        ) :
-          message ? (
-            <p className="font-mono text-sm text-center text-green-500">
-              {message}
-            </p>
-          ) : <></>}
-
+        ) : message ? (
+          <p className="font-mono text-sm text-center text-green-500">
+            {message}
+          </p>
+        ) : (
+          <></>
+        )}
       </div>
       <FooterComp />
     </div>
