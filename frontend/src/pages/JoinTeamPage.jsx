@@ -89,9 +89,20 @@ const TeamList = () => {
             Loading Teams...
           </div>
         ) : availableTeams.length === 0 ? (
-          <p className="text-center text-xl text-gray-400 ">
-            No available teams to join. You can create one!
-          </p>
+          <div className="w-full md:w-[60vw] lg:w-[80vw] mx-auto grid grid-cols-1 text-center lg:grid-cols-4 gap-4 flex-grow overflow-y-auto max-h-[60vh]">
+            <div className="col-span-full mx-6 my-2">
+              <input
+                id="search"
+                type="text"
+                placeholder="Search by Name"
+                className="bg-transparent border px-4 py-2 rounded-md border-gray-300 focus:outline-none w-full"
+                onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+              />
+            </div>
+            <div className="col-span-4 w-full bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm p-3 rounded-lg text-center">
+              No teams to join !!!
+            </div>
+          </div>
         ) : (
           <div className="w-full md:w-[60vw] lg:w-[80vw] mx-auto grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow overflow-y-auto max-h-[60vh]">
             <div className="col-span-full mx-6 my-2">
@@ -116,7 +127,6 @@ const TeamList = () => {
             })}
           </div>
         )}
-        
       </div>
       <FooterComp />
     </>
