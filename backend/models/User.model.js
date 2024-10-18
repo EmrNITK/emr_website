@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    year: {
+      type: String,
+      required: false,
+    },
     rollNo: {
       type: String,
       required: true,
@@ -48,12 +52,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    otp:{
-      type:String,
+    otp: {
+      type: String,
     },
-    otpExpireAt:{
+    otpExpireAt: {
       type: Date,
-    }
+    },
   },
   { timestamps: true }
 );

@@ -16,6 +16,7 @@ export const register = asyncHandler(async (req, res) => {
   const user = await User.create({
     name: req.body.name,
     branch: req.body.branch,
+    year:req.body.year,
     collegeName: req.body.collegeName,
     mobileNo: req.body.mobileNo,
     rollNo: req.body.rollNo,
