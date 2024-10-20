@@ -114,17 +114,17 @@ const TeamList = () => {
                 onChange={(e) => setSearchQuery(e.target.value)} // Update search query
               />
             </div>
-            {availableTeams.map((team) => {
-              return (
-                <>
+            {availableTeams
+              .filter((team) => team.members.length < 4) // Only teams with less than 4 members
+              .map((team) => {
+                return (
                   <TeamCard
                     key={team._id}
                     team={team}
                     handleJoin={handleJoin}
                   />
-                </>
-              );
-            })}
+                );
+              })}
           </div>
         )}
       </div>

@@ -17,7 +17,7 @@ const Register = () => {
   const [rollNo, setRollNo] = useState("");
   const [year, setYear] = useState("");
   const [error, setError] = useState("");
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Validate input fields
@@ -69,7 +69,7 @@ const Register = () => {
       navigate("/login");
     } catch (error) {
       setError(error.message);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -120,13 +120,29 @@ const Register = () => {
                 value={branch}
                 onChange={(e) => setBranch(e.target.value)}
               />
-              <input
-                className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent focus:outline-none"
-                type="text"
-                placeholder="year"
+              <select
+                className=" p-3 mb-4 border border-gray-600 rounded bg-gray-800 focus:outline-none text-white focus:border-blue-500 w-1/2 lg:w-full"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
-              />
+              >
+                <option value="" disabled className="bg-gray-700 text-white w-1/4 md:w-full">
+                  Select Year
+                </option>
+                <option value="1" className="bg-gray-700 text-white w-1/4 md:w-full">
+                  1st Year
+                </option>
+                <option value="2" className="bg-gray-700 text-white w-1/4 md:w-full">
+                  2nd Year
+                </option>
+                <option value="3" className="bg-gray-700 text-white w-1/4 md:w-full">
+                  3rd Year
+                </option>
+                <option value="4" className="bg-gray-700 text-white w-1/4 md:w-full">
+                  4th Year
+                </option>
+              </select>
+
+
               <input
                 className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent focus:outline-none"
                 type="text"

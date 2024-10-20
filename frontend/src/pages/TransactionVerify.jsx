@@ -40,7 +40,7 @@ const VerifyTransaction = () => {
       <Header />
       {user.isVerified ? <Navigate to="/workshop" /> : <></>}
       <div className="flex items-center justify-center h-screen ">
-        <div className="p-12 rounded-lg shadow-lg max-w-md w-full bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg ">
+        <div className="p-12 max-w-md w-full bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg ">
           <h2 className="text-2xl font-bold text-white text-center mb-6">
             Verify Transaction
           </h2>
