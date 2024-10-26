@@ -36,16 +36,16 @@ const sendVerificationEmail = async (user, transactionId) => {
               <a href="${rejectUrl}" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; margin-left: 10px;">Reject</a>
             </div>
 
-            <p style="font-size: 0.9em;">Best Regards,<br />EMR</p>
+            <p style="font-size: 0.9em;">Best Regards,<br />Team EMR</p>
             <hr style="border: none; border-top: 1px solid #eee" />
             <div style="padding: 8px 0; color: #aaa; font-size: 0.8em; line-height: 1; font-weight: 300; float: right"></div>
           </div>
         </div>`,
     };
 
-    console.log(
-      `Sending email from: ${process.env.APP_EMAIL} to: ${process.env.ADMIN_EMAIL}`
-    );
+    // console.log(
+    //   `Sending email from: ${process.env.APP_EMAIL} to: ${process.env.ADMIN_EMAIL}`
+    // );
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message);
@@ -72,7 +72,7 @@ const sendAcceptanceEmail = async (user) => {
                 <li><strong>Location:</strong> [Insert Workshop Location]</li>
               </ul>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -81,9 +81,9 @@ const sendAcceptanceEmail = async (user) => {
           </div>`,
     };
 
-    console.log(
-      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
-    );
+    // console.log(
+    //   `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
+    // );
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message); // Log any errors
@@ -92,7 +92,7 @@ const sendAcceptanceEmail = async (user) => {
 };
 const sendRejectionEmail = async (user) => {
   try {
-    console.log("Sending rejection email to", user.email);
+    // console.log("Sending rejection email to", user.email);
 
     // Email options
     const mailOptions = {
@@ -105,7 +105,7 @@ const sendRejectionEmail = async (user) => {
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">We regret to inform you that your verification request has been rejected.</p>
               <p style="font-size:1.1em">If you believe this is an error or have any questions, please feel free to contact us.</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -114,9 +114,9 @@ const sendRejectionEmail = async (user) => {
           </div>`,
     };
 
-    console.log(
-      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
-    );
+    // console.log(
+    //   `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
+    // );
     await transporter.sendMail(mailOptions); // Send the email
   } catch (error) {
     console.error("Error sending rejection email: ", error.message); // Log any errors
@@ -149,7 +149,7 @@ const sendInvitationEmail = async (user, team) => {
             </div>
 
   
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 
@@ -157,9 +157,9 @@ const sendInvitationEmail = async (user, team) => {
             </div>
           </div>`,
     };
-    console.log(
-      `Sending email from: ${process.env.APP_EMAIL} to: ${process.env.ADMIN_EMAIL}`
-    );
+    // console.log(
+    //   `Sending email from: ${process.env.APP_EMAIL} to: ${process.env.ADMIN_EMAIL}`
+    // );
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message);
@@ -183,7 +183,7 @@ const inviteAcceptedEmail = async (leader, user, team) => {
               <p style="font-size:1.1em">Congratulations! You're now a member of team ${team.name}.</p>
               <p style="font-size:1.1em">We are excited to welcome you to our workshop.</p>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -192,9 +192,9 @@ const inviteAcceptedEmail = async (leader, user, team) => {
           </div>`,
     };
 
-    console.log(
-      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
-    );
+    // console.log(
+    //   `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
+    // );
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email: ", error.message); // Log any errors
@@ -216,7 +216,7 @@ const inviteRejectedEmail = async (leader, user, team) => {
               <p style="font-size:1.1em">Hello ${leader.name},</p>
               <p style="font-size:1.1em">We regret to inform you that ${user.name} has rejected the invitation to join your team : <b>${team.name} </b>.</p>
               <p style="font-size:1.1em">If you believe this is an error or have any questions, please feel free to contact us.</p>
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
                 <!-- Additional footer or information can go here -->
@@ -225,9 +225,9 @@ const inviteRejectedEmail = async (leader, user, team) => {
           </div>`,
     };
 
-    console.log(
-      `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
-    );
+    // console.log(
+    //   `Sending email from: ${process.env.APP_EMAIL} to: ${user.email}`
+    // );
     await transporter.sendMail(mailOptions); // Send the email
   } catch (error) {
     console.error("Error sending rejection email: ", error.message); // Log any errors
@@ -267,16 +267,16 @@ const sendJoinRequestEmail = async (user, team, leader) => {
               <a href="${rejectUrl}" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; margin-left: 10px;">Reject</a>
             </div>
 
-            <p style="font-size: 0.9em;">Best Regards,<br />EMR</p>
+            <p style="font-size: 0.9em;">Best Regards,<br />Team EMR</p>
             <hr style="border: none; border-top: 1px solid #eee" />
             <div style="padding: 8px 0; color: #aaa; font-size: 0.8em; line-height: 1; font-weight: 300; float: right"></div>
           </div>
         </div>`,
     };
 
-    console.log(
-      `Sending email from: ${process.env.ADMIN_EMAIL} to: ${leader.email}`
-    );
+    // console.log(
+    //   `Sending email from: ${process.env.ADMIN_EMAIL} to: ${leader.email}`
+    // );
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending join request email: ", error.message);
@@ -304,7 +304,7 @@ const sendJoinAcceptanceEmail = async (user, team, leader) => {
               </ul>
               <p style="font-size:1.1em">You can now participate in team activities and contribute to your team's success!</p>
               
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
             </div>
           </div>`,
@@ -336,7 +336,7 @@ const sendJoinRejectionEmail = async (user, team, leader) => {
                  <li><strong>Team Leader:</strong> ${leader.name}</li>
               </ul>
               
-              <p style="font-size:0.9em;">Best Regards,<br />EMR</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
             </div>
           </div>`,

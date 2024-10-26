@@ -20,18 +20,23 @@ export default function CurrentWorkshop() {
             <div>
               <h1 className="current-workshop-title">Embedded Workshop</h1>
               <p className="current-workshop-description"><br /><br /><br />
-              Get ready to immerse yourself in the enchanting world of Robotics Engineering, where you'll unlock the potential of Embedded C, Arduino, Analog Circuits, Simulators, and Sensors. Our workshop is carefully crafted to accommodate participants of all skill levels, whether you're a curious beginner or an experienced enthusiast.
+              🎶 Get Ready for a Symphony of Code 👨‍💻 and Circuits 🤖!
+              The much-anticipated Embedded Workshop featuring Autonomous Line Follower Bot and Hand-Gesture Controlled Bot is here! 🌟🚀
 
-🤖 Hands-on Experience:
-One of the highlights of this workshop is the opportunity to put your knowledge into action. You won't just learn theory; you'll dive into the practical side of things. In fact, you'll have the chance to create not one, but two exciting robotics embedded systems projects. 💡🤖🚀<br /><br /><br />
-
-<h2>🔥 Workshop Highlights: </h2> <br />
-- Gain a deep understanding of Embedded C programming.<br />
-- Dive into the world of Arduino and microcontroller-based projects.<br />
-- Explore the principles of Analog Circuits and their applications.<br />
-- Get hands-on experience with simulators and sensor technologies.<br />
-- Collabor
-Don't miss this chance to enhance your skills, ignite your passion, and embark on a journey into the heart of Robotics. 🛠️
+              <b>🌟 What to Expect:</b>
+              Prepare to immerse yourself in the exciting world of Embedded Systems and Robotics, where you’ll explore both autonomous robotics and gesture-based control. Whether you're a beginner or an experienced tech enthusiast, this workshop is crafted for all skill levels!
+              <br />
+              🤖 Hands-on Experience:
+              You won’t just learn the theory—you’ll build two different bots! Create your own Autonomous Line Follower Bot and a Gesture-Controlled Bot, guided by expert lectures and practical hardware implementation. 💡🤖
+              <br />
+              📅 <b>Dates:</b> 8th, 9th & 10th November
+              📍 <b>Venue:</b> MCA Block
+              <br />
+              🔥 Workshop Highlights:
+              - Build and program your own Autonomous Line Follower Bot and your own bot operated by Hand Gestures, featuring an integrated Robotic Arm
+              - Master hand gesture recognition to control a bot
+              - Learn in-depth hardware implementation and control systems
+              - Ideal for both beginners and advanced participants
 </p>
               {/* <p className="current-workshop-description">
                 <b>Workshop Date :</b> 27/10/23 - 29/10/23

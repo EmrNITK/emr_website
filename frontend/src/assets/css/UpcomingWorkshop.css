@@ -60,19 +60,19 @@
     margin-bottom: 20px;
     /* padding:10px; */
 }
-img {
-    --a: 8deg; /* control the angle of rotation (the smaller, the better) */
+/* img {
+    --a: 8deg; 
     aspect-ratio: 1;
     transform: perspective(400px) rotate3d(var(--i,1,-1),0,var(--a));
     mask: 
       linear-gradient(135deg,#000c 40%,#000,#000c 60%)
       100% 100%/240% 240%;
     transition: .4s;
-  }
-  img:hover {
+  } 
+   img:hover {
     --i:-1,1;
     mask-position: 0 0;
-  }
+  }  */
 
 /* Gltich Animation and text  */
 

@@ -4,6 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
 import FooterComp from "../components/Footer/FooterComp";
+import payment_qr from "../assets/payment_qr.png"
 
 const VerifyTransaction = () => {
   const { user } = useContext(AuthContext);
@@ -38,12 +39,25 @@ const VerifyTransaction = () => {
   return (
     <div>
       <Header />
-      {user.isVerified ? <Navigate to="/workshop" /> : <></>}
-      <div className="flex items-center justify-center h-screen ">
-        <div className="p-12 max-w-md w-full bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg ">
+      {!user.isVerified ? <Navigate to="/workshop" /> : <></>}
+      <div className="flex mt-20 items-center justify-center h-screen ">
+        <div className="p-8 max-w-md w-full bg-white/5 backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg ">
           <h2 className="text-2xl font-bold text-white text-center mb-6">
             Verify Transaction
           </h2>
+          <p className="text-xs text-red-600 text-center mb-6">
+            Note: To Create/Join Team you need to first Pay for the Embedded BOT Kit
+          </p>
+          <div className="flex items-center justify-center">
+
+          <img className="h-60 w-2/3" src={payment_qr} />
+          </div>
+          <p className="text-normal mt-4 text-white text-center mb-6">
+          Price of Bot Kit: ₹ 1700
+          </p>
+          <p className="text-xs mt-4 text-green-500 text-center mb-6">
+            Once your payment is verified by us, you’ll receive an email notification, after which you can proceed to Create or Join a team.
+          </p>
           <input
             type="text"
             placeholder="Enter Transaction ID"
