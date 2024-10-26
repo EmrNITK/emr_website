@@ -191,11 +191,11 @@ const CreateTeam = () => {
                 />
               </div>
               
-              <div className="border border-white rounded-xl p-2 m-0 grid gap-4 overflow-y-auto max-h-[50vh]">
-                {/* Search Input */}
                 <p className="text-sm text-yellow-600 italic">Below is a list of verified users who have not yet joined a team.
               </p>
               <p className="text-green-600 text-sm">Invite your teammates to join now!</p>
+              <div className="border border-white rounded-xl p-2 m-0 grid gap-4 overflow-y-auto max-h-[50vh]">
+                {/* Search Input */}
                 <div className="col-span-full mx-6 my-2">
                   <input
                     id="search"
@@ -293,9 +293,9 @@ const CreateTeam = () => {
                   defaultValue={teamName}
                   />
               </div>
-              <div className="border border-white rounded-xl p-2 m-0 grid gap-4 overflow-y-auto max-h-[50vh]">
               <p className="text-sm  mt-2 text-yellow-600 italic">Below is a list of verified users who have not yet joined a team.
                   </p>
+              <div className="border border-white rounded-xl p-2 m-0 grid gap-4 overflow-y-auto max-h-[50vh]">
                 {/* Search Input */}
                 <div className="col-span-full mx-6 my-2">
                   <input

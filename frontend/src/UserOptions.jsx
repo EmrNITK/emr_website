@@ -12,11 +12,13 @@ const SpeedDial = () => {
 
   const handleNavigate = (path) => {
     navigate(path);
+    setOpen(false); // Close the menu
   };
 
   const handleLogout = () => {
     logout();
     navigate("/workshop");
+    setOpen(false); // Close the menu
   };
 
   const options = [
