@@ -39,7 +39,7 @@ const VerifyTransaction = () => {
   return (
     <div>
       <Header />
-      {!user.isVerified ? <Navigate to="/workshop" /> : <></>}
+      {user.isVerified ? <Navigate to="/workshop" /> : <></>}
       <div className="flex mt-20 items-center justify-center h-screen ">
         <div className="p-8 max-w-md w-full bg-white/5 backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg ">
           <h2 className="text-2xl font-bold text-white text-center mb-6">
