@@ -37,14 +37,14 @@ const WorkshopInfo = () => {
   return (
     <div>
       <Header />
-      <div className="mt-20 md:mt-5 flex flex-col items-center justify-center min-h-screen">
+      <div className="mt-24 md:mt-20 flex flex-col items-center justify-center min-h-screen">
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
-          
+
           <div className="p-4 w-full md:w-2/3">
             <h1 className="text-3xl md:text-4xl pt-10 font-bold mb-4">
               Embedded Workshop
             </h1>
-            
+
             <p className="text-sm md:text-normal text-gray-400 mb-6 text-justify font-mono">
               <b>🌟 What to Expect: </b>
               Prepare to immerse yourself in the exciting world of Embedded Systems and Robotics, where you’ll explore both autonomous robotics and gesture-based control. Whether you're a beginner or an experienced tech enthusiast, this workshop is crafted for all skill levels!
@@ -59,19 +59,32 @@ const WorkshopInfo = () => {
               <b>📅 Dates:</b> 8th, 9th & 10th November
               📍 <b>Venue:</b> MCA Block
               <br /><br />
-              <b>Amount ( Bot Kit Price ) </b>: ₹ 1700 
+              <b>Amount ( Bot Kit Price ) </b>: ₹ 1700
               <br />
               <br />
               <b className="text-green-500 text-lg">Yes! The kit is all yours to keep...</b>
+              <br /><br />
+              <p className="text-xs text-justify font-serif">
 
+              <u>Steps To Register:</u>
+              <br />
+              <br />
+              1. First, complete your payment verification by clicking either the "Create Team" or "Join Team" button.
+              <br />
+              2. After verification, you’ll receive a confirmation email (within 5 minutes to 1 hour).
+              <br />
+              3. If you are the Team Leader, first create your team using the "Create Team" button, then add all your "verified" members or members can also Join Team using "Join Team".
+              <br />
+              4. Don’t have a team yet? No worries! You can request to join any incomplete team, and the team admin can approve your request.
+              </p>
             </p>
-            <div className="w-full flex md:hidden md:w-1/2 p-4 justify-center items-center">
-            <img
-              src={bot}
-              alt="Embedded Workshop"
-              className="object-cover mb-4 h-[20vh] w-3/4 md:h-full md:w-3/4 rounded-md boxShadoww"
-            />
-          </div>
+            <div className="w-full flex md:hidden min-h-[30vh] md:w-1/2 p-4 justify-center items-center">
+              <img
+                src={bot}
+                alt="Embedded Workshop"
+                className="object-cover mb-4 min-h-[20vh] w-3/4 md:h-full md:w-3/4 rounded-md boxShadoww"
+              />
+            </div>
             {/* {Show Manage Team button if user is leader and member in team < 4} */}
             {user?.teamId?.members?.length < 4 && user?.isLeader ? (
               <>
