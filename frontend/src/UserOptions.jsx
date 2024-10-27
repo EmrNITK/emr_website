@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import Profile from "./assets/profile.webp";
 import "./UserOptions.css";
+import { changePassword } from "./api/apiService";
 
 const SpeedDial = () => {
   const { user, logout } = useContext(AuthContext);
@@ -26,6 +27,7 @@ const SpeedDial = () => {
     { name: "My Team", func: () => handleNavigate("/teamdetails") },
     { name: "Logout", func: handleLogout },
     { name: "Workshop Hub", func: () => handleNavigate("/workshop") },
+    { name:  "changePassword", func: () => handleNavigate("/change-password") },
   ];
 
   if (user?.isAdmin) {
