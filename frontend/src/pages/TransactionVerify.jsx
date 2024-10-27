@@ -1,10 +1,10 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { verifyUser } from "../api/apiService";
 import { Link, Navigate } from "react-router-dom";
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
 import FooterComp from "../components/Footer/FooterComp";
-import payment_qr from "../assets/payment_qr.png"
+import payment_qr from "../assets/payment_qr.png";
 
 const VerifyTransaction = () => {
   const { user } = useContext(AuthContext);
@@ -12,6 +12,7 @@ const VerifyTransaction = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false); // New state for verification status
 
   const handleVerify = async () => {
     setError("");
@@ -26,7 +27,8 @@ const VerifyTransaction = () => {
 
     try {
       const response = await verifyUser(transactionId);
-      setMessage(`${response.message} Wait for verification from admin`);
+      alert(`${response.message} Wait for verification from admin`);
+      setIsVerified(true); // Set verification status to true
     } catch (error) {
       console.error(error);
       setError(error.message || "An error occurred during verification.");
@@ -35,6 +37,11 @@ const VerifyTransaction = () => {
       setTransactionId("");
     }
   };
+
+  // Navigate to workshop if user is verified or verification is successful
+  if (user.isVerified || isVerified) {
+    return <Navigate to="/workshop" />;
+  }
 
   return (
     <div>
@@ -49,11 +56,10 @@ const VerifyTransaction = () => {
             Note: To Create/Join Team you need to first Pay for the Embedded BOT Kit
           </p>
           <div className="flex items-center justify-center">
-
-          <img className="h-60 w-2/3" src={payment_qr} />
+            <img className="h-60 w-2/3" src={payment_qr} alt="Payment QR" />
           </div>
           <p className="text-normal mt-4 text-white text-center mb-6">
-          Price of Bot Kit: ₹ 1700 / Member
+            Price of Bot Kit: ₹ 1700 / Member
           </p>
           <p className="text-xs mt-4 text-green-500 text-center mb-6">
             Once your payment is verified by us, you’ll receive an email notification, after which you can proceed to Create or Join a team.
@@ -82,7 +88,7 @@ const VerifyTransaction = () => {
               <p className="mt-4 font-mono text-green-500 text-center text-sm">
                 {message}
               </p>
-              <div className="center font-mono  ">
+              <div className="center font-mono">
                 <Link
                   to="/workshop"
                   className="text-blue-500 hover:text-white text-sm underline"

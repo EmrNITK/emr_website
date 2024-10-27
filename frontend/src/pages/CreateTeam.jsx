@@ -191,8 +191,8 @@ const CreateTeam = () => {
                   }}
                 />
               </div>
-              
-                <p className="text-sm text-yellow-600 italic">Below is a list of verified users who have not yet joined a team.
+
+              <p className="text-sm text-yellow-600 italic">Below is a list of verified users who have not yet joined a team.
               </p>
               <p className="text-green-600 text-sm">Invite your teammates to join now!</p>
               <div className="border border-white rounded-xl p-2 m-0 grid gap-4 overflow-y-auto max-h-[50vh]">
@@ -212,9 +212,12 @@ const CreateTeam = () => {
                   <div className="col-span-full text-center font-mono text-red-400 font-bold">
                     Loading Users...
                   </div>
-                ) : getAvailableUsers().length ? (
-                  getAvailableUsers().map((user) => {
-                    return (
+                ) : getAvailableUsers()
+                  .filter((user) => !user.isAdmin) // Exclude admin users
+                  .length ? (
+                  getAvailableUsers()
+                    .filter((user) => !user.isAdmin)
+                    .map((user) => (
                       <div
                         key={user._id}
                         className="col-span-full grid grid-cols-[auto,1fr,1fr] gap-4 p-2"
@@ -222,9 +225,7 @@ const CreateTeam = () => {
                         <input
                           type="checkbox"
                           className="w-auto"
-                          onClick={(e) =>
-                            toggleTeam(e.target.checked, user._id)
-                          }
+                          onClick={(e) => toggleTeam(e.target.checked, user._id)}
                         />
                         <div className="text-xs lg:text-lg flex-grow">
                           {user.name}
@@ -233,8 +234,7 @@ const CreateTeam = () => {
                           {user.email}
                         </div>
                       </div>
-                    );
-                  })
+                    ))
                 ) : (
                   <div className="col-span-full text-center font-mono text-red-400 font-bold">
                     No available users
@@ -283,7 +283,7 @@ const CreateTeam = () => {
                 <label
                   className="block text-xl font-large text-white-700"
                   htmlFor="team-name"
-                  >
+                >
                   Team :
                 </label>
                 <input
@@ -292,10 +292,10 @@ const CreateTeam = () => {
                   className="font-mono text-2xl font-bold bg-transparent border-gray-300 focus:outline-none w-full lg:w-2/5"
                   disabled={true}
                   defaultValue={teamName}
-                  />
+                />
               </div>
               <p className="text-sm  mt-2 text-yellow-600 italic">Below is a list of verified users who have not yet joined a team.
-                  </p>
+              </p>
               <div className="border border-white rounded-xl p-2 m-0 grid gap-4 overflow-y-auto max-h-[50vh]">
                 {/* Search Input */}
                 <div className="col-span-full mx-6 my-2">
@@ -313,7 +313,7 @@ const CreateTeam = () => {
                   <div className="col-span-full text-center font-mono text-red-400 font-bold">
                     Loading Users...
                   </div>
-                ) : getAvailableUsers().length ? (
+                ) : getAvailableUsers().filter((user) => !user.isAdmin).length ? (
                   getAvailableUsers().map((user) => {
                     return (
                       <div
