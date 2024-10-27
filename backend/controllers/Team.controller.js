@@ -100,3 +100,52 @@ export const deleteTeam = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Team and its members were successfully deleted" });
 });
+export const leaveTeam = asyncHandler(async (req, res) => {
+  const userId = req.userId;
+  const teamId = req.params.teamId;
+
+  // Find the team and populate members
+  const team = await Team.findById(teamId).populate("members");
+
+  if (!team) {
+    return res.status(404).json({ message: "Team not found" });
+  }
+
+  // Check if the user is a part of the team
+  const user = await User.findById(userId);
+  if (!user || !team.members.some((member) => member._id.equals(userId))) {
+    return res
+      .status(403)
+      .json({ message: "You are not a member of this team" });
+  }
+
+  // Check if the user is the leader
+  if (team.leader.equals(userId)) {
+    // If the leader is leaving, delete the team
+    await Promise.all(
+      team.members.map(async (member) => {
+        const memberUser = await User.findById(member._id);
+        if (memberUser) {
+          memberUser.teamId = null;
+          memberUser.isLeader = false;
+          await memberUser.save();
+        }
+      })
+    );
+
+    // Delete the team
+    await Team.deleteOne({ _id: teamId });
+    return res.status(200).json({ message: "Team deleted as the leader left" });
+  }
+
+  // If a non-leader member is leaving
+  team.members = team.members.filter((member) => !member._id.equals(userId));
+  await team.save();
+
+  user.teamId = null;
+  user.isLeader = false;
+  await user.save();
+
+  res.status(200).json({ message: "Successfully left the team" });
+});
+
