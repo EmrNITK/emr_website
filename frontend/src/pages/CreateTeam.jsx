@@ -63,6 +63,7 @@ const CreateTeam = () => {
     e.preventDefault();
 
     if (teamName.trim() === "") {
+      alert("Please enter team name.");
       setError("Please enter team name.");
       setMessage("");
       return;
