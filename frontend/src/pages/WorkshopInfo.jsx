@@ -61,7 +61,8 @@ const WorkshopInfo = () => {
               <b className="text-green-500 text-sm md:text-lg">Yes! The kit will be all yours to keep...</b>
               <br /><br />
               <p className="text-xs text-justify font-serif">
-                <u><a href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing">Click to know Steps To Register</a></u>
+              <u><a href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing" target="_blank">Click to know Steps To Register</a></u>
+
               </p>
               </p>
               <div className="w-full flex md:hidden min-h-[30vh] md:w-1/2 p-4 justify-center items-center">
