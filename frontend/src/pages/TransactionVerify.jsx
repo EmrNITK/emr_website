@@ -53,7 +53,7 @@ const VerifyTransaction = () => {
           <img className="h-60 w-2/3" src={payment_qr} />
           </div>
           <p className="text-normal mt-4 text-white text-center mb-6">
-          Price of Bot Kit: ₹ 1700
+          Price of Bot Kit: ₹ 1700 / Member
           </p>
           <p className="text-xs mt-4 text-green-500 text-center mb-6">
             Once your payment is verified by us, you’ll receive an email notification, after which you can proceed to Create or Join a team.

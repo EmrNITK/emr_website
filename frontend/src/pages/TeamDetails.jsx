@@ -81,6 +81,7 @@ const TeamDetails = () => {
     <div>
       <Header />
       <div className="min-h-[100vh]">
+        
         {team ? (
           <>
             <div className="max-w-2xl mx-auto shadow-lg rounded-lg p-6 mt-20">
@@ -93,6 +94,10 @@ const TeamDetails = () => {
                 </i>
               </div>
               <div>
+              <div className="font-mono my-2 text-sm text-red-500">
+                Note: Make Sure all your Team Mates Join the <u><a className="text-green-400" href="https://chat.whatsapp.com/Czckjr0oTgh5sT17Q81EUp">What'sApp Group</a></u> for all Updates related to Workshop. 
+                  </div>
+              
                 <h3 className="text-xl font-bold text-white-900 mb-4 ">
                   Team Members:
                 </h3>
@@ -127,6 +132,7 @@ const TeamDetails = () => {
                           Roll No: {member.rollNo}
                         </span>
                       </div>
+                      
 
                       <div className=" self-start md:self-end items-center">
                         {user.isLeader && user.rollNo != member.rollNo && (

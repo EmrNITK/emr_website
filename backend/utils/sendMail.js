@@ -68,8 +68,8 @@ const sendAcceptanceEmail = async (user) => {
               <p style="font-size:1.1em">Congratulations! Your verification has been accepted.</p>
               <p style="font-size:1.1em">We are excited to welcome you to our workshop. Here are the details:</p>
               <ul>
-                <li><strong>Workshop Date:</strong> [Insert Workshop Date]</li>
-                <li><strong>Location:</strong> [Insert Workshop Location]</li>
+                <li><strong>Workshop Date:</strong> 8th, 9th & 10th November</li>
+                <li><strong>Location:</strong> MCA Block</li>
               </ul>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
               <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
