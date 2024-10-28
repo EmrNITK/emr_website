@@ -71,7 +71,9 @@ const WorkshopInfo = () => {
               <br />
               <b className="font-mono">For Other College Students:</b>
                <br />
-              <b>Amount ( Bot Kit Price + Accommodation ) </b>: ₹ 2000 / Member
+              <b>Amount ( Bot Kit Price ) </b>: ₹ 1700 / Member
+              <br />
+              <b>Accommodation + Food (For 3 Days) </b>: ₹ 1500 / Member
               <br />
               <br />
               <b className="text-green-500 text-sm md:text-lg">Yes! The kit will be all yours to keep...</b>
