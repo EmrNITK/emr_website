@@ -295,10 +295,23 @@ export const changePasswordUser = async (passwordData) => {
 };
 
 export const deleteTeam = async (teamId) => {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return handleResponse(response);
+};
+
+
+export const leaveTeam = async (teamId) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/teams/${teamId}`,
+    `${API_BASE_URL}/api/teams/${teamId}/leave`,
     {
-      method: "DELETE",
+      method: "PUT",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -306,6 +319,5 @@ export const deleteTeam = async (teamId) => {
       },
     }
   );
-
   return handleResponse(response);
 };
