@@ -61,7 +61,7 @@ const WorkshopInfo = () => {
               <br />
               - Certificates will be awarded to all participants
               <br /><br />
-              <b>📅 Dates:</b> 8th, 9th & 10th November
+              <b>📅 Dates:</b> 8th November Onwards
               📍 <b>Venue:</b> MCA Block
               <br /><br />
               <b>Amount ( Bot Kit Price ) </b>: ₹ 1700 / Member
