@@ -46,11 +46,20 @@ const WorkshopInfo = () => {
             </h1>
 
             <p className="text-sm md:text-normal text-gray-400 mb-6 text-justify font-mono">
-              Prepare to immerse yourself in the exciting world of Embedded Systems and Robotics, where you’ll explore both autonomous robotics and gesture-based control. Whether you're a beginner or an experienced tech enthusiast, this workshop is crafted for all skill levels!
+            Get ready to dive into the exciting world of Embedded Systems and Robotics! In this hands-on workshop, you'll explore both autonomous robotics and gesture-based control, tailored for all skill levels—from beginners to experienced tech enthusiasts.
+            <br />
+            <br />
+              Build and program your own autonomous robots, including:
               <br />
+              - A Line Follower Bot 
               <br />
-              🔥<b>Workshop Highlights : </b>
-              Build and program your own 3 Autonomous bots <u>Line Follower Bot</u>, <u>Hand Gestures Bot</u>-with integrated <i>Robotic Arm</i> and <u>Remote Controlled Bot</u>
+              - A Hand Gesture-Controlled Bot with an integrated Robotic Arm 🤖
+              <br />
+              - A Remote-Controlled Bot
+              <br />
+              - Refreshments provided
+              <br />
+              - Certificates will be awarded to all participants
               <br /><br />
               <b>📅 Dates:</b> 8th, 9th & 10th November
               📍 <b>Venue:</b> MCA Block
@@ -61,51 +70,51 @@ const WorkshopInfo = () => {
               <b className="text-green-500 text-sm md:text-lg">Yes! The kit will be all yours to keep...</b>
               <br /><br />
               <p className="text-xs text-justify font-serif">
-              <u><a href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing" target="_blank">Click to know Steps To Register</a></u>
+                <u><a href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing" target="_blank">Click to know Steps To Register</a></u>
 
               </p>
-              </p>
-              <div className="w-full flex md:hidden min-h-[30vh] md:w-1/2 p-4 justify-center items-center">
-                <img
-                  src={bot}
-                  alt="Embedded Workshop"
-                  className="object-cover mb-4 min-h-[20vh] w-3/4 md:h-full md:w-3/4 rounded-md boxShadoww"
-                />
-              </div>
-              {/* {Show Manage Team button if user is leader and member in team < 4} */}
-              {user?.teamId?.members?.length < 4 && user?.isLeader ? (
-                <>
-                  <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                    <button
-                      onClick={handleCreateTeamClick}
-                      className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
-                    >
-                      Manage Team
-                    </button>
-                  </div>
-                </>
-                // {Show both buttons if user doesn't have teamId field}
-              ) : !user?.teamId ? (
-                <>
-                  <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                    <button
-                      onClick={handleCreateTeamClick}
-                      className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
-                    >
-                      Create Team
-                    </button>
-                    <button
-                      onClick={handleJoinTeamClick}
-                      className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-500"
-                    >
-                      Join Team
-                    </button>
-                  </div>
-                </>
-                // {Show nothing if user has a teamId and isn't leader}
-              ) : (
-                <></>
-              )}
+            </p>
+            <div className="w-full flex md:hidden min-h-[30vh] md:w-1/2 p-4 justify-center items-center">
+              <img
+                src={bot}
+                alt="Embedded Workshop"
+                className="object-cover mb-4 min-h-[20vh] w-3/4 md:h-full md:w-3/4 rounded-md boxShadoww"
+              />
+            </div>
+            {/* {Show Manage Team button if user is leader and member in team < 4} */}
+            {user?.teamId?.members?.length < 4 && user?.isLeader ? (
+              <>
+                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                  <button
+                    onClick={handleCreateTeamClick}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
+                  >
+                    Manage Team
+                  </button>
+                </div>
+              </>
+              // {Show both buttons if user doesn't have teamId field}
+            ) : !user?.teamId ? (
+              <>
+                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                  <button
+                    onClick={handleCreateTeamClick}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
+                  >
+                    Create Team
+                  </button>
+                  <button
+                    onClick={handleJoinTeamClick}
+                    className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-500"
+                  >
+                    Join Team
+                  </button>
+                </div>
+              </>
+              // {Show nothing if user has a teamId and isn't leader}
+            ) : (
+              <></>
+            )}
           </div>
           <div className="w-full hidden md:w-1/2 p-4 md:flex justify-center items-center">
             <img
