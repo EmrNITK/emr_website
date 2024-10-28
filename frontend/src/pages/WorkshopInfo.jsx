@@ -41,12 +41,12 @@ const WorkshopInfo = () => {
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
 
           <div className="p-4 w-full md:w-2/3">
-            <h1 className="text-3xl md:text-4xl pt-10 font-bold mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Embedded Workshop
             </h1>
 
             <p className="text-sm md:text-normal text-gray-400 mb-6 text-justify font-mono">
-            Get ready to dive into the exciting world of Embedded Systems and Robotics! In this hands-on workshop, you'll explore both autonomous robotics and gesture-based control, tailored for all skill levels—from beginners to experienced tech enthusiasts.
+            EmR is again back with its Embedded Workshop! Don't miss the change register asap as we have limited seats
             <br />
             <br />
               Build and program your own autonomous robots, including:
@@ -80,6 +80,14 @@ const WorkshopInfo = () => {
               <br /><br />
               <p className="text-xs text-justify font-serif">
                 <u><a href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing" target="_blank">Click to know Steps To Register</a></u>
+
+              </p>
+              <p className="text-xs text-justify font-serif">
+                Queries : 
+                <br />
+                Sujal : +91 81687 51825
+                <br />
+                Shivam : +91 6201 512 130 
 
               </p>
             </p>
