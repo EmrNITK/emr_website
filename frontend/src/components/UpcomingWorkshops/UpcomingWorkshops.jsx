@@ -1,10 +1,10 @@
 import "../../assets/css/UpcomingWorkshop.css";
 import React from "react";
-import pic1 from "../../assets/images/pixar.jpg";
-import pic2 from "../../assets/images/bit_coding.jpg";
-import pic3 from "../../assets/images/maze_up.jpg";
-import pic4 from "../../assets/images/simulator.jpg";
-import pic5 from "../../assets/images/robo_soccer.jpg";
+import pic2 from "../../assets/emb_2024.jpg";
+// import pic1 from "../../assets/images/bit_coding.jpg";
+// import pic3 from "../../assets/images/maze_up.jpg";
+// import pic4 from "../../assets/images/simulator.jpg";
+// import pic5 from "../../assets/images/robo_soccer.jpg";
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
 
@@ -12,16 +12,16 @@ const UpcomingWorkshops = () => {
   return (
     <div className="upcoming_workshop_block">
       <h1 className="glitch">
-        <span aria-hidden="true">Upcoming Events</span>
+        <span aria-hidden="true">Current Event</span>
         {/* Upcoming Event */}
-        upcoming Events
+        Current Event
         <span aria-hidden="true"></span>
       </h1>
 {/* 
 ------------------ use {below} code  when not any Upcoming Event ------------------
 */}
 
-<h1>Soon . . .</h1>
+{/* <h1>Soon . . .</h1> */}
 
 {/* 
 ------------------ use {above} code  when not any Upcoming Event ------------------
@@ -30,6 +30,7 @@ const UpcomingWorkshops = () => {
 
 
 
+<a href="https://www.emrnitkkr.com/workshop"><img alt="Bit_Coding" className="module_border_wrap " src={pic2} width="500" height="1000"></img></a>
       {/* <div className="Image_Boxes">
         <div className="module">
           <a href="https://forms.gle/GH3S5rTzicJxdzye7">
