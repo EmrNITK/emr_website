@@ -91,6 +91,8 @@ const WorkshopInfo = () => {
                     Brochure
                   </a>
                 </u>
+                <br />
+                <br />
                 <u>
                   <a
                     href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing"
@@ -100,6 +102,8 @@ const WorkshopInfo = () => {
                   </a>
                 </u>
               </p>
+              <br />
+              
               <p className="text-xs text-justify font-serif">
                 Queries :
                 <br />
