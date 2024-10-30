@@ -384,6 +384,38 @@ const sendRemoveEmail = async (member, team, leader) => {
     throw error;
   }
 };
+
+const sendTeamJoinEmail = async (leader, member, team) => {
+  try {
+
+    // Email options
+    const mailOptions = {
+      from: process.env.APP_EMAIL,
+      to: member.email,
+      cc: leader.email,
+      subject: `You are member of Team: ${team.name}`,
+      html: `
+          <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+              <p style="font-size:1.1em">Hello ${member.name},</p>
+              <p style="font-size:1.1em">Congratulations! You're now a member of team ${team.name}.</p>
+              <p style="font-size:1.1em">We are excited to welcome you to our workshop.</p>
+              <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
+              <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
+              <hr style="border:none;border-top:1px solid #eee" />
+              <div style="padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300; float:right">
+                <!-- Additional footer or information can go here -->
+              </div>
+            </div>
+          </div>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending verification email: ", error.message); // Log any errors
+    throw error;
+  }
+};
 export {
   sendVerificationEmail,
   sendAcceptanceEmail,
@@ -395,4 +427,5 @@ export {
   sendJoinAcceptanceEmail,
   sendJoinRejectionEmail,
   sendRemoveEmail,
+  sendTeamJoinEmail
 };

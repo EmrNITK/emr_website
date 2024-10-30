@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { fetchUsers } from "../api/apiService";
+import { fetchAllUsers } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
 import FooterComp from "../components/Footer/FooterComp";
 
@@ -20,7 +20,7 @@ const TeamDashboard = () => {
         const fetchUser = async () => {
             try {
                 setFetching(true);
-                const response = await fetchUsers();
+                const response = await fetchAllUsers();
                 setUsers(response);
             } catch (error) {
                 setError("Failed to fetch users. Please try again.");

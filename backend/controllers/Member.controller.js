@@ -1,9 +1,10 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { sendRemoveEmail } from "../utils/sendMail.js";
+import { sendRemoveEmail,sendTeamJoinEmail } from "../utils/sendMail.js";
 import Team from "../models/Team.model.js";
 import User from "../models/User.model.js";
+import addMemberTransaction from "../db/addMemberTransaction.js";
 
-const removeMember = asyncHandler(async (req, res) => {
+export const removeMember = asyncHandler(async (req, res) => {
   const { memberId, teamId } = req.params;
   const userId = req.userId;
 
@@ -55,4 +56,38 @@ const removeMember = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Member removed successfully" });
 });
 
-export default removeMember;
+
+export const addMember = asyncHandler(async (req, res) => {
+    const { teamId, memberId } = req.params;
+  
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    const member = await User.findById(memberId);
+    if (!member) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (member.teamId) {
+      return res.status(409).json({ message: "Already a member of a team" });
+    }
+
+    const leader = await User.findById(team.leader.toString());
+    if (!leader) {
+      return res.status(404).json({ message: "Team leader not found" });
+    }
+
+    if (team.members.length >= 4) {
+      return res.status(403).json({ message: "Can't add more than 4 member in a team" });
+    }
+
+    await addMemberTransaction(member, team);
+    await sendTeamJoinEmail(leader, member, team);
+
+    return res
+      .status(200)
+      .json({ message: "Member added to team successfully!!" });
+});
+

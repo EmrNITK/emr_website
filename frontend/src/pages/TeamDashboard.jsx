@@ -1,34 +1,37 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { getAllTeams, deleteTeam, removeMember } from "../api/apiService";
+import { getAllTeams, fetchUsers, deleteTeam } from "../api/apiService";
 import { Link, useNavigate } from "react-router-dom";
+import TeamInfo from "../components/TeamInfo";
 
 const TeamDashboard = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
+  const [availableUsers, setAvailableUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [fetching, setFetching] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTeams = async () => {
+    const fetchData = async () => {
       try {
         setFetching(true);
         await updateUser();
         const response = await getAllTeams();
+        const users = await fetchUsers();
+        setAvailableUsers(users);
         setTeams(response.teams || []);
       } catch (error) {
-        setError("Failed to fetch teams. Please try again.");
+        setError("Failed to fetch data. Please try again.");
         setMessage("");
       } finally {
         setFetching(false);
       }
     };
 
-    fetchTeams();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -37,52 +40,27 @@ const TeamDashboard = () => {
     }
   }, [user, navigate]);
 
+  const filteredTeams = teams.filter((team) =>
+    team.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleDeleteTeam = async (teamId) => {
     try {
+      setMessage("Deleting Team...");
+      setError("");
+
       await deleteTeam(teamId);
+
       setTeams((prevTeams) => prevTeams.filter((team) => team._id !== teamId));
+
       setMessage("Team deleted successfully.");
       setError("");
     } catch (err) {
       setError("Error deleting team. Please try again.");
+      setMessage("");
       console.error("Error deleting team:", err);
     }
   };
-
-  const handleDeleteMember = async (teamId, memberId, isLeader) => {
-    if (isLeader) {
-      setError("You cannot remove the team leader.");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await removeMember(teamId, memberId);
-      setTeams((prevTeams) =>
-        prevTeams.map((team) =>
-          team._id === teamId
-            ? {
-                ...team,
-                members: team.members.filter(
-                  (member) => member._id !== memberId
-                ),
-              }
-            : team
-        )
-      );
-      setMessage(response.message);
-      setError("");
-    } catch (error) {
-      setError(error.message || "Error deleting member.");
-      setMessage("");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredTeams = teams.filter((team) =>
-    team.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <div>
@@ -90,127 +68,38 @@ const TeamDashboard = () => {
         Team Dashboard
       </h1>
 
+      {message && <p className="text-green-500 font-mono">{message}</p>}
+      {error && <p className="text-red-500 font-mono">{error}</p>}
+
       <div className="flex justify-center mb-4">
         <input
           type="text"
           placeholder="Search by team name"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border border-gray-300 rounded-md p-2"
+          className="bg-transparent border px-4 py-2 rounded-md border-gray-300 focus:outline-none"
         />
       </div>
 
-      <div className="min-h-[100vh] flex flex-col items-center">
+      <div className="max-h-[50vh] flex flex-col items-center gap-5">
         {fetching ? (
-          <p>Loading...</p>
+          <p className="text-green-500 font-mono">Loading...</p>
         ) : filteredTeams.length > 0 ? (
-          <table className="min-w-full border-collapse border border-gray-200">
-            <thead>
-              <tr className="bg-gray-600 text-white">
-                <th className="border border-gray-300 p-4 text-left">Team</th>
-                <th className="border border-gray-300 p-4 text-left">Leader</th>
-                <th className="border border-gray-300 p-4 text-left">
-                  Members
-                </th>
-                <th className="border border-gray-300 p-4 text-left">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTeams.map((team) => (
-                <tr key={team._id} className="border-b border-gray-300">
-                  <td className="border border-gray-300 p-4">{team.name}</td>
-                  <td className="border border-gray-300 p-4">
-                    <div>
-                      <span className="font-semibold text-lg text-gray-500">
-                        Name:
-                      </span>{" "}
-                      {team.leader?.name}
-                    </div>
-                    <div>
-                      <span className="font-semibold text-lg text-gray-500">
-                        College:
-                      </span>{" "}
-                      {team.leader?.collegeName}
-                    </div>
-                    <div>
-                      <span className="font-semibold text-lg text-gray-500">
-                        Roll:
-                      </span>{" "}
-                      {team.leader?.rollNo}
-                    </div>
-                  </td>
-                  <td className="border border-gray-300 p-4">
-                    <ul className="list-disc pl-5">
-                      {team.members.map((member) => (
-                        <li
-                          key={`${team._id}-${member._id}`}
-                          className="relative group"
-                        >
-                          <div>
-                            <span className="font-semibold text-lg text-gray-500">
-                              Name:
-                            </span>{" "}
-                            {member.name}
-                            <div>
-                              <span className="font-semibold text-lg text-gray-500">
-                                Roll:
-                              </span>{" "}
-                              {member.rollNo}
-                            </div>
-                          </div>
-
-                          <button
-                            onClick={() =>
-                              handleDeleteMember(
-                                team._id,
-                                member._id,
-                                member._id === team.leader._id // Check if the member is the leader
-                              )
-                            }
-                            className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-md px-2 py-1 absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          >
-                            {loading ? "Removing..." : "Remove"}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </td>
-                  <td className="border border-gray-300 p-4 text-center">
-                    <>
-                      {team.members.length < 4 ? (
-                        <Link to="/workshop/createteam">
-                          <button className="bg-green-500 hover:bg-green-600 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2">
-                            Add Members
-                          </button>
-                        </Link>
-                      ) : (
-                        <button
-                          className="bg-gray-500 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2"
-                          onClick={() => alert("Team is already complete")}
-                        >
-                          Add Members
-                        </button>
-                      )}
-
-                      <button
-                        onClick={() => handleDeleteTeam(team._id)}
-                        className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2"
-                      >
-                        Delete Team
-                      </button>
-                    </>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          filteredTeams.map((team) => {
+            return (
+              <TeamInfo
+              key={team._id}
+                team={team}
+                users={availableUsers}
+                setTeams={setTeams}
+                setAvailableUsers={setAvailableUsers}
+                handleDeleteTeam={handleDeleteTeam}
+              />
+            );
+          })
         ) : (
           <p>No teams available</p>
         )}
-        {message && <p className="text-green-500">{message}</p>}
-        {error && <p className="text-red-500">{error}</p>}
       </div>
     </div>
   );
