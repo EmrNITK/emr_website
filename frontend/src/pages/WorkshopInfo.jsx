@@ -43,14 +43,7 @@ const WorkshopInfo = () => {
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Embedded Workshop
             </h1>
-            <u>
-              <a
-                href="https://drive.google.com/file/d/1EuMd9CGrhDzJ0gMqni90xFAnUL_Rm0fi/view?usp=drivesdk"
-                target="_blank"
-              >
-               Brouchure 
-              </a>
-            </u>
+
             <p className="text-sm md:text-normal text-gray-400 mb-6 text-justify font-mono">
               EmR is again back with its Embedded Workshop! Don't miss the
               change register asap as we have limited seats
@@ -90,6 +83,14 @@ const WorkshopInfo = () => {
               <br />
               <br />
               <p className="text-xs text-justify font-serif">
+                <u>
+                  <a
+                    href="https://drive.google.com/file/d/1EuMd9CGrhDzJ0gMqni90xFAnUL_Rm0fi/view?usp=drivesdk"
+                    target="_blank"
+                  >
+                    Brochure
+                  </a>
+                </u>
                 <u>
                   <a
                     href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing"
