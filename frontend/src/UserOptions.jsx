@@ -27,7 +27,8 @@ const SpeedDial = () => {
     { name: "My Team", func: () => handleNavigate("/teamdetails") },
     { name: "Logout", func: handleLogout },
     { name: "Workshop Hub", func: () => handleNavigate("/workshop") },
-    { name:  "changePassword", func: () => handleNavigate("/change-password") },
+    { name: "changePassword", func: () => handleNavigate("/change-password") },
+    { name: "Dashboard", func: () => handleNavigate("/teamdashboard") },,
   ];
 
   if (user?.isAdmin) {
