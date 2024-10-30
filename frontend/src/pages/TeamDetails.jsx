@@ -24,6 +24,7 @@ const TeamDetails = () => {
         await updateUser();
         if (user.teamId) {
           const { team } = await getTeamById(user?.teamId?._id);
+          console.log(team,"dgd")
           setTeam(team);
         }
       } catch (err) {
