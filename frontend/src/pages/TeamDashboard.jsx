@@ -4,54 +4,76 @@ import { getAllTeams, deleteTeam, removeMember } from "../api/apiService";
 import { Link, useNavigate } from "react-router-dom";
 
 const TeamDashboard = () => {
+  const { user, updateUser } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const { updateUser } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [fetching, setFetching] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (updateUser.isAdmin) {
-      navigate("/workshop");
-    }
-  }, [updateUser, navigate]);
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
+        setFetching(true);
+        await updateUser();
         const response = await getAllTeams();
         setTeams(response.teams || []);
-      } catch (err) {
-        console.log("Error fetching teams:", err);
+      } catch (error) {
+        setError("Failed to fetch teams. Please try again.");
+        setMessage("");
+      } finally {
+        setFetching(false);
       }
     };
 
     fetchTeams();
-  }, [updateUser]);
+  }, []);
+
+  useEffect(() => {
+    if (!user.isAdmin) {
+      navigate("/workshop");
+    }
+  }, [user, navigate]);
 
   const handleDeleteTeam = async (teamId) => {
     try {
       await deleteTeam(teamId);
       setTeams((prevTeams) => prevTeams.filter((team) => team._id !== teamId));
+      setMessage("Team deleted successfully.");
+      setError("");
     } catch (err) {
-      console.log("Error deleting team:", err);
+      setError("Error deleting team. Please try again.");
+      console.error("Error deleting team:", err);
     }
   };
 
-  const handleDeleteMember = async (memberId) => {
-    const teamId = user?.teamId?._id;
+  const handleDeleteMember = async (teamId, memberId, isLeader) => {
+    if (isLeader) {
+      setError("You cannot remove the team leader.");
+      return;
+    }
 
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await removeMember(teamId, memberId);
-      setTeam((prevTeam) => ({
-        ...prevTeam,
-        members: prevTeam.members.filter((member) => member._id !== memberId),
-      }));
+      setTeams((prevTeams) =>
+        prevTeams.map((team) =>
+          team._id === teamId
+            ? {
+                ...team,
+                members: team.members.filter(
+                  (member) => member._id !== memberId
+                ),
+              }
+            : team
+        )
+      );
       setMessage(response.message);
       setError("");
     } catch (error) {
-      console.error(error);
-      setError(error.message || "An error occurred during deleting member.");
+      setError(error.message || "Error deleting member.");
       setMessage("");
     } finally {
       setLoading(false);
@@ -79,7 +101,9 @@ const TeamDashboard = () => {
       </div>
 
       <div className="min-h-[100vh] flex flex-col items-center">
-        {filteredTeams.length > 0 ? (
+        {fetching ? (
+          <p>Loading...</p>
+        ) : filteredTeams.length > 0 ? (
           <table className="min-w-full border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-600 text-white">
@@ -99,19 +123,19 @@ const TeamDashboard = () => {
                   <td className="border border-gray-300 p-4">{team.name}</td>
                   <td className="border border-gray-300 p-4">
                     <div>
-                      <span className="font-semibold text-lg text-purple-700">
+                      <span className="font-semibold text-lg text-gray-500">
                         Name:
                       </span>{" "}
                       {team.leader?.name}
                     </div>
                     <div>
-                      <span className="font-semibold text-lg text-purple-700">
+                      <span className="font-semibold text-lg text-gray-500">
                         College:
                       </span>{" "}
                       {team.leader?.collegeName}
                     </div>
                     <div>
-                      <span className="font-semibold text-lg text-purple-700">
+                      <span className="font-semibold text-lg text-gray-500">
                         Roll:
                       </span>{" "}
                       {team.leader?.rollNo}
@@ -125,12 +149,12 @@ const TeamDashboard = () => {
                           className="relative group"
                         >
                           <div>
-                            <span className="font-semibold text-lg text-blue-700">
+                            <span className="font-semibold text-lg text-gray-500">
                               Name:
                             </span>{" "}
                             {member.name}
                             <div>
-                              <span className="font-semibold text-lg text-purple-700">
+                              <span className="font-semibold text-lg text-gray-500">
                                 Roll:
                               </span>{" "}
                               {member.rollNo}
@@ -139,11 +163,15 @@ const TeamDashboard = () => {
 
                           <button
                             onClick={() =>
-                              handleDeleteMember(team._id, member._id)
+                              handleDeleteMember(
+                                team._id,
+                                member._id,
+                                member._id === team.leader._id // Check if the member is the leader
+                              )
                             }
                             className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-md px-2 py-1 absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           >
-                            Remove
+                            {loading ? "Removing..." : "Remove"}
                           </button>
                         </li>
                       ))}
@@ -151,7 +179,7 @@ const TeamDashboard = () => {
                   </td>
                   <td className="border border-gray-300 p-4 text-center">
                     <>
-                      {team.members.length <= 3 ? (
+                      {team.members.length < 4 ? (
                         <Link to="/workshop/createteam">
                           <button className="bg-green-500 hover:bg-green-600 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2">
                             Add Members
@@ -159,8 +187,8 @@ const TeamDashboard = () => {
                         </Link>
                       ) : (
                         <button
-                          className="bg-gray-700 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2"
-                          onClick={() => alert("Team is already Complete")}
+                          className="bg-gray-500 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2"
+                          onClick={() => alert("Team is already complete")}
                         >
                           Add Members
                         </button>
@@ -181,6 +209,8 @@ const TeamDashboard = () => {
         ) : (
           <p>No teams available</p>
         )}
+        {message && <p className="text-green-500">{message}</p>}
+        {error && <p className="text-red-500">{error}</p>}
       </div>
     </div>
   );
