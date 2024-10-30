@@ -5,7 +5,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 
 
 export const getAllTeams = asyncHandler(async (req, res) => {
-  const teams = await Team.find().populate('leader').exec();
+  const teams = await Team.find().populate("leader").populate("members").exec();
   res.status(200).json({ teams });
 })
 
@@ -80,8 +80,8 @@ export const deleteTeam = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "user not found" });
   }
 
-  if (!(user.teamId == teamId && user.isLeader)) {
-    return res.status(403).json({ message:'Only Leader can delete team'});
+  if (!((user.teamId == teamId && user.isLeader) || user.isAdmin)) {
+    return res.status(403).json({ message: "Only Leader can delete team" });
   }
 
   await Promise.all(
