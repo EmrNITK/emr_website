@@ -49,7 +49,7 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route
-            path="/teamdashboard"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <AdminRoute>
