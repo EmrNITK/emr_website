@@ -32,8 +32,12 @@ const SpeedDial = () => {
 
   if (user?.isAdmin) {
     options.unshift({
-      name: "Dashboard",
+      name: "Team Dashboard",
       func: () => handleNavigate("/dashboard"),
+    });
+    options.unshift({
+      name: "User Dashboard",
+      func: () => handleNavigate("/userdashboard"),
     });
   }
 
