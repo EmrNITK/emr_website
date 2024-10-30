@@ -13,6 +13,7 @@ const TeamDashboard = () => {
     const [error, setError] = useState("");
     const [fetching, setFetching] = useState(false);
     const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(""); // For filtering by year
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,7 +42,8 @@ const TeamDashboard = () => {
         .filter((user) =>
             user.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
-        .filter((user) => (showVerifiedOnly ? user.isVerified : true));
+        .filter((user) => (showVerifiedOnly ? user.isVerified : true))
+        .filter((user) => (selectedYear ? user.year === selectedYear : true)); // Filter by selected year
 
     return (
         <>
@@ -60,10 +62,21 @@ const TeamDashboard = () => {
                     />
                     <button
                         onClick={() => setShowVerifiedOnly(!showVerifiedOnly)}
-                        className="p-2 bg-blue-500 text-white rounded-md"
+                        className="p-2 bg-blue-500 text-white rounded-md mb-2 md:mb-0 md:mr-4"
                     >
                         {showVerifiedOnly ? "Show All Users" : "Show Verified Only"}
                     </button>
+                    <select
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                        className="p-2 border text-white border-gray-800 rounded-md"
+                    >
+                        <option value="">All Years</option>
+                        <option value="1">Year 1</option>
+                        <option value="2">Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                    </select>
                 </div>
 
                 {loading ? (
