@@ -72,14 +72,13 @@ export const createTeam = async (teamName) => {
   return handleResponse(response);
 };
 // Add members to a Team
-export const addMemberToTeam = async (teamId, memberData) => {
-  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/members`, {
-    method: "POST",
+export const addMemberToTeam = async (teamId, memberId) => {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/members/${memberId}`, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
-    body: JSON.stringify(memberData),
   });
   return handleResponse(response);
 };
