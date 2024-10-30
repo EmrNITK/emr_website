@@ -26,7 +26,7 @@ import VerifiedRoute from "./components/VerifiedRoute";
 import UserOptions from "./UserOptions";
 
 import AdminRoute from "./components/AdminRoute";
-import TeamDashboard from "./pages/TeamDashBoard";
+import TeamDashboard from "./pages/TeamDashboard";
 
 const App = () => {
   return (
