@@ -37,23 +37,24 @@ const TeamDashboard = () => {
     }
   };
 
-  const handleRemoveMember = async (teamId, memberId) => {
+  const handleDeleteMember = async (memberId) => {
+    const teamId = user?.teamId?._id;
+
     try {
-      await removeMember(teamId, memberId);
-      setTeams((prevTeams) =>
-        prevTeams.map((team) =>
-          team._id === teamId
-            ? {
-                ...team,
-                members: team.members.filter(
-                  (member) => member._id !== memberId
-                ),
-              }
-            : team
-        )
-      );
-    } catch (err) {
-      console.log("Error removing member:", err);
+      setLoading(true);
+      const response = await removeMember(teamId, memberId);
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        members: prevTeam.members.filter((member) => member._id !== memberId),
+      }));
+      setMessage(response.message);
+      setError("");
+    } catch (error) {
+      console.error(error);
+      setError(error.message || "An error occurred during deleting member.");
+      setMessage("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,16 +136,15 @@ const TeamDashboard = () => {
                               {member.rollNo}
                             </div>
                           </div>
-                        
-                              <button
-                                onClick={() =>
-                                  handleRemoveMember(team._id, member._id)
-                                }
-                                className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-md px-2 py-1 absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                              >
-                                Remove
-                              </button>
-                            
+
+                          <button
+                            onClick={() =>
+                              handleDeleteMember(team._id, member._id)
+                            }
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-md px-2 py-1 absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          >
+                            Remove
+                          </button>
                         </li>
                       ))}
                     </ul>
