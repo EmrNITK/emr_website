@@ -66,10 +66,9 @@ export const rejectVerification = asyncHandler(async (req, res) => {
 
 export const getVerifiedUser = asyncHandler(async (req, res) => {
   const user = await User.find({});
+  // const verifiedUsers = user.filter(users => users.isVerified === true);
 
-  const verifiedUsers = user.filter(users => users.isVerified === true);
-
-  res.status(200).json(verifiedUsers);
+  res.status(200).json(user);
 });
 
 export const getUserById = asyncHandler(async (req, res) => {
