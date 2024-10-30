@@ -15,8 +15,8 @@ const removeMember = asyncHandler(async (req, res) => {
     const user = await User.findById(userId);
 
     const leader = await User.findById(team.leader);
-    // Check if user is leader
-    if (team.leader.toString() != userId||user.isAdmin) {
+    // Check if user is leader or admin
+    if (team.leader.toString() != userId||!user.isAdmin) {
         return res.status(401).json({ message: "Only leader can remove members" });
     }
 
