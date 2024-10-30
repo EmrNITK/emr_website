@@ -5,6 +5,7 @@ import {
   acceptVerification,
   getVerifiedUser,
   getUserById,
+  getAllUsers,
 } from "../controllers/User.controller.js";
 import { verifyJwt } from "../middlewares/auth.middlewares.js";
 
@@ -15,6 +16,7 @@ userRouter.get('/verify/:userId/accept', acceptVerification);
 userRouter.get("/verify/:userId/reject", rejectVerification);
 
 userRouter.get("/", verifyJwt, getVerifiedUser);
+userRouter.get("/all", verifyJwt, getAllUsers);
 userRouter.get("/:userId", verifyJwt, getUserById);
 
 export default userRouter;
