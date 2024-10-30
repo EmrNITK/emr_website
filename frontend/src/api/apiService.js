@@ -204,6 +204,17 @@ export const fetchUsers = async () => {
   });
   return handleResponse(response);
 };
+export const fetchAllUsers = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/users/all`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+  });
+  return handleResponse(response);
+};
 
 export const removeMember = async (teamId, memberId) => {
   const response = await fetch(
