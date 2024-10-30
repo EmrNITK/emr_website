@@ -12,7 +12,7 @@ const AdminRoute = ({ children }) => {
       setIsLoading(false);
     };
     checkUserStatus();
-  }, [updateUser]);
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
