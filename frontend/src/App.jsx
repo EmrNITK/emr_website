@@ -27,6 +27,7 @@ import UserOptions from "./UserOptions";
 
 import AdminRoute from "./components/AdminRoute";
 import TeamDashboard from "./pages/TeamDashboard";
+import UserDashboard from "./pages/userDashboard";
 
 const App = () => {
   return (
@@ -54,6 +55,16 @@ const App = () => {
               <ProtectedRoute>
                 <AdminRoute>
                   <TeamDashboard/>
+                </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/userdashboard"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <UserDashboard/>
                 </AdminRoute>
               </ProtectedRoute>
             }
