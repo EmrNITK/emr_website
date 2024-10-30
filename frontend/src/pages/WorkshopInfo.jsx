@@ -39,19 +39,26 @@ const WorkshopInfo = () => {
       <Header />
       <div className="mt-24 md:mt-20 flex flex-col items-center justify-center min-h-screen">
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
-
           <div className="p-4 w-full md:w-2/3">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Embedded Workshop
             </h1>
-
+            <u>
+              <a
+                href="https://drive.google.com/file/d/1EuMd9CGrhDzJ0gMqni90xFAnUL_Rm0fi/view?usp=drivesdk"
+                target="_blank"
+              >
+               Brouchure 
+              </a>
+            </u>
             <p className="text-sm md:text-normal text-gray-400 mb-6 text-justify font-mono">
-            EmR is again back with its Embedded Workshop! Don't miss the change register asap as we have limited seats
-            <br />
-            <br />
+              EmR is again back with its Embedded Workshop! Don't miss the
+              change register asap as we have limited seats
+              <br />
+              <br />
               Build and program your own autonomous robots, including:
               <br />
-              - A Line Follower Bot 
+              - A Line Follower Bot
               <br />
               - A Hand Gesture-Controlled Bot with an integrated Robotic Arm 🤖
               <br />
@@ -60,35 +67,44 @@ const WorkshopInfo = () => {
               - Refreshments provided
               <br />
               - Certificates will be awarded to all participants
-              <br /><br />
-              <b>📅 Dates:</b> 8th November Onwards
-              📍 <b>Venue:</b> MCA Block
-              <br /><br />
+              <br />
+              <br />
+              <b>📅 Dates:</b> 8th November Onwards 📍 <b>Venue:</b> MCA Block
+              <br />
+              <br />
               <b className="font-mono">For NIT Kurukshetra Students:</b>
               <br />
               <b>Amount ( Bot Kit Price ) </b>: ₹ 1700 / Member
               <br />
               <br />
               <b className="font-mono">For Other College Students:</b>
-               <br />
+              <br />
               <b>Amount ( Bot Kit Price ) </b>: ₹ 1700 / Member
               <br />
               <b>Accommodation + Food (For 3 Days) </b>: ₹ 1500 / Member
               <br />
               <br />
-              <b className="text-green-500 text-sm md:text-lg">Yes! The kit will be all yours to keep...</b>
-              <br /><br />
+              <b className="text-green-500 text-sm md:text-lg">
+                Yes! The kit will be all yours to keep...
+              </b>
+              <br />
+              <br />
               <p className="text-xs text-justify font-serif">
-                <u><a href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing" target="_blank">Click to know Steps To Register</a></u>
-
+                <u>
+                  <a
+                    href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing"
+                    target="_blank"
+                  >
+                    Click to know Steps To Register
+                  </a>
+                </u>
               </p>
               <p className="text-xs text-justify font-serif">
-                Queries : 
+                Queries :
                 <br />
                 Sujal : +91 81687 51825
                 <br />
-                Shivam : +91 6201 512 130 
-
+                Shivam : +91 6201 512 130
               </p>
             </p>
             <div className="w-full flex md:hidden min-h-[30vh] md:w-1/2 p-4 justify-center items-center">
@@ -110,8 +126,8 @@ const WorkshopInfo = () => {
                   </button>
                 </div>
               </>
-              // {Show both buttons if user doesn't have teamId field}
-            ) : !user?.teamId ? (
+            ) : // {Show both buttons if user doesn't have teamId field}
+            !user?.teamId ? (
               <>
                 <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
                   <button
@@ -128,8 +144,8 @@ const WorkshopInfo = () => {
                   </button>
                 </div>
               </>
-              // {Show nothing if user has a teamId and isn't leader}
             ) : (
+              // {Show nothing if user has a teamId and isn't leader}
               <></>
             )}
           </div>
@@ -140,7 +156,6 @@ const WorkshopInfo = () => {
               className="object-cover  md:h-[50vh] md:w-full rounded-md boxShadoww"
             />
           </div>
-
         </div>
       </div>
       <FooterComp />
