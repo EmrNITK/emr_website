@@ -37,23 +37,24 @@ const TeamDashboard = () => {
     }
   };
 
-  const handleRemoveMember = async (teamId, memberId) => {
+  const handleDeleteMember = async (memberId) => {
+    const teamId = user?.teamId?._id;
+
     try {
-      await removeMember(teamId, memberId);
-      setTeams((prevTeams) =>
-        prevTeams.map((team) =>
-          team._id === teamId
-            ? {
-                ...team,
-                members: team.members.filter(
-                  (member) => member._id !== memberId
-                ),
-              }
-            : team
-        )
-      );
-    } catch (err) {
-      console.log("Error removing member:", err);
+      setLoading(true);
+      const response = await removeMember(teamId, memberId);
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        members: prevTeam.members.filter((member) => member._id !== memberId),
+      }));
+      setMessage(response.message);
+      setError("");
+    } catch (error) {
+      console.error(error);
+      setError(error.message || "An error occurred during deleting member.");
+      setMessage("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,8 +63,8 @@ const TeamDashboard = () => {
   );
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-blue-800 mt-6 sm:mt-10 mb-4 sm:mb-8">
+    <div>
+      <h1 className="text-4xl font-extrabold text-center text-blue-800 mt-10 mb-8">
         Team Dashboard
       </h1>
 
@@ -73,40 +74,50 @@ const TeamDashboard = () => {
           placeholder="Search by team name"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 w-full max-w-sm sm:max-w-md"
+          className="border border-gray-300 rounded-md p-2"
         />
       </div>
 
-      <div className="flex flex-col items-center overflow-x-auto">
+      <div className="min-h-[100vh] flex flex-col items-center">
         {filteredTeams.length > 0 ? (
-          <table className="min-w-full border-collapse border border-gray-200 text-sm sm:text-base">
+          <table className="min-w-full border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-600 text-white">
-                <th className="border border-gray-300 p-2 sm:p-4 text-left">Team</th>
-                <th className="border border-gray-300 p-2 sm:p-4 text-left">Leader</th>
-                <th className="border border-gray-300 p-2 sm:p-4 text-left">Members</th>
-                <th className="border border-gray-300 p-2 sm:p-4 text-left">Actions</th>
+                <th className="border border-gray-300 p-4 text-left">Team</th>
+                <th className="border border-gray-300 p-4 text-left">Leader</th>
+                <th className="border border-gray-300 p-4 text-left">
+                  Members
+                </th>
+                <th className="border border-gray-300 p-4 text-left">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredTeams.map((team) => (
                 <tr key={team._id} className="border-b border-gray-300">
-                  <td className="border border-gray-300 p-2 sm:p-4">{team.name}</td>
-                  <td className="border border-gray-300 p-2 sm:p-4">
+                  <td className="border border-gray-300 p-4">{team.name}</td>
+                  <td className="border border-gray-300 p-4">
                     <div>
-                      <span className="font-semibold text-purple-700">Name:</span>{" "}
+                      <span className="font-semibold text-lg text-purple-700">
+                        Name:
+                      </span>{" "}
                       {team.leader?.name}
                     </div>
                     <div>
-                      <span className="font-semibold text-purple-700">College:</span>{" "}
+                      <span className="font-semibold text-lg text-purple-700">
+                        College:
+                      </span>{" "}
                       {team.leader?.collegeName}
                     </div>
                     <div>
-                      <span className="font-semibold text-purple-700">Roll:</span>{" "}
+                      <span className="font-semibold text-lg text-purple-700">
+                        Roll:
+                      </span>{" "}
                       {team.leader?.rollNo}
                     </div>
                   </td>
-                  <td className="border border-gray-300 p-2 sm:p-4">
+                  <td className="border border-gray-300 p-4">
                     <ul className="list-disc pl-5">
                       {team.members.map((member) => (
                         <li
@@ -114,18 +125,23 @@ const TeamDashboard = () => {
                           className="relative group"
                         >
                           <div>
-                            <span className="font-semibold text-blue-700">Name:</span>{" "}
+                            <span className="font-semibold text-lg text-blue-700">
+                              Name:
+                            </span>{" "}
                             {member.name}
                             <div>
-                              <span className="font-semibold text-purple-700">Roll:</span>{" "}
+                              <span className="font-semibold text-lg text-purple-700">
+                                Roll:
+                              </span>{" "}
                               {member.rollNo}
                             </div>
                           </div>
+
                           <button
                             onClick={() =>
-                              handleRemoveMember(team._id, member._id)
+                              handleDeleteMember(team._id, member._id)
                             }
-                            className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-md px-2 py-1 absolute top-6 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-md px-2 py-1 absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           >
                             Remove
                           </button>
@@ -133,25 +149,26 @@ const TeamDashboard = () => {
                       ))}
                     </ul>
                   </td>
-                  <td className="border border-gray-300 p-2 sm:p-4 text-center">
+                  <td className="border border-gray-300 p-4 text-center">
                     <>
                       {team.members.length <= 3 ? (
                         <Link to="/workshop/createteam">
-                          <button className="bg-green-500 hover:bg-green-600 rounded-md text-xs sm:text-sm md:text-base font-semibold mx-1 sm:mx-2 px-2 sm:px-3 md:px-4 py-1">
+                          <button className="bg-green-500 hover:bg-green-600 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2">
                             Add Members
                           </button>
                         </Link>
                       ) : (
                         <button
-                          className="bg-gray-700 rounded-md text-xs pb-4 sm:text-sm md:text-base font-semibold mx-1 sm:mx-2 px-2 sm:px-3 md:px-4 py-1"
+                          className="bg-gray-700 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2"
                           onClick={() => alert("Team is already Complete")}
                         >
                           Add Members
                         </button>
                       )}
+
                       <button
                         onClick={() => handleDeleteTeam(team._id)}
-                        className="bg-red-500 mt-4 hover:bg-red-600 rounded-md text-xs sm:text-sm md:text-base font-semibold mx-1 sm:mx-2 px-2 sm:px-3 md:px-4 py-1"
+                        className="bg-red-500 hover:bg-red-600 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2"
                       >
                         Delete Team
                       </button>
@@ -162,7 +179,7 @@ const TeamDashboard = () => {
             </tbody>
           </table>
         ) : (
-          <p className="text-center text-gray-500 mt-4">No teams available</p>
+          <p>No teams available</p>
         )}
       </div>
     </div>

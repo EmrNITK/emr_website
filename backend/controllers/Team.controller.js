@@ -43,7 +43,6 @@ export const createTeam = asyncHandler(async (req, res) => {
   res.status(200).json({ team });
 });
 
-
 export const updateTeam = asyncHandler(async (req, res) => {
   const name = req.body.name;
 
@@ -62,8 +61,6 @@ export const updateTeam = asyncHandler(async (req, res) => {
   res.status(500).json({ "message": "Unalbe to rename" });
 
 });
-
-
 
 export const deleteTeam = asyncHandler(async (req, res) => {
   const userId = req.userId;
@@ -100,6 +97,7 @@ export const deleteTeam = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Team and its members were successfully deleted" });
 });
+
 export const leaveTeam = asyncHandler(async (req, res) => {
   const userId = req.userId;
   const teamId = req.params.teamId;
