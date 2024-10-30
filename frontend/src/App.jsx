@@ -15,7 +15,7 @@ import CreateTeam from "./pages/CreateTeam";
 import WorkshopInfo from "./pages/WorkshopInfo";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import { AuthProvider} from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./pages/ForgotPassword";
 import TransactionVerify from "./pages/TransactionVerify";
 import TeamCard from "./components/TeamCard";
@@ -25,18 +25,15 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import VerifiedRoute from "./components/VerifiedRoute";
 import UserOptions from "./UserOptions";
 
+import AdminRoute from "./components/AdminRoute";
+import TeamDashboard from "./pages/TeamDashBoard";
 
 const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
-        {/* <Navbar /> */}
         <StarsCanvas />
-      
-          
-          
-        
         <UserOptions />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -46,11 +43,21 @@ const App = () => {
           <Route path="/event" element={<EventPage />} />
           <Route path="/workshop-details" element={<WorkshopDetail />} />
           <Route path="/gallery" element={<GalleryComp />} />
-
           <Route path="/workshop" element={<WorkshopInfo />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          <Route
+            path="/teamdashboard"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <TeamDashboard/>
+                </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/teamcard"

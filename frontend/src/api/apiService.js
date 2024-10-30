@@ -34,7 +34,6 @@ export const loginUser = async (credentials) => {
 
   return handleResponse(response);
 };
-
 // Retrieve all Teams
 export const getAllTeams = async () => {
   const response = await fetch(`${API_BASE_URL}/api/teams/`, {
@@ -47,7 +46,6 @@ export const getAllTeams = async () => {
   });
   return handleResponse(response);
 };
-
 export const getTeamById = async (teamId) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}`, {
     method: "GET",
@@ -60,7 +58,6 @@ export const getTeamById = async (teamId) => {
 
   return handleResponse(response);
 };
-
 // Create a new Team
 export const createTeam = async (teamName) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/`, {
@@ -74,7 +71,6 @@ export const createTeam = async (teamName) => {
   });
   return handleResponse(response);
 };
-
 // Add members to a Team
 export const addMemberToTeam = async (teamId, memberData) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/members`, {
@@ -87,7 +83,6 @@ export const addMemberToTeam = async (teamId, memberData) => {
   });
   return handleResponse(response);
 };
-
 // Update status of a Team member
 export const updateMemberStatus = async (teamId, memberId, status) => {
   const response = await fetch(
@@ -102,7 +97,6 @@ export const updateMemberStatus = async (teamId, memberId, status) => {
   );
   return handleResponse(response);
 };
-
 // Send invitations to members
 export const sendInvitation = async (teamId, members) => {
 
@@ -117,7 +111,6 @@ export const sendInvitation = async (teamId, members) => {
   });
   return handleResponse(response);
 };
-
 // Accept or Reject Invitation
 export const respondToInvitation = async (teamId, inviteId, userResponse) => {
   const response = await fetch(
@@ -132,7 +125,6 @@ export const respondToInvitation = async (teamId, inviteId, userResponse) => {
   );
   return handleResponse(response);
 };
-
 // Request to join a Team
 export const joinTeam = async (teamId) => {
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/join`, {
@@ -145,7 +137,6 @@ export const joinTeam = async (teamId) => {
   });
   return handleResponse(response);
 };
-
 // Approve or Reject Join Request
 export const respondToJoinRequest = async (
   teamId,
@@ -164,9 +155,6 @@ export const respondToJoinRequest = async (
   );
   return handleResponse(response);
 };
-
-
-
 // User Verification
 export const verifyUser = async (transactionId) => {
   const response = await fetch(`${API_BASE_URL}/api/users/verify`, {
@@ -180,10 +168,8 @@ export const verifyUser = async (transactionId) => {
   });
   return handleResponse(response);
 };
-
 // Admin approve/reject verification
 // api.js (or wherever you keep your API functions)
-
 export const getUserById = async (userId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/users/${userId}/`, {
@@ -207,7 +193,6 @@ export const getUserById = async (userId) => {
     throw error; // Re-throw the error for further handling if needed
   }
 };
-
 // List all verified users
 export const fetchUsers = async () => {
   const response = await fetch(`${API_BASE_URL}/api/users/`, {
@@ -220,7 +205,6 @@ export const fetchUsers = async () => {
   });
   return handleResponse(response);
 };
-
 
 export const removeMember = async (teamId, memberId) => {
   const response = await fetch(
@@ -305,8 +289,6 @@ export const deleteTeam = async (teamId) => {
   });
   return handleResponse(response);
 };
-
-
 export const leaveTeam = async (teamId) => {
   const response = await fetch(
     `${API_BASE_URL}/api/teams/${teamId}/leave`,
