@@ -70,6 +70,7 @@ const SpeedDial = () => {
             className="speed-dial"
             onMouseEnter={() => setOpen(true)}  // Open on hover
             onMouseLeave={() => setOpen(false)} // Close when the mouse leaves
+            onTouchStart={() => setOpen(true)} 
             ref={speedDialRef}
           >
             <div className="speed-dial-icon">
@@ -81,7 +82,7 @@ const SpeedDial = () => {
                 <button
                   key={index}
                   className="speed-dial-action min-w-24"
-                  onClick={item.func}
+                  onClick={()=>{item.func();  setOpen(false);}}
                   style={{ transform: `translateY(${-(index + 1)}px)` }}
                 >
                   {item.name}
