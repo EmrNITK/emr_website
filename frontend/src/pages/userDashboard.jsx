@@ -49,7 +49,7 @@ const TeamDashboard = () => {
     return (
         <>
         <Header/>
-            <div className="px-6">
+            <div className="px-6 min-h-[100vh]">
                 <h1 className="text-2xl md:text-4xl font-extrabold text-center text-white-800 mt-4">
                     User Dashboard
                 </h1>

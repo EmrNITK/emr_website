@@ -86,7 +86,7 @@ const TeamDashboard = () => {
   return (
     <>
     <Header/>
-    <div>
+    <div className="min-h-[100vh]">
       <h1 className="text-4xl font-extrabold text-center text-white-800 mt-4 mb-8">
         Team Dashboard
       </h1>
