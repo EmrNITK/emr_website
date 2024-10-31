@@ -32,86 +32,147 @@ const WorkshopInfo = () => {
     navigate("/workshop/jointeam");
   };
 
-
-
   return (
     <div>
       <Header />
-      <div className="mt-24 md:mt-20 flex flex-col items-center justify-center min-h-screen">
+      <div className="mt-12 md:mt-10 flex flex-col items-center justify-center min-h-screen">
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
           <div className="p-4 w-full md:w-2/3">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Embedded Workshop
             </h1>
 
-            <p className="text-sm md:text-normal text-gray-400 mb-6 text-justify font-mono">
-              EmR is again back with its Embedded Workshop! Don't miss the
-              change register asap as we have limited seats
+            <section className="text-xs md:text-sm text-gray-400 mb-6 text-justify font-mono">
+              <div className="font-mono">
+                EmR is again back with its Embedded Workshop! Don't miss the
+                chance; register asap as we have limited seats.
+              </div>
               <br />
+              <article className="font-mono">
+                <h2 className="text-xl font-bold font-mono">
+                  Workshop Highlights
+                </h2>
+                <ul className="list-disc list-inside font-mono flex flex-col gap-2 list-outside px-4">
+                  <li className="font-mono">
+                    <strong className="font-mono underline">
+                      Autonomous Labyrinth Solver
+                    </strong>
+                    : <br />
+                    Developed using the Arduino Uno microcontroller and infrared
+                    (IR) sensors for distance measurement. The project
+                    integrates hardware with software algorithms to navigate and
+                    solve a maze efficiently, minimizing completion time.
+                  </li>
+                  <li className="font-mono">
+                    <strong className="font-mono underline">
+                      Hand Gesture-Controlled Bot with an Integrated Robotic Arm
+                      🤖:
+                    </strong>
+                    <br />
+                    Constructed with the Arduino Nano microcontroller, NRF24L01
+                    transceiver, and ADXL345 gyro sensor for angle detection.
+                    The robotic arm is controlled via joystick inputs, allowing
+                    intuitive gesture-based navigation and control.
+                  </li>
+                  <li>
+                    <strong className="font-mono underline">Remote-Controlled Bot</strong>
+                  </li>
+                  <li className="font-mono">
+                    <strong className="font-mono">
+                      Refreshments will be provided.
+                    </strong>
+                  </li>
+                  <li className="font-mono">
+                    <strong className="font-mono">
+                      Certificates will be awarded to all participants.
+                    </strong>
+                  </li>
+                </ul>
+              </article>
+
               <br />
-              Build and program your own autonomous robots, including:
+              <aside className="font-mono">
+                <div className="font-mono">
+                  <strong>📅 Dates:</strong> 8th November Onwards
+                </div>
+                <div className="font-mono">
+                  <strong>📍 Venue:</strong> MCA Block
+                </div>
+              </aside>
+
               <br />
-              - A Line Follower Bot
+              <section className="font-mono">
+                <h2 className="text-xl font-mono font-bold">
+                  Fee Details
+                </h2>
+                <ul className="list-none space-y-4 font-mono">
+                  <li>
+                    <h4 className="text-sm font-mono">
+                      For NIT Kurukshetra Students:
+                    </h4>
+                    <ul className="list-disc list-inside ml-4 font-mono">
+                      <li className="font-mono">
+                        <strong className="font-mono">Amount (Bot Kit Price):</strong> ₹ 1700 / Member
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <h4 className="text-sm font-mono">
+                      For Other College Students:
+                    </h4>
+                    <ul className="list-disc list-inside ml-4 font-mono">
+                      <li className="font-mono">
+                        <strong className="font-mono">Amount (Bot Kit Price):</strong> ₹ 1700 / Member
+                      </li>
+                      <li className="font-mono">
+                        <strong className="font-mono">Accommodation + Food (For 3 Days):</strong> ₹
+                        1500 / Member
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+
               <br />
-              - A Hand Gesture-Controlled Bot with an integrated Robotic Arm 🤖
-              <br />
-              - A Remote-Controlled Bot
-              <br />
-              - Refreshments provided
-              <br />
-              - Certificates will be awarded to all participants
-              <br />
-              <br />
-              <b>📅 Dates:</b> 8th November Onwards 📍 <b>Venue:</b> MCA Block
-              <br />
-              <br />
-              <b className="font-mono">For NIT Kurukshetra Students:</b>
-              <br />
-              <b>Amount ( Bot Kit Price ) </b>: ₹ 1700 / Member
-              <br />
-              <br />
-              <b className="font-mono">For Other College Students:</b>
-              <br />
-              <b>Amount ( Bot Kit Price ) </b>: ₹ 1700 / Member
-              <br />
-              <b>Accommodation + Food (For 3 Days) </b>: ₹ 1500 / Member
-              <br />
-              <br />
-              <b className="text-green-500 text-sm md:text-lg">
+              <div className="text-green-500 text-xl font-bold md:text-xl font-mono">
                 Yes! The kit will be all yours to keep...
-              </b>
+              </div>
+
               <br />
-              <br />
-              <p className="text-xs text-justify font-serif">
-                <u>
-                  <a
-                    href="https://drive.google.com/file/d/1EuMd9CGrhDzJ0gMqni90xFAnUL_Rm0fi/view?usp=drivesdk"
-                    target="_blank"
-                  >
-                    Brochure
-                  </a>
-                </u>
+              <footer className="font-mono">
+                <div className="font-mono text-xl font-bold">
+                  Useful Links:
+                </div>
+                <ul className="list-disc list-inside font-mono">
+                  <li>
+                    <a
+                      href="https://drive.google.com/file/d/1EuMd9CGrhDzJ0gMqni90xFAnUL_Rm0fi/view?usp=drivesdk"
+                      target="_blank"
+                      className="font-mono text-sky-400 underline"
+                    >
+                      Brochure
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing"
+                      target="_blank"
+                      className="font-mono text-sky-400 underline"
+                    >
+                      Click to know Steps To Register
+                    </a>
+                  </li>
+                </ul>
                 <br />
-                <br />
-                <u>
-                  <a
-                    href="https://drive.google.com/file/d/105syjkUKCgF9ShWTHpxLUM-ksaDehA-y/view?usp=sharing"
-                    target="_blank"
-                  >
-                    Click to know Steps To Register
-                  </a>
-                </u>
-              </p>
-              <br />
-              
-              <p className="text-xs text-justify font-serif">
-                Queries :
-                <br />
-                Sujal : +91 81687 51825
-                <br />
-                Shivam : +91 6201 512 130
-              </p>
-            </p>
+                <address className="font-mono">
+                  <div className="font-mono text-xl font-bold">Queries:</div>
+                  <div className="font-mono">Sujal: +91 81687 51825</div>
+                  <div className="font-mono">Shivam: +91 6201 512 130</div>
+                </address>
+              </footer>
+            </section>
+
             <div className="w-full flex md:hidden min-h-[30vh] md:w-1/2 p-4 justify-center items-center">
               <img
                 src={bot}
