@@ -96,6 +96,22 @@ export const updateMemberStatus = async (teamId, memberId, status) => {
   );
   return handleResponse(response);
 };
+
+// Update status of a Team member
+export const updateKitProvided = async (teamId, isKitProvided) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/teams/${teamId}/${isKitProvided}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  );
+  return handleResponse(response);
+};
+
 // Send invitations to members
 export const sendInvitation = async (teamId, members) => {
 
