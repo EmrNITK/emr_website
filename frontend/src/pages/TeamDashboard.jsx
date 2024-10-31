@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { getAllTeams, fetchUsers, deleteTeam } from "../api/apiService";
 import { Link, useNavigate } from "react-router-dom";
 import TeamInfo from "../components/TeamInfo";
+import Header from "../components/Header";
 
 const TeamDashboard = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -63,8 +64,10 @@ const TeamDashboard = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div>
-      <h1 className="text-4xl font-extrabold text-center text-blue-800 mt-10 mb-8">
+      <h1 className="text-4xl font-extrabold text-center text-white-800 mt-4 mb-8">
         Team Dashboard
       </h1>
 
@@ -102,6 +105,7 @@ const TeamDashboard = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
