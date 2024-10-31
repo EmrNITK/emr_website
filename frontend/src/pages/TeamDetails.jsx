@@ -106,7 +106,7 @@ const TeamDetails = () => {
       <div className="min-h-[100vh]">
         {team ? (
           <>
-            <div className="max-w-2xl mx-auto shadow-lg rounded-lg p-6 mt-20">
+            <div className="max-w-2xl mx-auto shadow-lg rounded-lg p-6 mt-4">
               <div className="flex flex-col mb-4">
                 <h1 className="text-3xl font-bold text-blue-700">
                   Team: {team.name}

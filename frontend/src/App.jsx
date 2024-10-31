@@ -31,11 +31,13 @@ import UserDashboard from "./pages/userDashboard";
 
 const App = () => {
   return (
+    <div className="relative min-h-screen">
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
         <StarsCanvas />
         <UserOptions />
+        <div className="relative z-10">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sponsor" element={<SponsorPage />} />
@@ -127,8 +129,10 @@ const App = () => {
             }
           />
         </Routes>
+        </div>
       </BrowserRouter>
     </AuthProvider>
+    </div>
   );
 };
 

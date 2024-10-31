@@ -8,6 +8,7 @@ import {
 } from "../api/apiService";
 import { Link, useNavigate } from "react-router-dom";
 import TeamInfo from "../components/TeamInfo";
+import Header from "../components/Header";
 import FooterComp from "../components/Footer/FooterComp";
 
 const TeamDashboard = () => {
@@ -84,8 +85,9 @@ const TeamDashboard = () => {
 
   return (
     <>
-    <div className="min-h-[100vh] mt-10">
-      <h1 className="text-4xl font-extrabold text-center text-white mb-4">
+    <Header/>
+    <div>
+      <h1 className="text-4xl font-extrabold text-center text-white-800 mt-4 mb-8">
         Team Dashboard
       </h1>
 

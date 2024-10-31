@@ -64,8 +64,8 @@ const TeamList = () => {
     <>
       {user?.teamId ? <Navigate to="/workshop" /> : <></>}
       <Header />
-      <div className="w-screen min-h-screen px-10 my-6 mt-24">
-        <h2 className="text-2xl pt-12 font-bold mb-6 text-center text-white">
+      <div className="w-screen min-h-screen px-10 my-6">
+        <h2 className="text-2xl font-bold mb-6 text-center text-white">
           Available Teams to Join
         </h2>
         {message && (

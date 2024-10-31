@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { fetchAllUsers } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
 import FooterComp from "../components/Footer/FooterComp";
+import Header from "../components/Header";
 
 const TeamDashboard = () => {
     const { user } = useContext(AuthContext);
@@ -47,8 +48,9 @@ const TeamDashboard = () => {
 
     return (
         <>
+        <Header/>
             <div className="px-6">
-                <h1 className="text-2xl md:text-4xl font-extrabold text-center text-blue-800 mt-10 mb-8">
+                <h1 className="text-2xl md:text-4xl font-extrabold text-center text-white-800 mt-4">
                     User Dashboard
                 </h1>
 
