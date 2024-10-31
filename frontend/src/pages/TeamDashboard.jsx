@@ -1,8 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { getAllTeams, fetchUsers, deleteTeam } from "../api/apiService";
+import {
+  getAllTeams,
+  fetchUsers,
+  deleteTeam,
+  updateKitProvided,
+} from "../api/apiService";
 import { Link, useNavigate } from "react-router-dom";
 import TeamInfo from "../components/TeamInfo";
+import FooterComp from "../components/Footer/FooterComp";
 
 const TeamDashboard = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -62,16 +68,31 @@ const TeamDashboard = () => {
     }
   };
 
+  const handleKitProvided = async (teamId, isKitProvided) => {
+    console.log(teamId, isKitProvided);
+    setMessage("Updating status...");
+    setError("");
+    try {
+      const response = await updateKitProvided(teamId, isKitProvided);
+      setMessage(response.message);
+      setError("");
+    } catch (error) {
+      setError(error.message || "Error updating status.");
+      setMessage("");
+    }
+  };
+
   return (
-    <div>
-      <h1 className="text-4xl font-extrabold text-center text-blue-800 mt-10 mb-8">
+    <>
+    <div className="min-h-[100vh] mt-10">
+      <h1 className="text-4xl font-extrabold text-center text-white mb-4">
         Team Dashboard
       </h1>
 
-      {message && <p className="text-green-500 font-mono">{message}</p>}
-      {error && <p className="text-red-500 font-mono">{error}</p>}
+      {message && <p className="text-green-500 font-mono text-sm">{message}</p>}
+      {error && <p className="text-red-500 font-mono text-sm">{error}</p>}
 
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center my-4">
         <input
           type="text"
           placeholder="Search by team name"
@@ -88,12 +109,13 @@ const TeamDashboard = () => {
           filteredTeams.map((team) => {
             return (
               <TeamInfo
-              key={team._id}
+                key={team._id}
                 team={team}
                 users={availableUsers}
                 setTeams={setTeams}
                 setAvailableUsers={setAvailableUsers}
                 handleDeleteTeam={handleDeleteTeam}
+                handleKitProvided={handleKitProvided}
               />
             );
           })
@@ -102,6 +124,8 @@ const TeamDashboard = () => {
         )}
       </div>
     </div>
+    <FooterComp/>
+    </>
   );
 };
 

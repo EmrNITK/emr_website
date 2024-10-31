@@ -7,12 +7,14 @@ const TeamInfo = ({
   setTeams,
   setAvailableUsers,
   handleDeleteTeam,
+  handleKitProvided,
 }) => {
   const dialogRef = useRef(null);
   const [showUsers, setShowUsers] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isKitProvided, setIsKitProvided] = useState(false);
 
   const openDialog = () => {
     dialogRef.current?.showModal();
@@ -98,16 +100,32 @@ const TeamInfo = ({
 
   return (
     <>
-      <div className="w-4/5 md:w-3/5 flex flex-col gap-4 bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm p-3 rounded-lg shadow-lg">
+      <div className="w-4/5 md:w-2/5 flex flex-col gap-4 bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm p-3 rounded-lg shadow-lg">
         {/* Basic Team Details */}
         <div>
           <div className="text-2xl">{team.name}</div>
-          <div>Leader: {team.leader?.name}</div>
-          <div>Members: {team.members?.length}/4</div>
+          <div className=" items-center bg-[#050816]/40 p-2 rounded-md">
+            <div className="text-s font-mono">Leader: {team.leader?.name}</div>
+            <div className="text-s font-mono">
+              Members: {team.members?.length}/4
+            </div>
+            <div className="w-fit flex flex-row gap-2">
+              <label htmlFor="kit" className="text-s md:text-base font-mono">
+                Kit Provided ?
+              </label>
+              <input
+                type="checkbox"
+                name="isKitProvided"
+                id="kit"
+                defaultChecked={team.isKitProvided}
+                onChange={(e) => handleKitProvided(team._id, e.target.checked)}
+              />
+            </div>
+          </div>
         </div>
         {/* Team Details Dialog */}
         <dialog
-          className="w-4/5 md:w-3/5 realative m-auto bg-[#040714]/90 backdrop-opacity-10 backdrop-brightness-20 shadow-lg backdrop-blur-sm p-3 rounded-lg open:flex flex-col backdrop:bg-white/20 backdrop:backdrop-blur-sm "
+          className="w-4/5 md:w-2/5 realative m-auto bg-[#040714]/90 backdrop-opacity-10 backdrop-brightness-20 shadow-lg backdrop-blur-sm p-3 rounded-lg open:flex flex-col backdrop:bg-white/20 backdrop:backdrop-blur-sm "
           id="dialog"
           ref={dialogRef}
         >
@@ -201,7 +219,7 @@ const TeamInfo = ({
         </dialog>
 
         {/* Team Controls */}
-        <div className="self-end ">
+        <div className="self-end">
           <button
             className="bg-green-500 rounded-md text-xs md:text-base font-semibold mx-1 md:mx-2 px-3 md:px-4 py-1 md:py-2"
             onClick={openDialog}

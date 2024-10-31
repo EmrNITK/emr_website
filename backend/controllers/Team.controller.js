@@ -93,7 +93,7 @@ export const deleteTeam = asyncHandler(async (req, res) => {
     })
   );
 
-  await Team.deleteOne({_id:teamId});
+  await Team.deleteOne({ _id: teamId });
 
   res.status(200).json({ message: "Team and its members were successfully deleted" });
 });
@@ -147,3 +147,19 @@ export const leaveTeam = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Successfully left the team" });
 });
 
+
+export const updateKitProvided = asyncHandler(async (req, res) => {
+    const {teamId,isKitProvided} = req.params;
+
+    const team = await Team.findById(teamId);
+
+    if (!team) {
+      res.status(404).json({ "message": "Team Not Found" });
+    }
+
+    team.isKitProvided = isKitProvided;
+    await team.save();
+
+    res.status(200).json({ "message": "Successfully updated the status" });
+
+  });
