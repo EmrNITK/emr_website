@@ -149,15 +149,12 @@ const CreateTeam = () => {
         <></>
       )}
       <Header />
-      <br />
-      <br />
-      <br />
 
       {!user.teamId ? (
         <>
-          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-4 items-center justify-between  gap-y-6 mt-120">
+          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-4 items-center justify-between  gap-y-6 ">
 
-            <h1 className="text-2xl mt-8 font-bold text-center mb-4 col-span-3">
+            <h1 className="text-2xl mt-2 font-bold text-center mb-4 col-span-3">
               Create Team
             </h1>
             <p className="text-sm  text-red-600 italic">Note: Only Team Leader have to Create Team, other members simply need to join it via <u><br /><a href="https://www.emrnitkkr.com/workshop/jointeam">Join Team</a></u></p>
@@ -256,7 +253,7 @@ const CreateTeam = () => {
         </>
       ) : (
         <>
-          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-8 items-center justify-between gap-y-6 mt-12">
+          <section className="w-full min-h-screen md:w-3/5 lg:w-2/5 mx-auto px-4 py-8 items-center justify-between gap-y-6">
             <h1 className="text-2xl font-bold text-center col-span-3">
               Invite Members
             </h1>

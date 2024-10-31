@@ -7,7 +7,7 @@ const Header = () => {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <header className="fixed top-0 left-0 w-full p-4 sm:px-1 text-white shadow-md z-50 flex justify-between items-center bg-white/5 backdrop-blur-lg">
+    <header className="sticky top-0 left-0 w-full p-4 sm:px-1 text-white shadow-md z-50 flex justify-between items-center bg-white/5 backdrop-blur-lg">
       <p className="text-sm sm:text-xs font-semibold text-white-300 md:w-[50%] md:ml-4">
       <Link
               to="/"
