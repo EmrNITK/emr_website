@@ -98,7 +98,7 @@ const CreateTeam = () => {
   const getAvailableUsers = () => {
     const available = verifiedUsers.filter(
       (verifiedUser) =>
-        !(verifiedUser._id === user._id || verifiedUser.teamId) &&
+        !(verifiedUser._id === user._id || verifiedUser.teamId||verifiedUser.isAdmin) &&
         verifiedUser.name.toLowerCase().includes(searchQuery.toLowerCase()) // Search filter
     );
 
