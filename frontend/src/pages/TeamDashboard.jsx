@@ -104,7 +104,7 @@ const TeamDashboard = () => {
         />
       </div>
 
-      <div className="max-h-[50vh] flex flex-col items-center gap-5">
+      <div className="max-h-[60vh] flex flex-col items-center gap-5 overflow-y-auto">
         {fetching ? (
           <p className="text-green-500 font-mono">Loading...</p>
         ) : filteredTeams.length > 0 ? (
