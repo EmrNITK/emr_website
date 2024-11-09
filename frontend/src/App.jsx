@@ -92,14 +92,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/transactionverify"
             element={
               <ProtectedRoute>
                 <TransactionVerify />
               </ProtectedRoute>
             }
-          />
+          /> */}
           <Route
             path="/change-password"
             element={
@@ -108,7 +108,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/workshop/createteam"
             element={
               <ProtectedRoute>
@@ -117,8 +117,8 @@ const App = () => {
                 </VerifiedRoute>
               </ProtectedRoute>
             }
-          />
-          <Route
+          /> */}
+          {/* <Route
             path="/workshop/jointeam"
             element={
               <ProtectedRoute>
@@ -127,7 +127,7 @@ const App = () => {
                 </VerifiedRoute>
               </ProtectedRoute>
             }
-          />
+          /> */}
         </Routes>
         </div>
       </BrowserRouter>

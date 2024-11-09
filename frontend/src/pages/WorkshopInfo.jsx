@@ -28,6 +28,10 @@ const WorkshopInfo = () => {
     navigate("/workshop/createteam");
   };
 
+  const handelmyTeam = () => {
+    navigate("/teamdetails");
+  }
+
   const handleJoinTeamClick = () => {
     navigate("/workshop/jointeam");
   };
@@ -35,7 +39,7 @@ const WorkshopInfo = () => {
   return (
     <div>
       <Header />
-      <div className="mt-12 md:mt-10 flex flex-col items-center justify-center min-h-screen">
+      {/* <div className="mt-12 md:mt-10 flex flex-col items-center justify-center min-h-screen">
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
           <div className="p-4 w-full md:w-2/3">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
@@ -180,7 +184,6 @@ const WorkshopInfo = () => {
                 className="object-cover mb-4 min-h-[20vh] w-3/4 md:h-full md:w-3/4 rounded-md boxShadoww"
               />
             </div>
-            {/* {Show Manage Team button if user is leader and member in team < 4} */}
             {user?.teamId?.members?.length < 4 && user?.isLeader ? (
               <>
                 <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
@@ -223,7 +226,26 @@ const WorkshopInfo = () => {
             />
           </div>
         </div>
+      </div> */}
+      <h1 className="flex justify-center align-center text-red-500 text-xl my-10">
+
+        Registrations Closed
+        <br />
+      </h1>
+      <div className="flex justify-center align-center">
+      {user?.teamId && (
+          <>
+            <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+              <button
+                onClick={handelmyTeam}
+                className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500"
+              >
+                My Team
+              </button>
+            </div>
+          </>)}
       </div>
+
       <FooterComp />
     </div>
   );
