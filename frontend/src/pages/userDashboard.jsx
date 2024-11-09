@@ -22,6 +22,7 @@ const TeamDashboard = () => {
             try {
                 setFetching(true);
                 const response = await fetchAllUsers();
+                console.log(response)
                 setUsers(response);
             } catch (error) {
                 setError("Failed to fetch users. Please try again.");
@@ -92,6 +93,7 @@ const TeamDashboard = () => {
                                         <th className="px-4 py-2 border border-gray-800">S.No</th>
                                         <th className="px-4 py-2 border border-gray-800">Name</th>
                                         <th className="px-4 py-2 border border-gray-800">Branch</th>
+                                        <th className="px-4 py-2 border border-gray-800">Roll No.</th>
                                         <th className="px-4 py-2 border border-gray-800">College</th>
                                         <th className="px-4 py-2 border border-gray-800">Year</th>
                                         <th className="px-4 py-2 border border-gray-800">Mobile No</th>
@@ -104,6 +106,7 @@ const TeamDashboard = () => {
                                             <td className="px-4 py-2 border border-gray-800">{index + 1}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.name}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.branch}</td>
+                                            <td className="px-4 py-2 border border-gray-800">{user.rollNo}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.collegeName}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.year}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.mobileNo}</td>
