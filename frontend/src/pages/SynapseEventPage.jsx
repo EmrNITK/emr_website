@@ -54,7 +54,7 @@ const SynapseEventPage = () => {
             }`}
             onClick={() => setActive(2)}
           >
-            Rules
+            Rulebook
           </div>
           <div
             className={`w-full text-center text-xs text-nowrap md:text-base p-2 rounded-2xl ${
@@ -100,9 +100,8 @@ const SynapseEventPage = () => {
                   <h3 className="font-mono text-xl md:text-3xl">✨Prizes🌟</h3>
                   <p className="font-mono text-left text-sm p-4 ">
                     <ul className="list-inside font-mono flex flex-col gap-2 *:font-mono *:text-base">
-                      <li>🥇 1st Prize : ₹ 2000 /- </li>
-                      <li>🥈 2nd Prize : ₹ 1000 /- </li>
-                      <li className="text-nowrap">⭐ Top 5: E-certificates</li>
+                      <li>💸 Cash Prize : ₹ 3000 /- </li>
+                      <li className="text-nowrap">⭐ Top 10: E-certificates</li>
                     </ul>
                   </p>
                 </div>
@@ -120,7 +119,7 @@ const SynapseEventPage = () => {
             </div>
           ) : active == 2 ? (
             <div className="text-center py-4">
-              <h3 className="font-mono text-xl text md:text-3xl ">Rules</h3>
+              <h3 className="font-mono text-xl text md:text-3xl ">Rulebook</h3>
               <p className="font-mono text-left text-base p-4 md:w-[fit-content]">
                 You can access rule book from here:
                 <a
@@ -150,14 +149,15 @@ const SynapseEventPage = () => {
             </div>
           ) : active == 4 ? (
             <div className="text-center py-4">
-              <h3 className="font-mono text-xl text md:text-3xl ">Submit</h3>
+              <h3 className="font-mono text-xl text md:text-3xl ">Submission Form</h3>
               <p className="font-mono text-left text-base p-4 md:w-[fit-content]">
-                Submit your solution by filling the form:
+                Thank you for participating!! <br />
+                You can submit your solution by filling the Submission form: <br />
                 <a
                   href="https://www.kaggle.com/"
                   className="text-blue-400 underline"
                 >
-                  Form
+                  Submission Form
                 </a>
               </p>
             </div>
