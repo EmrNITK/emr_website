@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/apiService";
-import Header from '../components/Header';
+import Header from "../components/Header";
 import { StarsCanvas } from "../components";
 import FooterComp from "../components/Footer/FooterComp";
 
@@ -125,23 +125,38 @@ const Register = () => {
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
               >
-                <option value="" disabled className="bg-gray-700 text-white w-1/4 md:w-full">
+                <option
+                  value=""
+                  disabled
+                  className="bg-gray-700 text-white w-1/4 md:w-full"
+                >
                   Select Year
                 </option>
-                <option value="1" className="bg-gray-700 text-white w-1/4 md:w-full">
+                <option
+                  value="1"
+                  className="bg-gray-700 text-white w-1/4 md:w-full"
+                >
                   1st Year
                 </option>
-                <option value="2" className="bg-gray-700 text-white w-1/4 md:w-full">
+                <option
+                  value="2"
+                  className="bg-gray-700 text-white w-1/4 md:w-full"
+                >
                   2nd Year
                 </option>
-                <option value="3" className="bg-gray-700 text-white w-1/4 md:w-full">
+                <option
+                  value="3"
+                  className="bg-gray-700 text-white w-1/4 md:w-full"
+                >
                   3rd Year
                 </option>
-                <option value="4" className="bg-gray-700 text-white w-1/4 md:w-full">
+                <option
+                  value="4"
+                  className="bg-gray-700 text-white w-1/4 md:w-full"
+                >
                   4th Year
                 </option>
               </select>
-
 
               <input
                 className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent focus:outline-none"
