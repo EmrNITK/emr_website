@@ -36,7 +36,7 @@ const Login = () => {
       const userData = { email, password };
       const response = await loginUser(userData);
       login(response);
-      navigate("/workshop");
+      navigate("/synapse");
     } catch (error) {
       setError(error.message);
     } finally {
