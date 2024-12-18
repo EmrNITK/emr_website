@@ -14,6 +14,7 @@ import JoinTeamPage from "./pages/JoinTeamPage";
 import CreateTeam from "./pages/CreateTeam";
 import WorkshopInfo from "./pages/WorkshopInfo";
 import Register from "./pages/Register";
+import SynapseRegister from "./pages/SynapseRegister";
 import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -28,87 +29,89 @@ import UserOptions from "./UserOptions";
 import AdminRoute from "./components/AdminRoute";
 import TeamDashboard from "./pages/TeamDashboard";
 import UserDashboard from "./pages/userDashboard";
+import SynapseEventPage from "./pages/SynapseEventPage";
 
 const App = () => {
   return (
     <div className="relative min-h-screen">
-    <AuthProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <StarsCanvas />
-        <UserOptions />
-        <div className="relative z-10">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/sponsor" element={<SponsorPage />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/team" element={<TeamComp />} />
-          <Route path="/event" element={<EventPage />} />
-          <Route path="/workshop-details" element={<WorkshopDetail />} />
-          <Route path="/gallery" element={<GalleryComp />} />
-          <Route path="/workshop" element={<WorkshopInfo />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+      <AuthProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <StarsCanvas />
+          <UserOptions />
+          <div className="relative z-10">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/sponsor" element={<SponsorPage />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/team" element={<TeamComp />} />
+              <Route path="/event" element={<EventPage />} />
+              <Route path="/workshop-details" element={<WorkshopDetail />} />
+              <Route path="/gallery" element={<GalleryComp />} />
+              <Route path="/workshop" element={<WorkshopInfo />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <TeamDashboard/>
-                </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/userdashboard"
-            element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <UserDashboard/>
-                </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
+              <Route path="/register" element={<SynapseRegister />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          <Route
-            path="/teamcard"
-            element={
-              <ProtectedRoute>
-                <VerifiedRoute>
-                  <TeamCard />
-                </VerifiedRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/teamdetails"
-            element={
-              <ProtectedRoute>
-                <VerifiedRoute>
-                  <TeamDetails />
-                </VerifiedRoute>
-              </ProtectedRoute>
-            }
-          />
-          {/* <Route
-            path="/transactionverify"
-            element={
-              <ProtectedRoute>
-                <TransactionVerify />
-              </ProtectedRoute>
-            }
-          /> */}
-          <Route
-            path="/change-password"
-            element={
-              <ProtectedRoute>
-                <ChangePassword />
-              </ProtectedRoute>
-            }
-          />
-          {/* <Route
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <AdminRoute>
+                      <TeamDashboard />
+                    </AdminRoute>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/userdashboard"
+                element={
+                  <ProtectedRoute>
+                    <AdminRoute>
+                      <UserDashboard />
+                    </AdminRoute>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/teamcard"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <TeamCard />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/teamdetails"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <TeamDetails />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/transactionverify"
+                element={
+                  <ProtectedRoute>
+                    <TransactionVerify />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/change-password"
+                element={
+                  <ProtectedRoute>
+                    <ChangePassword />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route
             path="/workshop/createteam"
             element={
               <ProtectedRoute>
@@ -118,7 +121,7 @@ const App = () => {
               </ProtectedRoute>
             }
           /> */}
-          {/* <Route
+              {/* <Route
             path="/workshop/jointeam"
             element={
               <ProtectedRoute>
@@ -128,10 +131,20 @@ const App = () => {
               </ProtectedRoute>
             }
           /> */}
-        </Routes>
-        </div>
-      </BrowserRouter>
-    </AuthProvider>
+              <Route
+                path="/synapse"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <SynapseEventPage />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 };
