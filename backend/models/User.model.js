@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
     },
     branch: {
       type: String,
-      required: true,
+      required: false,
     },
     collegeName: {
       type: String,
@@ -58,6 +58,10 @@ const userSchema = new mongoose.Schema(
     otpExpireAt: {
       type: Date,
     },
+    kaggleUserName:{
+      type: String,
+      required:true
+    }
   },
   { timestamps: true }
 );

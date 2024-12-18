@@ -3,19 +3,19 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/apiService";
 import Header from "../components/Header";
-import { StarsCanvas } from "../components";
 import FooterComp from "../components/Footer/FooterComp";
 
-const Register = () => {
+const SynapseRegister = () => {
   const { login } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [branch, setBranch] = useState("");
+  // const [branch, setBranch] = useState("");
   const [collegeName, setCollegeName] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [rollNo, setRollNo] = useState("");
   const [year, setYear] = useState("");
+  const [kaggleUserName, setKaggleUserName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,10 +26,11 @@ const Register = () => {
       !name ||
       !email ||
       !password ||
-      !branch ||
+      // !branch ||
       !collegeName ||
       !mobileNo ||
-      !rollNo
+      !rollNo||
+      !kaggleUserName
     ) {
       return "All fields are required.";
     }
@@ -58,11 +59,11 @@ const Register = () => {
         name,
         email,
         password,
-        branch,
         year,
         collegeName,
         mobileNo,
         rollNo,
+        kaggleUserName,
       };
       const response = await registerUser(userData);
       login(response);
@@ -116,12 +117,20 @@ const Register = () => {
               <input
                 className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent focus:outline-none"
                 type="text"
-                placeholder="Branch"
-                value={branch}
-                onChange={(e) => setBranch(e.target.value)}
+                placeholder="Kaggle Username"
+                value={kaggleUserName}
+                onChange={(e) => setKaggleUserName(e.target.value)}
               />
+               <input
+                className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent focus:outline-none"
+                type="email"
+                placeholder="Kaggle Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+             
               <select
-                className=" p-3 mb-4 border border-gray-600 rounded bg-gray-800 focus:outline-none text-white focus:border-blue-500 w-1/2 lg:w-full"
+                className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent focus:outline-none"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
               >
@@ -172,13 +181,7 @@ const Register = () => {
                 value={mobileNo}
                 onChange={(e) => setMobileNo(e.target.value)}
               />
-              <input
-                className="w-full p-3 mb-1 border border-gray-300 rounded bg-transparent focus:outline-none"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+             
               <input
                 className="w-full p-3 mb-4 border border-gray-300 rounded bg-transparent border-b  focus:outline-none"
                 type="password"
@@ -202,4 +205,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SynapseRegister;

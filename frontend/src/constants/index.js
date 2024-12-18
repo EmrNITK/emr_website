@@ -1,42 +1,46 @@
 import {
- 
+
   emrlogo,
 } from "../assets";
 
-// import Hero from "../components/Hero";
 
 export const navLinks = [
-   {
+  {
     id: "hero",
     title: "Home",
-    path : '/',
-    componentId : "hero"
+    path: '/',
+    componentId: "hero"
   },
-  
+
   {
 
     title: "Links",
-    componentId : "tablinks"
+    componentId: "tablinks"
   },
   {
-  
+
     title: "Contact",
-    componentId : "footer"
+    componentId: "footer"
   },
 ];
 
 const services = [
   {
+    title: "Synapse",
+    icon: emrlogo,
+    path: '/synapse'
+  },
+  {
     title: "TECH FEST",
     icon: emrlogo,
     path: '/event',
-  
+
   },
   {
     title: "Workshops",
     icon: emrlogo,
     path: '/workshop',
-   
+
   },
   {
     title: "Events",
@@ -52,7 +56,7 @@ const services = [
     title: "GALLERY",
     icon: emrlogo,
     path: '/gallery',
-    
+
   },
   {
     title: "TEAM",
@@ -64,16 +68,12 @@ const services = [
     icon: emrlogo,
     path: '/sponsor',
   },
-  {
-    title: "SOON",
-    icon: emrlogo,
-  },
 
- 
+
 
 ];
 
-  
+
 
 const experiences = [
   {
@@ -132,8 +132,8 @@ const experiences = [
       "4th.",
     ],
   },
-  
-  
+
+
 ];
 
 const testimonials = [
@@ -229,4 +229,4 @@ const projects = [
   },
 ];
 
-export { services,  experiences, testimonials, projects };
+export { services, experiences, testimonials, projects };

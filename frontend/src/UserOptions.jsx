@@ -24,9 +24,10 @@ const SpeedDial = () => {
 
   const options = [
     { name: "Home", func: () => handleNavigate("/") },
-    { name: "My Team", func: () => handleNavigate("/teamdetails") },
+    // { name: "My Team", func: () => handleNavigate("/teamdetails") },
     { name: "Logout", func: handleLogout },
-    { name: "Workshop Hub", func: () => handleNavigate("/workshop") },
+    // { name: "Workshop Hub", func: () => handleNavigate("/workshop") },
+    { name: "Synapse", func: () => handleNavigate("/synapse") },
     { name:  "Change Password", func: () => handleNavigate("/change-password") },
   ];
 

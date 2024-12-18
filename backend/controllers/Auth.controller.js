@@ -15,13 +15,14 @@ export const register = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   const user = await User.create({
     name: req.body.name,
-    branch: req.body.branch,
+    // branch: req.body.branch,
     year:req.body.year,
     collegeName: req.body.collegeName,
     mobileNo: req.body.mobileNo,
     rollNo: req.body.rollNo,
     email: req.body.email.toLowerCase(),
     password: hashedPassword,
+    kaggleUserName: req.body.kaggleUserName,
   });
 
   const registerUser = await user.save();
