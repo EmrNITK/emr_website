@@ -60,17 +60,19 @@ const sendAcceptanceEmail = async (user) => {
     const mailOptions = {
       from: process.env.APP_EMAIL,
       to: user.email,
-      subject: "Verification Request Accepted - Welcome to the Workshop!",
+      subject: "Welcome to Competition!!",
       html: `
           <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
               <p style="font-size:1.1em">Hello ${user.name},</p>
               <p style="font-size:1.1em">Congratulations! Your verification has been accepted.</p>
-              <p style="font-size:1.1em">We are excited to welcome you to our workshop. Here are the details:</p>
+              <p style="font-size:1.1em">We are excited to welcome you to Synapse, our competition. Here are the details:</p>
               <ul>
-                <li><strong>Workshop Date:</strong> 8th, 9th & 10th November</li>
-                <li><strong>Location:</strong> MCA Block</li>
+                <li><strong>Competition Dates:</strong> 8th, 9th & 10th November</li>
+                <li><strong>Venue:</strong> Kaggle (Online)</li>
+                <li><strong>Competition Link:</strong> </li>
               </ul>
+              <p style="font-size:1.1em"><strong>Note : You will added to competition after 7:00 PM of the day of verification  then you can access competition using the link.</strong></p>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
               <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
