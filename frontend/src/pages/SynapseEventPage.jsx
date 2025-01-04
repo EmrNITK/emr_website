@@ -91,8 +91,8 @@ const SynapseEventPage = () => {
                           Contest
                         </a>
                       </li>
-                      <li>Launch Date: 18/12/2024</li>
-                      <li>End Date: 18/12/2024</li>
+                      <li>Launch Date: Jan 11, 2025 (09:00 AM)</li>
+                      <li>End Date: Jan 17, 2025 (07:00 PM)</li>
                     </ul>
                   </p>
                 </div>

@@ -68,7 +68,8 @@ const sendAcceptanceEmail = async (user) => {
               <p style="font-size:1.1em">Congratulations! Your verification has been accepted.</p>
               <p style="font-size:1.1em">We are excited to welcome you to Synapse, our competition. Here are the details:</p>
               <ul>
-                <li><strong>Competition Dates:</strong> 8th, 9th & 10th November</li>
+                <li><strong>Launch Date:</strong> Jan 11, 2025 (09:00 AM)</li>
+                <li><strong>End Dates:</strong> Jan 17, 2025 (07:00 PM)</li>
                 <li><strong>Venue:</strong> Kaggle (Online)</li>
                 <li><strong>Competition Link:</strong> </li>
               </ul>
