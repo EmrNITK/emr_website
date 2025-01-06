@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const BACKEND_DOMAIN = process.env.BACKEND_DOMAIN_DEV || process.env.BACKEND_DOMAIN_PROD;
+const BACKEND_DOMAIN =
+  process.env.BACKEND_DOMAIN_DEV || process.env.BACKEND_DOMAIN_PROD;
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -55,7 +56,6 @@ const sendVerificationEmail = async (user, transactionId) => {
 
 const sendAcceptanceEmail = async (user) => {
   try {
-
     // Email options
     const mailOptions = {
       from: process.env.APP_EMAIL,
@@ -71,9 +71,22 @@ const sendAcceptanceEmail = async (user) => {
                 <li><strong>Launch Date:</strong> Jan 11, 2025 (09:00 AM)</li>
                 <li><strong>End Dates:</strong> Jan 17, 2025 (07:00 PM)</li>
                 <li><strong>Venue:</strong> Kaggle (Online)</li>
-                <li><strong>Competition Link:</strong> </li>
+                <li><strong>Competition Link:</strong> 
+                    <a
+                      href="https://www.kaggle.com/t/e66fc415621be5018f8cc36765e27060"
+                      className="text-blue-400 underline">
+                        Contest
+                    </a>
+                </li>
+                <li><strong>Join WhatsApp Group:</strong> 
+                    <a
+                      href="https://chat.whatsapp.com/CYG3EOsqkNKFyvVAj4cmBT"
+                      className="text-blue-400 underline">
+                        Synapse-EmR [S1E1]
+                    </a>
+                </li>
               </ul>
-              <p style="font-size:1.1em"><strong>Note : You will added to competition after 7:00 PM of the day of verification  then you can access competition using the link.</strong></p>
+              <p style="font-size:1.1em"><strong>Note : Link will be activated only after the launch date and You will be added in the competition after 07:00 PM of the day of verification & after that you can access it via link.</strong></p>
               <p style="font-size:1.1em">If you have any questions or need further information, feel free to reach out!</p>
               <p style="font-size:0.9em;">Best Regards,<br />Team EMR</p>
               <hr style="border:none;border-top:1px solid #eee" />
@@ -128,7 +141,6 @@ const sendRejectionEmail = async (user) => {
 };
 const sendInvitationEmail = async (user, team) => {
   try {
-
     const inviteId = user._id;
     const teamId = team._id;
 
@@ -242,7 +254,6 @@ const sendJoinRequestEmail = async (user, team, leader) => {
     const acceptUrl = `${BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/accept?_method=PUT`;
     const rejectUrl = `${BACKEND_DOMAIN}/api/teams/${team._id}/join/${user._id}/reject?_method=POST`;
 
-    
     const mailOptions = {
       from: process.env.ADMIN_EMAIL,
       to: leader.email,
@@ -286,7 +297,6 @@ const sendJoinRequestEmail = async (user, team, leader) => {
     throw error;
   }
 };
-
 
 const sendJoinAcceptanceEmail = async (user, team, leader) => {
   try {
@@ -378,7 +388,6 @@ const sendRemoveEmail = async (member, team, leader) => {
               <hr style="border:none;border-top:1px solid #eee" />
             </div>
           </div>`,
-
     };
 
     await transporter.sendMail(mailOptions);
@@ -390,7 +399,6 @@ const sendRemoveEmail = async (member, team, leader) => {
 
 const sendTeamJoinEmail = async (leader, member, team) => {
   try {
-
     // Email options
     const mailOptions = {
       from: process.env.APP_EMAIL,
@@ -430,5 +438,5 @@ export {
   sendJoinAcceptanceEmail,
   sendJoinRejectionEmail,
   sendRemoveEmail,
-  sendTeamJoinEmail
+  sendTeamJoinEmail,
 };
