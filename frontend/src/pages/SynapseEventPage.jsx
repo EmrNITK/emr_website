@@ -85,10 +85,19 @@ const SynapseEventPage = () => {
                       <li>
                         Link:{" "}
                         <a
-                          href="https://www.kaggle.com/"
+                          href="https://www.kaggle.com/t/e66fc415621be5018f8cc36765e27060"
                           className="text-blue-400 underline"
                         >
                           Contest
+                        </a>
+                      </li>
+                      <li>
+                        Join WhatsApp Group:{" "}
+                        <a
+                          href="https://chat.whatsapp.com/CYG3EOsqkNKFyvVAj4cmBT"
+                          className="text-blue-400 underline"
+                        >
+                          Synapse-EmR [S1E1]
                         </a>
                       </li>
                       <li>Launch Date: Jan 11, 2025 (09:00 AM)</li>
@@ -107,10 +116,9 @@ const SynapseEventPage = () => {
                 </div>
               </div>
               <p className="font-mono text-green-400 text-left text-sm p-4 ">
-                Note: You will be added in the competetion after 07:00 PM &
-                after that you can access it via{" "}
+                Note: Link will be activated only after the launch date and You will be added in the competition after 07:00 PM of the day of verification & after that you can access it via{" "}
                 <a
-                  href="https://www.kaggle.com/"
+                  href="https://www.kaggle.com/t/e66fc415621be5018f8cc36765e27060"
                   className="text-blue-400 underline"
                 >
                   link
@@ -123,7 +131,7 @@ const SynapseEventPage = () => {
               <p className="font-mono text-left text-base p-4 md:w-[fit-content]">
                 You can access rule book from here:
                 <a
-                  href="https://www.kaggle.com/"
+                  href="https://drive.google.com/file/d/1yjUnulmEPRT3bKfva8iLumk1a2IRIgGO/view?usp=sharing"
                   className="text-blue-400 underline"
                 >
                   Rule book
@@ -154,7 +162,7 @@ const SynapseEventPage = () => {
                 Thank you for participating!! <br />
                 You can submit your solution by filling the Submission form: <br />
                 <a
-                  href="https://www.kaggle.com/"
+                  href="https://forms.gle/X8r63oJ1bg6B73989"
                   className="text-blue-400 underline"
                 >
                   Submission Form
