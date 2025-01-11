@@ -92,7 +92,7 @@ const TeamDashboard = () => {
                                     <tr className="bg-gray-600">
                                         <th className="px-4 py-2 border border-gray-800">S.No</th>
                                         <th className="px-4 py-2 border border-gray-800">Name</th>
-                                        <th className="px-4 py-2 border border-gray-800">Branch</th>
+                                        <th className="px-4 py-2 border border-gray-800">Email</th>
                                         <th className="px-4 py-2 border border-gray-800">Roll No.</th>
                                         <th className="px-4 py-2 border border-gray-800">College</th>
                                         <th className="px-4 py-2 border border-gray-800">Year</th>
@@ -105,7 +105,7 @@ const TeamDashboard = () => {
                                         <tr key={user._id} className="hover:bg-gray-900">
                                             <td className="px-4 py-2 border border-gray-800">{index + 1}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.name}</td>
-                                            <td className="px-4 py-2 border border-gray-800">{user.branch}</td>
+                                            <td className="px-4 py-2 border border-gray-800">{user.email}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.rollNo}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.collegeName}</td>
                                             <td className="px-4 py-2 border border-gray-800">{user.year}</td>
