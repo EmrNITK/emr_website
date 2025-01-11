@@ -100,7 +100,7 @@ const SynapseEventPage = () => {
                           Synapse-EmR [S1E1]
                         </a>
                       </li>
-                      <li>Launch Date: Jan 11, 2025 (09:00 AM)</li>
+                      <li>Launch Date: Jan 11, 2025 (09:00 PM)</li>
                       <li>End Date: Jan 17, 2025 (07:00 PM)</li>
                     </ul>
                   </p>
