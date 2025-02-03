@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-import { logo } from "../assets";
+import emrlogo from "../assets/emrlogo.png";
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
@@ -9,11 +9,9 @@ const Header = () => {
   return (
     <header className="sticky top-0 left-0 w-full p-4 sm:px-1 text-white shadow-md z-50 flex justify-between items-center bg-white/5 backdrop-blur-lg">
       <p className="text-sm sm:text-xs font-semibold text-white-300 md:w-[50%] md:ml-4">
-      <Link
-              to="/"
-            >
-              <img src={logo} alt="logo" className="w-16 h-13" />
-            </Link>
+        <Link to="/">
+          <img src={emrlogo} alt="logo" className="w-16 h-13" />
+        </Link>
       </p>
       <div className="flex justify-end items-center md:w-[50%] right-0 mx-2">
         {user ? (

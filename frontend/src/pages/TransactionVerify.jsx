@@ -3,8 +3,8 @@ import { verifyUser } from "../api/apiService";
 import { Link, Navigate } from "react-router-dom";
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
-import FooterComp from "../components/Footer/FooterComp";
-import payment_qr from "../assets/payment_qr.jpg";
+import FooterComp from "../components/Footer";
+// import payment_qr from "../assets/payment_qr.jpg";
 
 const VerifyTransaction = () => {
   const { user, updateUser } = useContext(AuthContext);

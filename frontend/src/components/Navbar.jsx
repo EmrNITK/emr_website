@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { styles } from "../styles";
+import { styles } from "../utils/styles.js";
 import { navLinks } from "../constants";
-import { logo, menu, close } from "../assets";
-import "../assets/css/HomeHero.css";
+import emrlogo from "../assets/emrlogo.png";
+import menu from "../assets/menu.svg";
+import close from "../assets/close.svg";
 
 const Navbar = () => {
   const [active, setActive] = useState("");
@@ -42,7 +43,7 @@ const Navbar = () => {
           className="flex items-center gap-2"
           onClick={() => handleButtonClick("homeComponentId")}
         >
-          <img src={logo} alt="logo" className="w-16 h-13" />
+          <img src={emrlogo} alt="logo" className="w-16 h-13" />
           <p className="text-white text-[18px] font-bold cursor-pointer flex">
             &nbsp;<span className="sm:block hidden"></span>
           </p>

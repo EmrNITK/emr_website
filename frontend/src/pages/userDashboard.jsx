@@ -2,10 +2,10 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { fetchAllUsers } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
-import FooterComp from "../components/Footer/FooterComp";
+import FooterComp from "../components/Footer";
 import Header from "../components/Header";
 
-const TeamDashboard = () => {
+const UserDashboard = () => {
     const { user } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
@@ -131,4 +131,4 @@ const TeamDashboard = () => {
     );
 };
 
-export default TeamDashboard;
+export default UserDashboard;

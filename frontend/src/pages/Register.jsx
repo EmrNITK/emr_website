@@ -3,8 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/apiService";
 import Header from "../components/Header";
-import { StarsCanvas } from "../components";
-import FooterComp from "../components/Footer/FooterComp";
+import FooterComp from "../components/Footer";
 
 const Register = () => {
   const { login } = useContext(AuthContext);

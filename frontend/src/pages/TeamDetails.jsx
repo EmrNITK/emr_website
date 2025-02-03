@@ -8,7 +8,7 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
-import FooterComp from "../components/Footer/FooterComp";
+import FooterComp from "../components/Footer";
 
 const TeamDetails = () => {
   const { user, updateUser } = useContext(AuthContext);

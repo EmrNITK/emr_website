@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
-import FooterComp from "../components/Footer/FooterComp";
-import bot from "../assets/workshop_bot.png";
+import FooterComp from "../components/Footer";
 
 const WorkshopInfo = () => {
   const { user, updateUser } = useContext(AuthContext);
