@@ -3,7 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/apiService";
 import Header from "../components/Header";
-import FooterComp from "../components/Footer/FooterComp";
+import FooterComp from "../components/Footer";
 
 const Login = () => {
   const { login } = useContext(AuthContext);

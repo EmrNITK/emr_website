@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import { getAllTeams, joinTeam } from "../api/apiService";
 import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
-import FooterComp from "../components/Footer/FooterComp";
+import FooterComp from "../components/Footer";
 
 const TeamList = () => {
   const { user, updateUser } = useContext(AuthContext);

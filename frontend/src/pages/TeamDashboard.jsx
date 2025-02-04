@@ -9,7 +9,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import TeamInfo from "../components/TeamInfo";
 import Header from "../components/Header";
-import FooterComp from "../components/Footer/FooterComp";
+import FooterComp from "../components/Footer";
 
 const TeamDashboard = () => {
   const { user, updateUser } = useContext(AuthContext);
