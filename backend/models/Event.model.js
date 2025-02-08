@@ -37,18 +37,14 @@ const EventSchema = new mongoose.Schema({
     qrCode:{
         type: String,  // QR-Image
     },
-    coordinator: [
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref: User,
-        }
-    ],
-    title:{
-        type: String,  // title
-    },
-    link:{
-        type: String,  // link
-    },
+    coordinator: [{
+        name: String,
+        mobileNo: Number,
+    }],
+    usefulLinks:[{
+       title:String,
+       link:String,
+    }],
     leaderboard: [
         {
             type:mongoose.Schema.Types.ObjectId,
@@ -67,9 +63,8 @@ const EventSchema = new mongoose.Schema({
             ref: User,
         }
     ],
-    islive: {
+    isLive: {
         type: Boolean,
-        required : true,
         default: false,
     }
 },

@@ -37,10 +37,10 @@ export const validateLogin = [
 
 export const validateCreateEvent =[
   body("name").escape().trim(),
-  body("date").escape().isdate(),
+  body("date").escape().isDate(),
   body("venue").escape().notEmpty(),
   body("description").escape().notEmpty(),
-  body("numberOfMemeber").escape().isInt({min:1}),
+  body("numberOfMember").escape().isInt({min:1}),
   body("poster").escape().trim(),
   body("isLive").escape().isBoolean(),
   (req, res, next) => {

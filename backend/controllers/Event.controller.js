@@ -29,12 +29,6 @@ export const createEvent = asyncHandler(async (req, res) => {
         .json({message:"All field are required"});
     }
 
-    // if([name,date,venue,numberOfMember,description].some((field) => field?.trim() === "")){
-    //       return res.
-    //       status(400)
-    //       .json({message:"All fields are required"})
-    //   }
-
     // qr code and image upload
     const posterLocalPath = req.files?.poster[0]?.path;
     if(!posterLocalPath){
@@ -88,7 +82,7 @@ export const getAllEvent = asyncHandler (async (req,res) => {
   })
 
 export const getEventById = asyncHandler(async (req, res) => {
-      const eventId = req.params.userId
+      const eventId = req.params.eventId
 
       const event = await Event.findById(eventId)
       if (!event) {
@@ -111,39 +105,38 @@ export const updateEventById = async (req, res) => {
         .status(403)
         .json({message:"You do not have permission to update this event"})
     }
-
-    const {name , date , venue , numberOfMember , description} = req.body
-
-    const isPresent = await Event.findOne({ name: name });
-
-    if(isPresent){
+    
+    const event = await Event.findById(eventId)
+    if (!event) {
         return res
         .status(404)
-        .json({message:"Event name already exists" })
+        .json({ message: 'Event not found' });
+    }
+    
+    const eventData = req.body
+
+    // checking if event name alrady exist in databse (as it is unique)
+    if(eventData.name){
+        const ifExisted = await Event.findOne({name:eventData.name})
+        if(ifExisted){
+            return res
+            .status(409)
+            .json({message:"Event name already exists try using differnt event name"})
+        }
     }
 
-    const updatedEvent = await Event.updateMany(
-        { _id: eventId }, // condition to find documents
-        { 
-          $set: {
-            name: name,
-            date: date,
-            venue: venue,
-            numberOfMember: numberOfMember,
-            description: description
-          }
-        }
-    )
-
-    if (updatedEvent.modifiedCount > 0) {
-        res
+    const updatedEvent = await Event.findByIdAndUpdate(eventId, eventData, { new: true });
+    if(updatedEvent){
+        return res
         .status(200)
-        .json({message:"Event updated" , updatedEvent});
-    };
-
-    res
-    .status(500)
-    .json({message:"Unable to update"})
+        .json({message:"Event updated successfully" , updatedEvent})
+    }
+   
+    if(modifiedCount === 0){
+        return res
+        .status(500)
+        .json({message:"Unable to update event"})
+    }
 }
 
 export const deleteEventById = async (req, res) => {
@@ -165,9 +158,15 @@ export const deleteEventById = async (req, res) => {
         .json({message:"You do not have permission to delete this event"})
     }
 
-    await Event.findByIdAndDelete(eventId);
-
-    res
-    .status(200)
-    .json({message:"Event deleted successfully"})
+    const deletedEvent = await Event.findByIdAndDelete(eventId);
+    if(deletedEvent){
+        return res
+        .status(200)
+        .json({message:"Event deleted successfully" , deletedEvent})
+    }
+    else{
+        return res
+        .status(500)
+        .json({message:"Unable to delete event"})
+    }
 }
