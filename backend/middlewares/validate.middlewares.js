@@ -34,3 +34,23 @@ export const validateLogin = [
     
   }
 ];
+
+export const validateCreateEvent =[
+  body("name").escape().trim(),
+  body("date").escape().isdate(),
+  body("venue").escape().notEmpty(),
+  body("description").escape().notEmpty(),
+  body("numberOfMemeber").escape().isInt({min:1}),
+  body("poster").escape().trim(),
+  body("isLive").escape().isBoolean(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      next();
+      return ;
+    }
+    res
+    .status(422)
+    .json({message:"please enter a valid credentials",errors});
+  },
+]
