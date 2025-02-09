@@ -10,7 +10,7 @@ const CreateEvent = () => {
     venue: "",
     members: "",
     rulebookLink: "",
-    accounts: "",
+    amount: "",
     description: "",
     coordinators: [],
     usefulLinks: [],
@@ -113,12 +113,12 @@ const CreateEvent = () => {
               />
             </Accordion>
 
-            <Accordion title="Registration Fee" onSave={() => handleSaveSection("accounts")}>
+            <Accordion title="Registration Fee" onSave={() => handleSaveSection("amount")}>
               <input
                 type="text"
-                name="accounts"
-                placeholder="Accounts"
-                value={eventDetails.accounts}
+                name="amount"
+                placeholder="Amount"
+                value={eventDetails.amount}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
               />
