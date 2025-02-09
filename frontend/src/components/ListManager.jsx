@@ -47,12 +47,12 @@ const ListManager = ({ items, setItems, placeholder1, placeholder2, isEditing })
           {items.map((item, index) => (
             <div key={index} className="flex justify-between items-center bg-gray-700 p-2 rounded-md my-1">
               {isEditing ? (
-                <span className="text-white">
+                <span className="text-wrap w-[95%] break-words whitespace-pre-wrap">
                   {item.field1} - {item.field2}
                 </span>
               ) : (
-                <span className="text-white">
-                  <strong>{placeholder1}:</strong> {item.field1} &nbsp;&nbsp;
+                <span className="text-wrap w-full break-words whitespace-pre-wrap">
+                  <strong>{placeholder1}:</strong> {item.field1} <br/>
                   <strong>{placeholder2}:</strong> {item.field2}
                 </span>
               )}
