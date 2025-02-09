@@ -1,17 +1,18 @@
 import React from "react";
 import './index.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
+import ManageEvents from './pages/ManageEvents.jsx';
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./utils/ScrollToTop";
 
 import StarsCanvas from "./components/Stars.jsx";
 import UserOptions from "./components/UserOptions.jsx";
-
+import TeamCard from "./components/TeamCard.jsx";
 import ProtectedRoute from "./hoc/ProtectedRoute.jsx";
 import VerifiedRoute from "./hoc/VerifiedRoute.jsx";
 import AdminRoute from "./hoc/AdminRoute.jsx";
-
+import CreateTeam from "./pages/CreateTeam.jsx";
+import JoinTeamPage from "./pages/JoinTeamPage.jsx";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
@@ -26,7 +27,7 @@ import TeamDetails from "./pages/TeamDetails";
 import SynapseEventPage from "./pages/SynapseEventPage";
 import TeamDashboard from "./pages/TeamDashboard";
 import UserDashboard from "./pages/UserDashboard.jsx";
-
+import EventPage from "./components/EventPage.jsx";
 const App = () => {
   return (
     <div className="relative min-h-screen">
@@ -65,7 +66,7 @@ const App = () => {
                 }
               />
 
-              {/* <Route
+              <Route
                 path="/teamcard"
                 element={
                   <ProtectedRoute>
@@ -74,13 +75,13 @@ const App = () => {
                     </VerifiedRoute>
                   </ProtectedRoute>
                 }
-              /> */}
+              />
               <Route
                 path="/teamdetails"
                 element={
                   <ProtectedRoute>
                     <VerifiedRoute>
-                      <TeamDetails />
+                      {/* <TeamDetails /> */}
                     </VerifiedRoute>
                   </ProtectedRoute>
                 }
@@ -101,36 +102,39 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              {/* <Route
-            path="/workshop/createteam"
-            element={
-              <ProtectedRoute>
-                <VerifiedRoute>
-                  <CreateTeam />
-                </VerifiedRoute>
-              </ProtectedRoute>
-            }
-          /> */}
-              {/* <Route
-            path="/workshop/jointeam"
-            element={
-              <ProtectedRoute>
-                <VerifiedRoute>
-                  <JoinTeamPage />
-                </VerifiedRoute>
-              </ProtectedRoute>
-            }
-          /> */}
+              <Route
+                path="/workshop/createteam"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <CreateTeam />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/workshop/jointeam"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <JoinTeamPage />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/synapse"
                 element={
                   <ProtectedRoute>
                     <VerifiedRoute>
-                      <SynapseEventPage />
-                    </VerifiedRoute>
+                  <SynapseEventPage />
+                  </VerifiedRoute>
                   </ProtectedRoute>
                 }
               />
+
+              <Route path="/manage-events" element={<ManageEvents />} />
+              <Route path="/manage-events/event" element={<EventPage />} />
             </Routes>
           </div>
         </BrowserRouter>
