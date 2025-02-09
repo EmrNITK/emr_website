@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 
-const Accordion = ({ title, children, onSave }) => {
+const Accordion = ({ title, children, onSave, isEditing, setIsEditing }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleSave = () => {
+    onSave();
+    setIsOpen(false);
+    setIsEditing(false);
+  };
 
   return (
     <div className="w-full p-2 bg-gray-800 rounded-xl">
@@ -16,12 +22,16 @@ const Accordion = ({ title, children, onSave }) => {
       {isOpen && (
         <div className="p-3 bg-gray-900 rounded-lg mt-2">
           <div className="flex flex-col gap-4">
-            {children}
+            {React.Children.map(children, (child) =>
+              React.cloneElement(child, { disabled: !isEditing })
+            )}
             <button
-              onClick={onSave}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md self-end mt-2"
+              onClick={isEditing ? handleSave : () => setIsEditing(true)}
+              className={`${
+                isEditing ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600"
+              } text-white font-semibold px-4 py-2 rounded-md self-end mt-2`}
             >
-              Save
+              {isEditing ? "Save" : "Edit"}
             </button>
           </div>
         </div>

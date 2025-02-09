@@ -1,7 +1,7 @@
 import React from "react";
 import { FaTrash } from "react-icons/fa";
 
-const ListManager = ({ items, setItems, placeholder1, placeholder2, onSave }) => {
+const ListManager = ({ items, setItems, placeholder1, placeholder2, isEditing }) => {
   const [newItem, setNewItem] = React.useState({ field1: "", field2: "" });
 
   const handleAdd = () => {
@@ -17,44 +17,45 @@ const ListManager = ({ items, setItems, placeholder1, placeholder2, onSave }) =>
 
   return (
     <div className="flex flex-col gap-3">
-      
-      <div className="flex gap-2">
-        <input
-          type="text"
-          placeholder={placeholder1}
-          value={newItem.field1}
-          onChange={(e) => setNewItem({ ...newItem, field1: e.target.value })}
-          className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none w-full"
-        />
-        <input
-          type="text"
-          placeholder={placeholder2}
-          value={newItem.field2}
-          onChange={(e) => setNewItem({ ...newItem, field2: e.target.value })}
-          className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none w-full"
-        />
-        <button
-          onClick={handleAdd}
-          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md"
-        >
-          Add
-        </button>
-      </div>
-
+      {isEditing && (
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder={placeholder1}
+            value={newItem.field1}
+            onChange={(e) => setNewItem({ ...newItem, field1: e.target.value })}
+            className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none w-full"
+          />
+          <input
+            type="text"
+            placeholder={placeholder2}
+            value={newItem.field2}
+            onChange={(e) => setNewItem({ ...newItem, field2: e.target.value })}
+            className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none w-full"
+          />
+          <button
+            onClick={handleAdd}
+            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md"
+          >
+            Add
+          </button>
+        </div>
+      )}
 
       {items.length > 0 && (
         <div className="bg-gray-800 p-3 rounded-md">
           {items.map((item, index) => (
             <div key={index} className="flex justify-between items-center bg-gray-700 p-2 rounded-md my-1">
               <span className="text-white">{item.field1} - {item.field2}</span>
-              <button onClick={() => handleDelete(index)} className="text-red-500 hover:text-red-700">
-                <FaTrash />
-              </button>
+              {isEditing && (
+                <button onClick={() => handleDelete(index)} className="text-red-500 hover:text-red-700">
+                  <FaTrash />
+                </button>
+              )}
             </div>
           ))}
         </div>
       )}
-
     </div>
   );
 };

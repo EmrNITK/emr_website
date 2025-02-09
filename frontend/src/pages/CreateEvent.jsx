@@ -17,9 +17,16 @@ const CreateEvent = () => {
   });
 
   const [showPopup, setShowPopup] = useState(false);
+  const [editingSections, setEditingSections] = useState({
+    basicDetails: true,
+    description: true,
+    rulebook: true,
+    registrationFee: true,
+    coordinators: true,
+    usefulLinks: true,
+  });
 
   const handleSaveEvent = () => {
-    setEventDetails((prev) => ({ ...prev }));
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
   };
@@ -36,6 +43,11 @@ const CreateEvent = () => {
     console.log(`Saved ${section}:`, eventDetails[section]);
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+    setEditingSections((prev) => ({ ...prev, [section]: false }));
+  };
+
+  const handleEditSection = (section) => {
+    setEditingSections((prev) => ({ ...prev, [section]: true }));
   };
 
   return (
@@ -59,7 +71,12 @@ const CreateEvent = () => {
         {/* Main Content */}
         <div className="max-h-[80vh] flex justify-center p-3 md:p-5 overflow-y-auto">
           <div className="flex flex-col gap-4 p-4 md:p-6 rounded-lg w-full max-w-2xl">
-            <Accordion title="Basic Details" onSave={() => handleSaveSection("eventName")}>
+            <Accordion
+              title="Basic Details"
+              onSave={() => handleSaveSection("basicDetails")}
+              isEditing={editingSections.basicDetails}
+              setIsEditing={(value) => setEditingSections((prev) => ({ ...prev, basicDetails: value }))}
+            >
               <input
                 type="text"
                 name="eventName"
@@ -67,6 +84,7 @@ const CreateEvent = () => {
                 value={eventDetails.eventName}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.basicDetails}
               />
               <input
                 type="date"
@@ -74,6 +92,7 @@ const CreateEvent = () => {
                 value={eventDetails.date}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.basicDetails}
               />
               <input
                 type="text"
@@ -82,6 +101,7 @@ const CreateEvent = () => {
                 value={eventDetails.venue}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.basicDetails}
               />
               <input
                 type="number"
@@ -90,21 +110,37 @@ const CreateEvent = () => {
                 value={eventDetails.members}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.basicDetails}
               />
-              <input type="file" className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none" />
+              <input
+                type="file"
+                className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.basicDetails}
+              />
             </Accordion>
 
-            <Accordion title="Description" onSave={() => handleSaveSection("description")}>
+            <Accordion
+              title="Description"
+              onSave={() => handleSaveSection("description")}
+              isEditing={editingSections.description}
+              setIsEditing={(value) => setEditingSections((prev) => ({ ...prev, description: value }))}
+            >
               <textarea
                 name="description"
                 value={eventDetails.description}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
                 placeholder="Event Description"
+                disabled={!editingSections.description}
               />
             </Accordion>
 
-            <Accordion title="Rulebook" onSave={() => handleSaveSection("rulebookLink")}>
+            <Accordion
+              title="Rulebook"
+              onSave={() => handleSaveSection("rulebook")}
+              isEditing={editingSections.rulebook}
+              setIsEditing={(value) => setEditingSections((prev) => ({ ...prev, rulebook: value }))}
+            >
               <input
                 type="text"
                 name="rulebookLink"
@@ -112,10 +148,16 @@ const CreateEvent = () => {
                 value={eventDetails.rulebookLink}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.rulebook}
               />
             </Accordion>
 
-            <Accordion title="Registration Fee" onSave={() => handleSaveSection("amount")}>
+            <Accordion
+              title="Registration Fee"
+              onSave={() => handleSaveSection("registrationFee")}
+              isEditing={editingSections.registrationFee}
+              setIsEditing={(value) => setEditingSections((prev) => ({ ...prev, registrationFee: value }))}
+            >
               <input
                 type="text"
                 name="amount"
@@ -123,25 +165,42 @@ const CreateEvent = () => {
                 value={eventDetails.amount}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.registrationFee}
               />
-              <input type="file" className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none" />
+              <input
+                type="file"
+                className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
+                disabled={!editingSections.registrationFee}
+              />
             </Accordion>
 
-            <Accordion title="Coordinators" onSave={() => handleSaveSection("coordinators")}>
+            <Accordion
+              title="Coordinators"
+              onSave={() => handleSaveSection("coordinators")}
+              isEditing={editingSections.coordinators}
+              setIsEditing={(value) => setEditingSections((prev) => ({ ...prev, coordinators: value }))}
+            >
               <ListManager
                 items={eventDetails.coordinators}
                 setItems={(newList) => setEventDetails((prev) => ({ ...prev, coordinators: newList }))}
                 placeholder1="Name"
                 placeholder2="Mobile Number"
+                isEditing={editingSections.coordinators}
               />
             </Accordion>
 
-            <Accordion title="Useful Links" onSave={() => handleSaveSection("usefulLinks")}>
+            <Accordion
+              title="Useful Links"
+              onSave={() => handleSaveSection("usefulLinks")}
+              isEditing={editingSections.usefulLinks}
+              setIsEditing={(value) => setEditingSections((prev) => ({ ...prev, usefulLinks: value }))}
+            >
               <ListManager
                 items={eventDetails.usefulLinks}
                 setItems={(newList) => setEventDetails((prev) => ({ ...prev, usefulLinks: newList }))}
                 placeholder1="Title"
                 placeholder2="Link"
+                isEditing={editingSections.usefulLinks}
               />
             </Accordion>
           </div>
