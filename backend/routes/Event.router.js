@@ -21,7 +21,7 @@ eventRouter.post('/',
 
 eventRouter.get('/',verifyJwt,getAllEvent)
 eventRouter.get('/:eventId',verifyJwt,getEventById)
-eventRouter.put('/update/:eventId',verifyJwt,updateEventById)
-eventRouter.delete('/delete/:eventId',verifyJwt,deleteEventById)
+eventRouter.put('/:eventId',verifyJwt,updateEventById)
+eventRouter.delete('/:eventId',verifyJwt,deleteEventById)
 
 export default eventRouter;
