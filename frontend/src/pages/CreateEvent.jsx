@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Accordion from "../components/Accordion";
 import ListManager from "../components/ListManager";
+import Header from "../components/Header";
 import FooterComp from "../components/Footer";
 
 const CreateEvent = () => {
@@ -28,7 +29,7 @@ const CreateEvent = () => {
 
   const handleSaveEvent = () => {
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+    setTimeout(() => setShowPopup(false), 3000);
   };
 
   const handleInputChange = (e) => {
@@ -42,7 +43,7 @@ const CreateEvent = () => {
   const handleSaveSection = (section) => {
     console.log(`Saved ${section}:`, eventDetails[section]);
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+    setTimeout(() => setShowPopup(false), 3000);
     setEditingSections((prev) => ({ ...prev, [section]: false }));
   };
 
@@ -52,24 +53,34 @@ const CreateEvent = () => {
 
   return (
     <>
+      <Header />
       <div className="min-h-[100vh]">
-        <div className="flex flex-wrap justify-between items-center px-5 py-4 md:px-10">
-          <h1 className="text-white font-bold text-2xl pl-5 md:pl-10">Create Event</h1>
-          <div className="flex space-x-3 md:space-x-4 pr-5 md:pr-10">
+        <div className="flex flex-col items-center justify-center text-center py-6">
+          <h1 className="text-white font-bold text-2xl mb-4">Create Event</h1>
+
+          <div className="flex space-x-4">
             <button
               onClick={handleSaveEvent}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-md"
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 
+                 hover:from-blue-600 hover:to-purple-600 text-white font-semibold 
+                 rounded-full shadow-lg transition-transform transform hover:scale-105"
             >
               Save
             </button>
-            <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-md">
+
+            <button
+              className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 
+                 hover:from-green-600 hover:to-teal-600 text-white font-semibold 
+                 rounded-full shadow-lg transition-transform transform hover:scale-105"
+            >
               Make Live
             </button>
           </div>
         </div>
 
+
         {/* Main Content */}
-        <div className="max-h-[80vh] flex justify-center p-3 md:p-5 overflow-y-auto">
+        <div className="max-h-full flex justify-center p-3 md:p-5 overflow-y-auto">
           <div className="flex flex-col gap-4 p-4 md:p-6 rounded-lg w-full max-w-2xl">
             <Accordion
               title="Basic Details"
@@ -89,6 +100,7 @@ const CreateEvent = () => {
               <input
                 type="date"
                 name="date"
+                placeholder="Date"
                 value={eventDetails.date}
                 onChange={handleInputChange}
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
@@ -114,6 +126,8 @@ const CreateEvent = () => {
               />
               <input
                 type="file"
+                name="poster"
+                placeholder="Poster"
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
                 disabled={!editingSections.basicDetails}
               />
@@ -127,12 +141,17 @@ const CreateEvent = () => {
             >
               <textarea
                 name="description"
-                value={eventDetails.description}
-                onChange={handleInputChange}
-                className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
                 placeholder="Event Description"
+                value={eventDetails.description}
+                onChange={(e) => {
+                  handleInputChange(e);
+                  e.target.style.height = "auto";
+                  e.target.style.height = `${e.target.scrollHeight}px`;
+                }}
+                className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none resize-none overflow-hidden"
                 disabled={!editingSections.description}
               />
+
             </Accordion>
 
             <Accordion
@@ -169,6 +188,8 @@ const CreateEvent = () => {
               />
               <input
                 type="file"
+                name="feeProof"
+                placeholder="Fee Proof"
                 className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none"
                 disabled={!editingSections.registrationFee}
               />
