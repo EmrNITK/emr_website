@@ -32,10 +32,7 @@ const Accordion = ({ title, children, onSave, isEditing, setIsEditing }) => {
                   if (child.props.name) {
                     return (
                       <div className="flex flex-col w-full">
-                        {/* Label - Always on Top */}
                         <span className="font-semibold">{child.props.placeholder}:</span>
-
-                        {/* Value - Wraps Properly */}
                         <span className="text-wrap w-full break-words whitespace-pre-wrap bg-gray-700 p-2 rounded-md">
                           {child.props.value}
                         </span>

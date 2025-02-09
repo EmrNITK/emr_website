@@ -228,10 +228,10 @@ const CreateEvent = () => {
         </div>
 
         {showPopup && (
-          <div className="fixed bottom-4 right-4 z-50">
-            <div className="w-48 h-16 bg-gray-800 rounded-lg flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-50 animate-spin-slow"></div>
-              <h2 className="text-white font-semibold z-10">Saved Successfully</h2>
+          <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
+            <div className="w-80 h-24 bg-gray-900 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-40 animate-pulse"></div>
+              <h2 className="text-white font-semibold text-lg z-10">Saved Successfully!</h2>
             </div>
           </div>
         )}
