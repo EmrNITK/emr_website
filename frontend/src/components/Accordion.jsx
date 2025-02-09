@@ -6,7 +6,7 @@ const Accordion = ({ title, children, onSave }) => {
   return (
     <div className="w-full p-2 bg-gray-800 rounded-xl">
       <div
-        className="flex justify-between items-center  text-white p-2 rounded-lg cursor-pointer"
+        className="flex justify-between items-center text-white p-2 rounded-lg cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="font-semibold">{title}</span>

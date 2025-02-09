@@ -24,14 +24,14 @@ const ListManager = ({ items, setItems, placeholder1, placeholder2, onSave }) =>
           placeholder={placeholder1}
           value={newItem.field1}
           onChange={(e) => setNewItem({ ...newItem, field1: e.target.value })}
-          className="p-2 bg-gray-700 text-white rounded w-full"
+          className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none w-full"
         />
         <input
           type="text"
           placeholder={placeholder2}
           value={newItem.field2}
           onChange={(e) => setNewItem({ ...newItem, field2: e.target.value })}
-          className="p-2 bg-gray-700 text-white rounded w-full"
+          className="p-2 border-b-2 border-gray-400/50 bg-transparent focus:outline-none w-full"
         />
         <button
           onClick={handleAdd}

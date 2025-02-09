@@ -16,11 +16,12 @@ const CreateEvent = () => {
     usefulLinks: [],
   });
 
+  const [showPopup, setShowPopup] = useState(false);
+
   const handleSaveEvent = () => {
-    setEventDetails(prev => ({
-      ...prev,
-    }));
-    // console.log("Event Details:", eventDetails);
+    setEventDetails((prev) => ({ ...prev }));
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
   };
 
   const handleInputChange = (e) => {
@@ -33,12 +34,13 @@ const CreateEvent = () => {
 
   const handleSaveSection = (section) => {
     console.log(`Saved ${section}:`, eventDetails[section]);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
   };
 
   return (
     <>
       <div className="min-h-[100vh]">
-
         <div className="flex flex-wrap justify-between items-center px-5 py-4 md:px-10">
           <h1 className="text-white font-bold text-2xl pl-5 md:pl-10">Create Event</h1>
           <div className="flex space-x-3 md:space-x-4 pr-5 md:pr-10">
@@ -145,6 +147,14 @@ const CreateEvent = () => {
           </div>
         </div>
 
+        {showPopup && (
+          <div className="fixed bottom-4 right-4 z-50">
+            <div className="w-48 h-16 bg-gray-800 rounded-lg flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-50 animate-spin-slow"></div>
+              <h2 className="text-white font-semibold z-10">Saved Successfully</h2>
+            </div>
+          </div>
+        )}
       </div>
       <FooterComp />
     </>
