@@ -7,6 +7,7 @@ import inviteRouter from "./routes/Invite.router.js";
 import userRouter from "./routes/User.router.js";
 import memberRouter from "./routes/Member.router.js";
 import joinRouter from "./routes/Join.router.js";
+import eventRouter from "./routes/Event.router.js";
 import cors from "cors"
 import methodOverride from "method-override";
 dotenv.config();
@@ -47,6 +48,7 @@ app.use('/api/teams', teamRouter);
 app.use('/api/teams', inviteRouter);
 app.use('/api/teams', joinRouter);
 app.use('/api/teams', memberRouter);
+app.use('/api/events', eventRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
