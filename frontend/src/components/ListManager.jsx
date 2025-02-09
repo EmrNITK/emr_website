@@ -43,10 +43,19 @@ const ListManager = ({ items, setItems, placeholder1, placeholder2, isEditing })
       )}
 
       {items.length > 0 && (
-        <div className="bg-gray-800 p-3 rounded-md">
+        <div className="p-3 rounded-md">
           {items.map((item, index) => (
             <div key={index} className="flex justify-between items-center bg-gray-700 p-2 rounded-md my-1">
-              <span className="text-white">{item.field1} - {item.field2}</span>
+              {isEditing ? (
+                <span className="text-white">
+                  {item.field1} - {item.field2}
+                </span>
+              ) : (
+                <span className="text-white">
+                  <strong>{placeholder1}:</strong> {item.field1} &nbsp;&nbsp;
+                  <strong>{placeholder2}:</strong> {item.field2}
+                </span>
+              )}
               {isEditing && (
                 <button onClick={() => handleDelete(index)} className="text-red-500 hover:text-red-700">
                   <FaTrash />

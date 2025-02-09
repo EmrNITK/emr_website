@@ -4,9 +4,9 @@ const Accordion = ({ title, children, onSave, isEditing, setIsEditing }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = () => {
-    onSave();
-    setIsOpen(false);
-    setIsEditing(false);
+    onSave();         
+    setIsEditing(false); 
+    setIsOpen(false);  
   };
 
   return (
@@ -22,8 +22,29 @@ const Accordion = ({ title, children, onSave, isEditing, setIsEditing }) => {
       {isOpen && (
         <div className="p-3 bg-gray-900 rounded-lg mt-2">
           <div className="flex flex-col gap-4">
-            {React.Children.map(children, (child) =>
-              React.cloneElement(child, { disabled: !isEditing })
+            {isEditing ? (
+              React.Children.map(children, (child) =>
+                React.cloneElement(child, { disabled: !isEditing })
+              )
+            ) : (
+              <div className="text-white flex flex-col gap-2">
+                {React.Children.map(children, (child) => {
+                  if (child.props.name) {
+                    return (
+                      <div className="flex flex-col w-full">
+                        {/* Label - Always on Top */}
+                        <span className="font-semibold">{child.props.placeholder}:</span>
+
+                        {/* Value - Wraps Properly */}
+                        <span className="text-wrap w-full break-words whitespace-pre-wrap bg-gray-700 p-2 rounded-md">
+                          {child.props.value}
+                        </span>
+                      </div>
+                    );
+                  }
+                  return child;
+                })}
+              </div>
             )}
             <button
               onClick={isEditing ? handleSave : () => setIsEditing(true)}
