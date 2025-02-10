@@ -27,7 +27,7 @@ import SynapseEventPage from "./pages/SynapseEventPage";
 import TeamDashboard from "./pages/TeamDashboard";
 import UserDashboard from "./pages/UserDashboard.jsx";
 
-import EventPage from "./components/EventPage.jsx";
+import EventDetailsPage from "./pages/EventDetailsPage.jsx";
 import CreateEventPage from "./pages/CreateEventPage.jsx";
 import ManageEventsPage from "./pages/ManageEventsPage.jsx";
 
@@ -134,7 +134,7 @@ const App = () => {
                 }
               />
               <Route path="/manage-events" element={<ManageEventsPage />} />
-              <Route path="/manage-events/event" element={<EventPage />} />
+              <Route path="/manage-events/event" element={<EventDetailsPage />} />
             </Routes>
           </div>
         </BrowserRouter>

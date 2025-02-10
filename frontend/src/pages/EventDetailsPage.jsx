@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-function EventPage() {
+function EventDetailsPage() {
     const location = useLocation();
     const { event } = location.state;
     
@@ -44,4 +44,4 @@ function EventPage() {
     );
 }
 
-export default EventPage;
+export default EventDetailsPage;
