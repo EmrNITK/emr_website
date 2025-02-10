@@ -6,12 +6,10 @@ import {
   deleteTeam,
   updateKitProvided,
 } from "../api/apiService";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
 import TeamInfo from "../components/TeamInfo";
-import Header from "../components/Header";
-import FooterComp from "../components/Footer";
 
-const TeamDashboard = () => {
+const TeamDashboard = ({}) => {
   const { user, updateUser } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [availableUsers, setAvailableUsers] = useState([]);
@@ -19,7 +17,6 @@ const TeamDashboard = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [fetching, setFetching] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,12 +37,6 @@ const TeamDashboard = () => {
 
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   if (!user.isAdmin) {
-  //     navigate("/workshop");
-  //   }
-  // }, [user, navigate]);
 
   const filteredTeams = teams.filter((team) =>
     team.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -85,12 +76,8 @@ const TeamDashboard = () => {
 
   return (
     <>
-    <Header/>
+    {/* <Header/> */}
     <div className="min-h-[100vh]">
-      <h1 className="text-4xl font-extrabold text-center text-white-800 mt-4 mb-8">
-        Team Dashboard
-      </h1>
-
       {message && <p className="text-green-500 font-mono text-sm">{message}</p>}
       {error && <p className="text-red-500 font-mono text-sm">{error}</p>}
 
@@ -126,7 +113,7 @@ const TeamDashboard = () => {
         )}
       </div>
     </div>
-    <FooterComp/>
+  
     </>
   );
 };
