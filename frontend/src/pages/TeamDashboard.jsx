@@ -41,11 +41,11 @@ const TeamDashboard = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (!user.isAdmin) {
-      navigate("/workshop");
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (!user.isAdmin) {
+  //     navigate("/workshop");
+  //   }
+  // }, [user, navigate]);
 
   const filteredTeams = teams.filter((team) =>
     team.name.toLowerCase().includes(searchQuery.toLowerCase())
