@@ -1,7 +1,7 @@
 import React from "react";
-import './index.css';
+import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ManageEvents from './pages/ManageEvents.jsx';
+import ManageEvents from "./pages/ManageEvents.jsx";
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./utils/ScrollToTop";
 
@@ -30,7 +30,7 @@ import UserDashboard from "./pages/UserDashboard.jsx";
 
 import EventPage from "./components/EventPage.jsx";
 
-import CreateEvent from "./pages/CreateEvent.jsx";
+import CreateEventPage from "./pages/CreateEventPage.jsx";
 
 const App = () => {
   return (
@@ -48,7 +48,6 @@ const App = () => {
               <Route path="/register" element={<SynapseRegister />} />
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-
               <Route
                 path="/dashboard"
                 element={
@@ -59,9 +58,8 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-
-        <Route path="/event" element={<CreateEvent />} /> {/* Create Event Route */}
-    
+              <Route path="/event" element={<CreateEventPage />} />{" "}
+              {/* Create Event Route */}
               <Route
                 path="/userdashboard"
                 element={
@@ -72,7 +70,6 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/teamcard"
                 element={
@@ -87,9 +84,7 @@ const App = () => {
                 path="/teamdetails"
                 element={
                   <ProtectedRoute>
-                    <VerifiedRoute>
-                      {/* <TeamDetails /> */}
-                    </VerifiedRoute>
+                    <VerifiedRoute>{/* <TeamDetails /> */}</VerifiedRoute>
                   </ProtectedRoute>
                 }
               />
@@ -134,12 +129,11 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <VerifiedRoute>
-                  <SynapseEventPage />
-                  </VerifiedRoute>
+                      <SynapseEventPage />
+                    </VerifiedRoute>
                   </ProtectedRoute>
                 }
               />
-
               <Route path="/manage-events" element={<ManageEvents />} />
               <Route path="/manage-events/event" element={<EventPage />} />
             </Routes>

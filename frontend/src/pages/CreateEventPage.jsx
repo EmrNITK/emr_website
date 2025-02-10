@@ -4,7 +4,7 @@ import ListManager from "../components/ListManager";
 import Header from "../components/Header";
 import FooterComp from "../components/Footer";
 
-const CreateEvent = () => {
+const CreateEventPage = () => {
   const [eventDetails, setEventDetails] = useState({
     eventName: "",
     date: "",
@@ -241,4 +241,4 @@ const CreateEvent = () => {
   );
 };
 
-export default CreateEvent;
+export default CreateEventPage;
