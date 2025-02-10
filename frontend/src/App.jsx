@@ -27,6 +27,8 @@ import SynapseEventPage from "./pages/SynapseEventPage";
 import TeamDashboard from "./pages/TeamDashboard";
 import UserDashboard from "./pages/UserDashboard.jsx";
 
+import CreateEvent from "./pages/CreateEvent.jsx";
+
 const App = () => {
   return (
     <div className="relative min-h-screen">
@@ -54,6 +56,9 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
+
+        <Route path="/event" element={<CreateEvent />} /> {/* Create Event Route */}
+    
               <Route
                 path="/userdashboard"
                 element={
