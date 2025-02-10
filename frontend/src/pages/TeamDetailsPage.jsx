@@ -9,7 +9,7 @@ import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 
-const TeamDetails = () => {
+const TeamDetailsPage = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [team, setTeam] = useState(null);
   const [fetching, setFetching] = useState(true);
@@ -249,4 +249,4 @@ const TeamDetails = () => {
   );
 };
 
-export default TeamDetails;
+export default TeamDetailsPage;

@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { changePasswordUser } from "../api/apiService"; // Import the change password API call
 import PageLayout from "../components/PageLayout";
 
-const ChangePassword = () => {
+const ChangePasswordPage = () => {
   const { user } = useContext(AuthContext); // Assuming you have user context to get email
   const [currentPassword, setCurrentPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -104,4 +104,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default ChangePasswordPage;

@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import PageLayout from "../components/PageLayout";
 // import payment_qr from "../assets/payment_qr.jpg";
 
-const VerifyTransaction = () => {
+const VerifyTransactionPage = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [transactionId, setTransactionId] = useState("");
   const [error, setError] = useState("");
@@ -113,4 +113,4 @@ const VerifyTransaction = () => {
   );
 };
 
-export default VerifyTransaction;
+export default VerifyTransactionPage;

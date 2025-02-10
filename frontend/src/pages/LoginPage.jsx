@@ -2,11 +2,9 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/apiService";
-import Header from "../components/Header";
-import FooterComp from "../components/Footer";
 import PageLayout from "../components/PageLayout";
 
-const Login = () => {
+const LoginPage = () => {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -125,4 +123,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

@@ -3,7 +3,7 @@ import { changePassword, verifyOTP, sendOTP } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 
-const ForgotPassword = () => {
+const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -219,4 +219,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordPage;

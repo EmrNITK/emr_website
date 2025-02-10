@@ -4,7 +4,7 @@ import { fetchAllUsers } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 
-const UserDashboard = () => {
+const UserDashboardPage = () => {
   const { user } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -140,4 +140,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default UserDashboardPage;

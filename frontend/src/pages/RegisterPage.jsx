@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/apiService";
 import PageLayout from "../components/PageLayout";
 
-const Register = () => {
+const RegisterPage = () => {
   const { login } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -198,4 +198,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;

@@ -10,7 +10,7 @@ import Header from "../components/Header.jsx";
 import { useNavigate, Link, Navigate } from "react-router-dom";
 import FooterComp from "../components/Footer.jsx";
 
-const CreateTeam = () => {
+const CreateTeamPage = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [verifiedUsers, setVerifiedUsers] = useState([]);
   const [teamName, setTeamName] = useState("");
@@ -358,4 +358,4 @@ const CreateTeam = () => {
   );
 };
 
-export default CreateTeam;
+export default CreateTeamPage;

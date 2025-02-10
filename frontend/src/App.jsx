@@ -10,22 +10,22 @@ import TeamCard from "./components/TeamCard.jsx";
 import ProtectedRoute from "./hoc/ProtectedRoute.jsx";
 import VerifiedRoute from "./hoc/VerifiedRoute.jsx";
 import AdminRoute from "./hoc/AdminRoute.jsx";
-import CreateTeam from "./pages/CreateTeam.jsx";
+import CreateTeamPage from "./pages/CreateTeamPage.jsx";
 import JoinTeamPage from "./pages/JoinTeamPage.jsx";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import ChangePassword from "./pages/ChangePassword";
-import ForgotPassword from "./pages/ForgotPassword";
+import LoginPage from "./pages/LoginPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 import SponsorPage from "./pages/Sponsor.jsx";
-import SynapseRegister from "./pages/SynapseRegister";
-import TransactionVerify from "./pages/TransactionVerify";
+import RegisterPage from "./pages/RegisterPage";
+import TransactionVerifyPage from "./pages/TransactionVerifyPage";
 
 import WorkshopInfo from "./pages/WorkshopInfo";
-import TeamDetails from "./pages/TeamDetails";
+import TeamDetailsPage from "./pages/TeamDetailsPage";
 import SynapseEventPage from "./pages/SynapseEventPage";
-import TeamDashboard from "./pages/TeamDashboard";
-import UserDashboard from "./pages/UserDashboard.jsx";
+// import TeamDashboard from "./pages/TeamDashboard";
+import UserDashboardPage from "./pages/UserDashboardPage";
 
 import EventDetailsPage from "./pages/EventDetailsPage.jsx";
 import CreateEventPage from "./pages/CreateEventPage.jsx";
@@ -44,10 +44,10 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/sponsor" element={<SponsorPage />} />
               <Route path="/workshop" element={<WorkshopInfo />} />
-              <Route path="/register" element={<SynapseRegister />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              {/* <Route
                 path="/dashboard"
                 element={
                   <ProtectedRoute>
@@ -56,7 +56,7 @@ const App = () => {
                     </AdminRoute>
                   </ProtectedRoute>
                 }
-              />
+              /> */}
               <Route path="/event" element={<CreateEventPage />} />{" "}
               {/* Create Event Route */}
               <Route
@@ -64,7 +64,7 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <AdminRoute>
-                      <UserDashboard />
+                      <UserDashboardPage />
                     </AdminRoute>
                   </ProtectedRoute>
                 }
@@ -83,7 +83,7 @@ const App = () => {
                 path="/teamdetails"
                 element={
                   <ProtectedRoute>
-                    <VerifiedRoute>{/* <TeamDetails /> */}</VerifiedRoute>
+                    <VerifiedRoute><TeamDetailsPage /></VerifiedRoute>
                   </ProtectedRoute>
                 }
               />
@@ -91,7 +91,7 @@ const App = () => {
                 path="/transactionverify"
                 element={
                   <ProtectedRoute>
-                    <TransactionVerify />
+                    <TransactionVerifyPage />
                   </ProtectedRoute>
                 }
               />
@@ -99,7 +99,7 @@ const App = () => {
                 path="/change-password"
                 element={
                   <ProtectedRoute>
-                    <ChangePassword />
+                    <ChangePasswordPage />
                   </ProtectedRoute>
                 }
               />
@@ -108,7 +108,7 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <VerifiedRoute>
-                      <CreateTeam />
+                      <CreateTeamPage />
                     </VerifiedRoute>
                   </ProtectedRoute>
                 }
