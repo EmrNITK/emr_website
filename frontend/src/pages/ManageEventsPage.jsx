@@ -2,7 +2,7 @@ import React from 'react';
 import { events } from '../utils/data';
 import { Link } from 'react-router-dom';
 
-export default function ManageEvents() {
+export default function ManageEventsPage() {
   return (
     <div className="p-8 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <h1 className="text-4xl font-bold text-center mb-8 text-blue-400">Manage Events</h1>
