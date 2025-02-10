@@ -1,7 +1,6 @@
 import React from "react";
 import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ManageEvents from "./pages/ManageEvents.jsx";
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./utils/ScrollToTop";
 
@@ -29,8 +28,8 @@ import TeamDashboard from "./pages/TeamDashboard";
 import UserDashboard from "./pages/UserDashboard.jsx";
 
 import EventPage from "./components/EventPage.jsx";
-
 import CreateEventPage from "./pages/CreateEventPage.jsx";
+import ManageEventsPage from "./pages/ManageEventsPage.jsx";
 
 const App = () => {
   return (
@@ -134,7 +133,7 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/manage-events" element={<ManageEvents />} />
+              <Route path="/manage-events" element={<ManageEventsPage />} />
               <Route path="/manage-events/event" element={<EventPage />} />
             </Routes>
           </div>
