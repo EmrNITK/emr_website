@@ -1,12 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import { verifyUser } from "../api/apiService";
 import { Link, Navigate } from "react-router-dom";
-import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
-import FooterComp from "../components/Footer";
+import PageLayout from "../components/PageLayout";
 // import payment_qr from "../assets/payment_qr.jpg";
 
-const VerifyTransaction = () => {
+const VerifyTransactionPage = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [transactionId, setTransactionId] = useState("");
   const [error, setError] = useState("");
@@ -60,17 +59,12 @@ const VerifyTransaction = () => {
 
 
   return (
-    <div>
-      <Header />
-      {user.isVerified ? <Navigate to="/synapse" /> : <></>}
-      <div className="flex mt-20 items-center justify-center h-screen ">
+    <PageLayout title={"Verify Transaction"}>
+      {/* {user.isVerified ? <Navigate to="/" /> : <></>} */}
+      <div className="flex items-start mt-16 justify-center">
         <div className="p-8 max-w-md w-full bg-white/5 backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg ">
-          <h2 className="text-2xl font-bold text-white text-center mb-6 font-mono">
-            Verify Transaction
-          </h2>
-
           <div className="flex items-center justify-center">
-            <img className="h-60 w-2/3" src={payment_qr} alt="Payment QR" />
+            {/* <img className="h-60 w-2/3" src={payment_qr} alt="Payment QR" /> */}
           </div>
           <p className="text-normal mt-4 text-white text-center mb-6 font-mono">
             Registration Fee: ₹ 50
@@ -114,9 +108,9 @@ const VerifyTransaction = () => {
           )}
         </div>
       </div>
-      <FooterComp />
-    </div>
+      </PageLayout>
+   
   );
 };
 
-export default VerifyTransaction;
+export default VerifyTransactionPage;

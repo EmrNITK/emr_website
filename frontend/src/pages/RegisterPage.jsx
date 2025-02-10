@@ -2,10 +2,9 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/apiService";
-import Header from "../components/Header";
-import FooterComp from "../components/Footer";
+import PageLayout from "../components/PageLayout";
 
-const Register = () => {
+const RegisterPage = () => {
   const { login } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -74,8 +73,7 @@ const Register = () => {
   };
 
   return (
-    <>
-      <Header />
+    <PageLayout>
       <div className="flex justify-center items-center h-screen mt-28 md:mt-10">
         <div className="flex flex-col md:flex-row max-w-4xl w-full md:w-4/5">
           <div className="relative md:w-1/2 w-full p-8 flex items-center justify-center bg-center">
@@ -196,9 +194,8 @@ const Register = () => {
           </div>
         </div>
       </div>
-      <FooterComp />
-    </>
+    </PageLayout>
   );
 };
 
-export default Register;
+export default RegisterPage;
