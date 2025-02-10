@@ -25,7 +25,9 @@ const EventDetailsPage = () => {
 
   return (
     <PageLayout title={event.name}>
-      <Tabs tabs={tabs} content={content} />
+      <div className="flex justify-center">
+        <Tabs tabs={tabs} content={content} />
+      </div>
     </PageLayout>
   );
 };
