@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { changePassword, verifyOTP, sendOTP } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+import PageLayout from "../components/PageLayout";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -49,8 +49,8 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      const {token}= await verifyOTP(email, otp);
-      localStorage.setItem('tempOtpJwt',token);
+      const { token } = await verifyOTP(email, otp);
+      localStorage.setItem("tempOtpJwt", token);
       setMessage("OTP verified. You can now reset your password.");
       setError("");
       setStep(3); // Move to password reset step
@@ -97,9 +97,8 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen text-white">
-      <Header />
-      <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
+    <PageLayout>
+      <div className="flex justify-center items-center min-h-[80vh] px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-1400 p-8 shadow-lg rounded-lg w-full max-w-md bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm">
           {step === 1 && (
             <>
@@ -216,7 +215,7 @@ const ForgotPassword = () => {
           )}
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

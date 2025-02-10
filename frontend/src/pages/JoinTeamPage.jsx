@@ -1,13 +1,12 @@
 // src/components/TeamList.js
 import React, { useContext, useEffect, useState } from "react";
 import TeamCard from "../components/TeamCard";
-import Header from "../components/Header";
 import { getAllTeams, joinTeam } from "../api/apiService";
 import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
-import FooterComp from "../components/Footer";
+import PageLayout from "../components/PageLayout";
 
-const TeamList = () => {
+const JoinTeamPage = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [message, setMessage] = useState("");
@@ -61,13 +60,9 @@ const TeamList = () => {
   );
 
   return (
-    <>
+    <PageLayout title={"Join Team"}>
       {user?.teamId ? <Navigate to="/workshop" /> : <></>}
-      <Header />
-      <div className="w-screen min-h-screen px-10 my-6">
-        <h2 className="text-2xl font-bold mb-6 text-center text-white">
-          Available Teams to Join
-        </h2>
+      
         {message && (
           <p className="font-mono text-sm mt-4 text-center mb-4 text-green-500">
             {message}
@@ -127,10 +122,9 @@ const TeamList = () => {
               })}
           </div>
         )}
-      </div>
-      <FooterComp />
-    </>
+     
+    </PageLayout>
   );
 };
 
-export default TeamList;
+export default JoinTeamPage;

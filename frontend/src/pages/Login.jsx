@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/apiService";
 import Header from "../components/Header";
 import FooterComp from "../components/Footer";
+import PageLayout from "../components/PageLayout";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -45,8 +46,7 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <Header />
+    <PageLayout>
       <div className="flex justify-center items-center h-screen md:mt-2 mt-20">
         <div className="flex flex-col md:flex-row max-w-4xl shadow-lg w-full md:w-4/5">
           <div
@@ -121,8 +121,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <FooterComp />
-    </div>
+      </PageLayout>
   );
 };
 

@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
-import FooterComp from "../components/Footer";
+import PageLayout from "../components/PageLayout";
 
 const WorkshopInfo = () => {
   const { user, updateUser } = useContext(AuthContext);
@@ -29,22 +28,17 @@ const WorkshopInfo = () => {
 
   const handelmyTeam = () => {
     navigate("/teamdetails");
-  }
+  };
 
   const handleJoinTeamClick = () => {
     navigate("/workshop/jointeam");
   };
 
   return (
-    <div>
-      <Header />
-      {/* <div className="mt-12 md:mt-10 flex flex-col items-center justify-center min-h-screen">
+    <PageLayout title={"Embedded Workshop"}>
+      <div className="mt-12 md:mt-10 flex flex-col items-center justify-center min-h-screen">
         <div className=" bg-white/5  backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-lg overflow-hidden flex flex-col md:flex-row max-w-6xl w-full">
           <div className="p-4 w-full md:w-2/3">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Embedded Workshop
-            </h1>
-
             <section className="text-xs md:text-sm text-gray-400 mb-6 text-justify font-mono">
               <div className="font-mono">
                 EmR is again back with its Embedded Workshop! Don't miss the
@@ -78,7 +72,9 @@ const WorkshopInfo = () => {
                     intuitive gesture-based navigation and control.
                   </li>
                   <li>
-                    <strong className="font-mono underline">Remote-Controlled Bot</strong>
+                    <strong className="font-mono underline">
+                      Remote-Controlled Bot
+                    </strong>
                   </li>
                   <li className="font-mono">
                     <strong className="font-mono">
@@ -105,9 +101,7 @@ const WorkshopInfo = () => {
 
               <br />
               <section className="font-mono">
-                <h2 className="text-xl font-mono font-bold">
-                  Fee Details
-                </h2>
+                <h2 className="text-xl font-mono font-bold">Fee Details</h2>
                 <ul className="list-none space-y-4 font-mono">
                   <li>
                     <h4 className="text-sm font-mono">
@@ -115,7 +109,10 @@ const WorkshopInfo = () => {
                     </h4>
                     <ul className="list-disc list-inside ml-4 font-mono">
                       <li className="font-mono">
-                        <strong className="font-mono">Amount (Bot Kit Price):</strong> ₹ 1700 / Member
+                        <strong className="font-mono">
+                          Amount (Bot Kit Price):
+                        </strong>{" "}
+                        ₹ 1700 / Member
                       </li>
                     </ul>
                   </li>
@@ -126,11 +123,16 @@ const WorkshopInfo = () => {
                     </h4>
                     <ul className="list-disc list-inside ml-4 font-mono">
                       <li className="font-mono">
-                        <strong className="font-mono">Amount (Bot Kit Price):</strong> ₹ 1700 / Member
+                        <strong className="font-mono">
+                          Amount (Bot Kit Price):
+                        </strong>{" "}
+                        ₹ 1700 / Member
                       </li>
                       <li className="font-mono">
-                        <strong className="font-mono">Accommodation + Food (For 3 Days):</strong> ₹
-                        1500 / Member
+                        <strong className="font-mono">
+                          Accommodation + Food (For 3 Days):
+                        </strong>{" "}
+                        ₹ 1500 / Member
                       </li>
                     </ul>
                   </li>
@@ -144,9 +146,7 @@ const WorkshopInfo = () => {
 
               <br />
               <footer className="font-mono">
-                <div className="font-mono text-xl font-bold">
-                  Useful Links:
-                </div>
+                <div className="font-mono text-xl font-bold">Useful Links:</div>
                 <ul className="list-disc list-inside font-mono">
                   <li>
                     <a
@@ -178,7 +178,7 @@ const WorkshopInfo = () => {
 
             <div className="w-full flex md:hidden min-h-[30vh] md:w-1/2 p-4 justify-center items-center">
               <img
-                src={bot}
+                // src={bot}
                 alt="Embedded Workshop"
                 className="object-cover mb-4 min-h-[20vh] w-3/4 md:h-full md:w-3/4 rounded-md boxShadoww"
               />
@@ -219,20 +219,16 @@ const WorkshopInfo = () => {
           </div>
           <div className="w-full hidden md:w-1/2 p-4 md:flex justify-center items-center">
             <img
-              src={bot}
+              // src={bot}
               alt="Embedded Workshop"
               className="object-cover  md:h-[50vh] md:w-full rounded-md boxShadoww"
             />
           </div>
         </div>
-      </div> */}
-      <h1 className="flex justify-center align-center text-red-500 text-xl my-10">
+      </div>
 
-        Registrations Closed
-        <br />
-      </h1>
       <div className="flex justify-center align-center">
-      {user?.teamId && (
+        {user?.teamId && (
           <>
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               <button
@@ -242,11 +238,10 @@ const WorkshopInfo = () => {
                 My Team
               </button>
             </div>
-          </>)}
+          </>
+        )}
       </div>
-
-      <FooterComp />
-    </div>
+    </PageLayout>
   );
 };
 

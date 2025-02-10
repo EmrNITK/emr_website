@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { changePasswordUser } from "../api/apiService"; // Import the change password API call
-import Header from "../components/Header";
+import PageLayout from "../components/PageLayout";
 
 const ChangePassword = () => {
   const { user } = useContext(AuthContext); // Assuming you have user context to get email
@@ -27,8 +27,7 @@ const ChangePassword = () => {
   };
 
   return (
-    <div>
-      <Header />
+    <PageLayout>
       <div className="flex justify-center items-center h-screen">
         <div className="flex flex-col md:flex-row max-w-4xl shadow-lg w-full md:w-4/5">
           <div
@@ -101,7 +100,7 @@ const ChangePassword = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
