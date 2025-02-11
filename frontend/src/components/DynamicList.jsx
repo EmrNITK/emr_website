@@ -10,7 +10,7 @@ export const DynamicList = ({ fields, section, isEditing }) => {
   const [inputValues, setInputValues] = useState(fields.map(() => ""));
 
   useUpdateEffect(() => {
-    console.log('render');
+    console.log("render");
     updateSection(section, items);
   }, [isEditing]);
 
@@ -50,7 +50,7 @@ export const DynamicList = ({ fields, section, isEditing }) => {
   return (
     <>
       {isEditing ? (
-        <div className="grid grid-cols-[3fr_3fr_.75fr] gap-4 align-center">
+        <div className="grid grid-rows-3 md:grid-rows-none md:grid-cols-[3fr_3fr_.75fr] gap-4 align-center">
           {fields.map((field, index) => {
             return (
               <Input
@@ -85,7 +85,7 @@ export const DynamicList = ({ fields, section, isEditing }) => {
           {items.map((item, index) => (
             <div
               key={index}
-              className="flex justify-between items-center gap-2 bg-gray-700 p-2 rounded-md my-1"
+              className="flex md:flex-row flex-col justify-between items-center gap-2 bg-gray-700 py-2 md:p-2 rounded-md my-1"
             >
               {fields.map((field) => (
                 <Input
@@ -102,7 +102,7 @@ export const DynamicList = ({ fields, section, isEditing }) => {
 
               {/* Controls: Edit, Save, Delete */}
               {isEditing && (
-                <div className="flex gap-4">
+                <div className="flex gap-4 md:self-center self-end px-2">
                   {item.editing ? (
                     <FaCheck
                       className="text-green-500 hover:text-green-700 cursor-pointer"
