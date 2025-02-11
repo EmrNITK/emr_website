@@ -17,7 +17,7 @@ const ParticipantsDashboard = ({ participants }) => {
 
   return (
     <>
-      <div className="px-6 min-h-[100vh]">
+      <div className="w-[100%] px-6 min-h-[100vh] overflow-x-auto">
         <div className="flex flex-col p-4 md:flex-row justify-center mb-4">
           <input
             type="text"
