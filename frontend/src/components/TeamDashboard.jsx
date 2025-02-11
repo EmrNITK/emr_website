@@ -77,7 +77,7 @@ const TeamDashboard = ({}) => {
   return (
     <>
     {/* <Header/> */}
-    <div className="min-h-[100vh]">
+    <div className="min-h-[100vh] w-full">
       {message && <p className="text-green-500 font-mono text-sm">{message}</p>}
       {error && <p className="text-red-500 font-mono text-sm">{error}</p>}
 
