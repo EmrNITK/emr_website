@@ -16,17 +16,13 @@ import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-
 import SponsorPage from "./pages/Sponsor.jsx";
 import RegisterPage from "./pages/RegisterPage";
 import TransactionVerifyPage from "./pages/TransactionVerifyPage";
-
 import WorkshopInfo from "./pages/WorkshopInfo";
 import TeamDetailsPage from "./pages/TeamDetailsPage";
 import SynapseEventPage from "./pages/SynapseEventPage";
-// import TeamDashboard from "./pages/TeamDashboard";
 import UserDashboardPage from "./pages/UserDashboardPage";
-
 import EventDetailsPage from "./pages/EventDetailsPage.jsx";
 import CreateEventPage from "./pages/CreateEventPage.jsx";
 import ManageEventsPage from "./pages/ManageEventsPage.jsx";
@@ -47,18 +43,7 @@ const App = () => {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              {/* <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <AdminRoute>
-                      <TeamDashboard />
-                    </AdminRoute>
-                  </ProtectedRoute>
-                }
-              /> */}
-              <Route path="/event" element={<CreateEventPage />} />{" "}
-              {/* Create Event Route */}
+
               <Route
                 path="/userdashboard"
                 element={
@@ -83,7 +68,9 @@ const App = () => {
                 path="/teamdetails"
                 element={
                   <ProtectedRoute>
-                    <VerifiedRoute><TeamDetailsPage /></VerifiedRoute>
+                    <VerifiedRoute>
+                      <TeamDetailsPage />
+                    </VerifiedRoute>
                   </ProtectedRoute>
                 }
               />
@@ -133,8 +120,36 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/manage-events" element={<ManageEventsPage />} />
-              <Route path="/manage-events/event" element={<EventDetailsPage />} />
+              <Route
+                path="/events/create"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <CreateEventPage />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/events/manage"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <ManageEventsPage />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/events/manage/event"
+                element={
+                  <ProtectedRoute>
+                    <VerifiedRoute>
+                      <EventDetailsPage />
+                    </VerifiedRoute>
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </div>
         </BrowserRouter>
