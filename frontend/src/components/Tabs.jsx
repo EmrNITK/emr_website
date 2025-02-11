@@ -20,7 +20,7 @@ const Tabs = ({ tabs, content }) => {
         ))}
       </div>
       {/* Tab Content */}
-      <div className="w-full text-center md:text-left bg-white/5 backdrop-opacity-100 backdrop-brightness-100 shadow-lg backdrop-blur-lg rounded-3xl p-4">
+      <div className="w-full flex flex-col items-center text-center md:text-left bg-white/5 backdrop-opacity-100 backdrop-brightness-100 shadow-lg backdrop-blur-lg rounded-3xl p-4">
         {content[active]}
       </div>
     </div>
