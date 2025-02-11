@@ -20,7 +20,7 @@ const EventsSection = ({ title, events, isLive, navigate }) => {
             event={event}
             action="View Details"
             onActionClick={() =>
-              navigate("/manage-events/event", { state: { event } })
+              navigate("/events/manage/event", { state: { event } })
             }
             isLive={isLive}
           />
