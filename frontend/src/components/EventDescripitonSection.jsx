@@ -4,14 +4,13 @@ import Accordion from "./Accordion";
 import useUpdateEffect from "../hooks/useUpdateEffect";
 import { EventFormContext } from "../context/EventFormContext";
 
-export const EventDescriptionSection = ({disabled}) => {
+export const EventDescriptionSection = ({ disabled }) => {
   const [isEditing, setIsEditing] = useState(!disabled);
-  const { eventData, updateSection } = useContext(EventFormContext);
+  const { eventData, updateField } = useContext(EventFormContext);
   const [content, setContent] = useState(eventData["description"]);
 
   useUpdateEffect(() => {
-    console.log("render");
-    updateSection("descripition", content);
+    updateField("description", content);
   }, [isEditing]);
 
   const handleSave = () => {
@@ -34,7 +33,7 @@ export const EventDescriptionSection = ({disabled}) => {
             className="mt-4 p-4 bg-transparent rounded-md"
           />
         )}
-         <button
+        <button
           onClick={isEditing ? handleSave : () => setIsEditing(true)}
           className={`${
             isEditing
