@@ -6,12 +6,8 @@ import { Input } from "./Input";
 
 export const EventFormSection = ({ title, section, fields, disabled }) => {
   const [isEditing, setIsEditing] = useState(!disabled);
-  const { eventData, updateSection } = useContext(EventFormContext);
-  const [sectionData, setSectionData] = useState(eventData[section]);
-
-  useUpdateEffect(() => {
-    updateSection(section, sectionData);
-  }, [isEditing]);
+  const { eventData, updateField } = useContext(EventFormContext);
+  const [sectionData, setSectionData] = useState(eventData);
 
   const handleSave = () => {
     setIsEditing(false);
@@ -21,12 +17,15 @@ export const EventFormSection = ({ title, section, fields, disabled }) => {
     const updatedInputValues = { ...sectionData };
     updatedInputValues[name] = e.target.value;
     setSectionData(updatedInputValues);
+    updateField(name, e.target.value);
   };
 
   const handleFileChange = (e, name) => {
     const updatedInputValues = { ...sectionData };
+    console.log(e.target.files[0]);
     updatedInputValues[name] = e.target.files[0];
     setSectionData(updatedInputValues);
+    updateField(name, e.target.files[0]);
   };
 
   return (
@@ -40,7 +39,9 @@ export const EventFormSection = ({ title, section, fields, disabled }) => {
               disabled={!isEditing}
               id={`${field.name}-${index}`}
               type={field.type}
-              value={field.type == "file" ? "" : sectionData[field.name]}
+              hidden={field.type == "file"}
+              value={field.type == "file" ? "" : sectionData[field.name] ?? ""}
+              fileName={sectionData[field.name]?.name}
               onChange={(e) => {
                 field.type == "file"
                   ? handleFileChange(e, field.name)
