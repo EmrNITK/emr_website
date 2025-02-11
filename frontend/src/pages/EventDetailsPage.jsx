@@ -4,6 +4,7 @@ import Tabs from "../components/Tabs";
 import ParticipantsDashboard from "../components/ParticipantsDashboard";
 import TeamDashboard from "../components/TeamDashboard";
 import PageLayout from "../components/PageLayout";
+import { EventForm } from "../components/EventForm";
 
 const EventDetailsPage = () => {
   const location = useLocation();
@@ -11,15 +12,11 @@ const EventDetailsPage = () => {
 
   const tabs = ["Details", "Participants", "Teams", "Leaderboard"];
   const content = [
-    <div> {/* Details Content */} </div>,
-    <div>
-      {" "}
-      <ParticipantsDashboard participants={event.participants} />{" "}
-    </div>,
-    <div>
-      {" "}
-      <TeamDashboard teams={event.teams} />{" "}
-    </div>,
+    <EventForm initialData={event} disabled={true} />,
+
+    <ParticipantsDashboard participants={event.participants} />,
+
+    <TeamDashboard teams={event.teams} />,
     <div> {/* Submit Content */} </div>,
   ];
 
