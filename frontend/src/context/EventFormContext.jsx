@@ -4,6 +4,7 @@ export const EventFormContext = createContext();
 
 export const EventFormProvider = ({ children, initialData = {} }) => {
   const [eventData, setEventData] = useState({
+    id: initialData._id||"",
     name: initialData.name || "",
     date: initialData.date || "",
     venue: initialData.venue || "",
@@ -15,7 +16,7 @@ export const EventFormProvider = ({ children, initialData = {} }) => {
     qrCode: initialData.qrCode || "",
     coordinator: initialData.coordinator || [],
     usefulLinks: initialData.usefulLinks || [],
-    isLive: initialData.isLive || "",
+    isLive: initialData.isLive || false,
     updatedFields: {}, // Track fields that are updated for editing mode
   });
 
