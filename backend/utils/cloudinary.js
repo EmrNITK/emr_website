@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import fs, { unlinkSync } from "fs"   // fs => file system (by default in node)
+import fs  from "fs"   // fs => file system (by default in node)
 
 const uploadOnCloudinary = async(localFilePath) => {
    try {
