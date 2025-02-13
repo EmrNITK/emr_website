@@ -29,9 +29,6 @@ export const validateLogin = [
       
     }
     return res.status(422).json({ errors: errors.array() });
-
-    console.log('good');
-    
   }
 ];
 
