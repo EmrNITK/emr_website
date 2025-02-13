@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
 import Accordion from "./Accordion";
 import { EventFormContext } from "../context/EventFormContext";
-import useUpdateEffect from "../hooks/useUpdateEffect";
 import { Input } from "./Input";
+import { readFile } from "../utils/readFile";
 
 export const EventFormSection = ({ title, section, fields, disabled }) => {
   const [isEditing, setIsEditing] = useState(!disabled);
@@ -21,11 +21,18 @@ export const EventFormSection = ({ title, section, fields, disabled }) => {
   };
 
   const handleFileChange = (e, name) => {
-    const updatedInputValues = { ...sectionData };
-    console.log(e.target.files[0]);
-    updatedInputValues[name] = e.target.files[0];
-    setSectionData(updatedInputValues);
-    updateField(name, e.target.files[0]);
+    const file = e.target.files[0];
+
+    if (!file) return;
+    readFile(file, (base64String) => {
+      const updatedInputValues = {
+        ...sectionData,
+        [name]: { name: file.name },
+      };
+      setSectionData(updatedInputValues);
+      console.log(base64String);
+      updateField(name, base64String);
+    });
   };
 
   return (
@@ -62,14 +69,6 @@ export const EventFormSection = ({ title, section, fields, disabled }) => {
           {isEditing ? "Save" : "Edit"}
         </button>
       </Accordion>
-
-      {/* {eventData[section].poster && eventData[section].poster.type.startsWith("image/") && (
-        <img
-          src={URL.createObjectURL(eventData[section].poster)}
-          alt="Preview"
-          className="w-40 h-40"
-        />
-      )} */}
     </>
   );
 };
