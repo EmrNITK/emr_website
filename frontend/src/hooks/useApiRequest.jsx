@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-export const useApiRequest = () => {
+export const useApiRequest = ({ enableToast }) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -17,14 +17,16 @@ export const useApiRequest = () => {
       // If response is successful (status 2xx)
       if (response?.status >= 200 && response?.status < 300) {
         setData(response.data);
-        toast({
-          title: "Success",
-          description: successMessage,
-          variant: "success",
-          className:
-            "bg-green-800 text-white shadow-lg border border-green-500",
-        });
-        return response;
+        enableToast
+          ? toast({
+              title: "Success",
+              description: successMessage,
+              variant: "success",
+              className:
+                "bg-green-800 text-white shadow-lg border border-green-500",
+            })
+          : "";
+        return response.json();
       }
 
       // If response indicates an error (status 4xx, 5xx)
@@ -34,7 +36,7 @@ export const useApiRequest = () => {
       let errorDetails = "";
 
       const { status } = err;
-      const res = await err.json();
+      const res = await err?.json();
 
       if (status >= 400 && status < 500) {
         // Client-side validation errors
