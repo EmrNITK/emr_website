@@ -103,9 +103,7 @@ export const updateEventById = async (req, res) => {
       .json({ message: "Event updated successfully", updatedEvent });
   }
 
-  if (modifiedCount === 0) {
-    return res.status(500).json({ message: "Unable to update event" });
-  }
+  return res.status(500).json({ message: "Unable to update event" });
 };
 
 export const deleteEventById = async (req, res) => {
