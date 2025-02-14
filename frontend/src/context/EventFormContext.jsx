@@ -4,7 +4,7 @@ export const EventFormContext = createContext();
 
 export const EventFormProvider = ({ children, initialData = {} }) => {
   const [eventData, setEventData] = useState({
-    id: initialData._id||"",
+    _id: initialData._id || "",
     name: initialData.name || "",
     date: initialData.date || "",
     venue: initialData.venue || "",
@@ -17,20 +17,27 @@ export const EventFormProvider = ({ children, initialData = {} }) => {
     coordinator: initialData.coordinator || [],
     usefulLinks: initialData.usefulLinks || [],
     isLive: initialData.isLive || false,
-    updatedFields: {}, // Track fields that are updated for editing mode
+    // Track fields that are updated for editing mode
   });
+
+  const [updatedValues, setUpdatedValues] = useState({ _id: initialData._id });
 
   // Update a specific section and track changes
   const updateField = (field, newValue) => {
     setEventData((prev) => ({
       ...prev,
       [field]: newValue,
-      updatedFields: { ...prev.updatedFields, [field]: true },
+    }));
+    setUpdatedValues((prev) => ({
+      ...prev,
+      [field]: newValue,
     }));
   };
 
   return (
-    <EventFormContext.Provider value={{ eventData, updateField }}>
+    <EventFormContext.Provider
+      value={{ eventData, updateField, updatedValues }}
+    >
       {children}
     </EventFormContext.Provider>
   );
