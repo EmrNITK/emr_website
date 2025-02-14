@@ -26,6 +26,7 @@ import UserDashboardPage from "./pages/UserDashboardPage";
 import EventDetailsPage from "./pages/EventDetailsPage.jsx";
 import CreateEventPage from "./pages/CreateEventPage.jsx";
 import ManageEventsPage from "./pages/ManageEventsPage.jsx";
+import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
           <ScrollToTop />
           <StarsCanvas />
           <UserOptions />
+          <Toaster/>
           <div className="relative z-10">
             <Routes>
               <Route path="/" element={<Home />} />

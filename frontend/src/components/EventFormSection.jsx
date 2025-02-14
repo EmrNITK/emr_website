@@ -1,17 +1,13 @@
 import React, { useState, useContext } from "react";
 import Accordion from "./Accordion";
 import { EventFormContext } from "../context/EventFormContext";
-import useUpdateEffect from "../hooks/useUpdateEffect";
 import { Input } from "./Input";
+import { readFile } from "../utils/readFile";
 
 export const EventFormSection = ({ title, section, fields, disabled }) => {
   const [isEditing, setIsEditing] = useState(!disabled);
-  const { eventData, updateSection } = useContext(EventFormContext);
-  const [sectionData, setSectionData] = useState(eventData[section]);
-
-  useUpdateEffect(() => {
-    updateSection(section, sectionData);
-  }, [isEditing]);
+  const { eventData, updateField } = useContext(EventFormContext);
+  const [sectionData, setSectionData] = useState(eventData);
 
   const handleSave = () => {
     setIsEditing(false);
@@ -21,12 +17,22 @@ export const EventFormSection = ({ title, section, fields, disabled }) => {
     const updatedInputValues = { ...sectionData };
     updatedInputValues[name] = e.target.value;
     setSectionData(updatedInputValues);
+    updateField(name, e.target.value);
   };
 
   const handleFileChange = (e, name) => {
-    const updatedInputValues = { ...sectionData };
-    updatedInputValues[name] = e.target.files[0];
-    setSectionData(updatedInputValues);
+    const file = e.target.files[0];
+
+    if (!file) return;
+    readFile(file, (base64String) => {
+      const updatedInputValues = {
+        ...sectionData,
+        [name]: { name: file.name },
+      };
+      setSectionData(updatedInputValues);
+      console.log(base64String);
+      updateField(name, base64String);
+    });
   };
 
   return (
@@ -40,7 +46,9 @@ export const EventFormSection = ({ title, section, fields, disabled }) => {
               disabled={!isEditing}
               id={`${field.name}-${index}`}
               type={field.type}
-              value={field.type == "file" ? "" : sectionData[field.name]}
+              hidden={field.type == "file"}
+              value={field.type == "file" ? "" : sectionData[field.name] ?? ""}
+              fileName={sectionData[field.name]?.name}
               onChange={(e) => {
                 field.type == "file"
                   ? handleFileChange(e, field.name)
@@ -61,14 +69,6 @@ export const EventFormSection = ({ title, section, fields, disabled }) => {
           {isEditing ? "Save" : "Edit"}
         </button>
       </Accordion>
-
-      {/* {eventData[section].poster && eventData[section].poster.type.startsWith("image/") && (
-        <img
-          src={URL.createObjectURL(eventData[section].poster)}
-          alt="Preview"
-          className="w-40 h-40"
-        />
-      )} */}
     </>
   );
 };

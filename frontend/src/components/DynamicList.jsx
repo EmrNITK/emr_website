@@ -5,13 +5,13 @@ import { FaTrash, FaEdit, FaCheck } from "react-icons/fa";
 import { Input } from "./Input";
 
 export const DynamicList = ({ fields, section, isEditing }) => {
-  const { eventData, updateSection } = useContext(EventFormContext);
+  const { eventData, updateField } = useContext(EventFormContext);
   const [items, setItems] = useState(eventData[section]);
   const [inputValues, setInputValues] = useState(fields.map(() => ""));
 
   useUpdateEffect(() => {
     console.log("render");
-    updateSection(section, items);
+    updateField(section, items);
   }, [isEditing]);
 
   const handleAdd = () => {

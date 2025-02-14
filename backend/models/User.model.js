@@ -60,7 +60,6 @@ const userSchema = new mongoose.Schema(
     },
     kaggleUserName:{
       type: String,
-      required:true
     }
   },
   { timestamps: true }

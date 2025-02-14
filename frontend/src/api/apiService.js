@@ -2,11 +2,13 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Replace with your act
 
 // Handle API Response
 const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Something went wrong");
-  }
-  return await response.json();
+  // if (!response.ok) {
+  //   const error = await response.json();
+  //   console.log(error);
+  //   throw new Error(error || "Something went wrong");
+  //   // return error;
+  // }
+  return await response;
 };
 
 // User Registration
@@ -41,7 +43,7 @@ export const getAllTeams = async () => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   return handleResponse(response);
@@ -52,7 +54,7 @@ export const getTeamById = async (teamId) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
 
@@ -65,7 +67,7 @@ export const createTeam = async (teamName) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({ name: teamName }),
   });
@@ -73,13 +75,16 @@ export const createTeam = async (teamName) => {
 };
 // Add members to a Team
 export const addMemberToTeam = async (teamId, memberId) => {
-  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/members/${memberId}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    },
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/teams/${teamId}/members/${memberId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
   return handleResponse(response);
 };
 // Update status of a Team member
@@ -105,8 +110,8 @@ export const updateKitProvided = async (teamId, isKitProvided) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     }
   );
   return handleResponse(response);
@@ -114,13 +119,12 @@ export const updateKitProvided = async (teamId, isKitProvided) => {
 
 // Send invitations to members
 export const sendInvitation = async (teamId, members) => {
-
   const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({ members }),
   });
@@ -147,7 +151,7 @@ export const joinTeam = async (teamId) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   return handleResponse(response);
@@ -177,7 +181,7 @@ export const verifyUser = async (transactionId) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({ transactionId }), // Send transactionId in the request body
   });
@@ -192,7 +196,7 @@ export const getUserById = async (userId) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
 
@@ -215,7 +219,7 @@ export const fetchUsers = async () => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   return handleResponse(response);
@@ -226,7 +230,7 @@ export const fetchAllUsers = async () => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   return handleResponse(response);
@@ -240,7 +244,7 @@ export const removeMember = async (teamId, memberId) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     }
   );
@@ -261,14 +265,17 @@ export const sendOTP = async (email) => {
 };
 
 export const verifyOTP = async (email, otp) => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/forgot_password/verify`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, otp }),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/auth/forgot_password/verify`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, otp }),
+    }
+  );
   console.log("response", response);
   return handleResponse(response);
 };
@@ -279,7 +286,7 @@ export const changePassword = async (email, newPassword) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('tempOtpJwt')}`
+      Authorization: `Bearer ${localStorage.getItem("tempOtpJwt")}`,
     },
     body: JSON.stringify({ email, newPassword }),
   });
@@ -288,18 +295,15 @@ export const changePassword = async (email, newPassword) => {
 };
 
 export const changePasswordUser = async (passwordData) => {
-  const response = await fetch(
-    `${API_BASE_URL}/api/auth/change-password`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify(passwordData),
-    }
-  );
+  const response = await fetch(`${API_BASE_URL}/api/auth/change-password`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify(passwordData),
+  });
   console.log("response", response);
   return handleResponse(response);
 };
@@ -316,16 +320,61 @@ export const deleteTeam = async (teamId) => {
   return handleResponse(response);
 };
 export const leaveTeam = async (teamId) => {
-  const response = await fetch(
-    `${API_BASE_URL}/api/teams/${teamId}/leave`,
-    {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-    }
-  );
+  const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/leave`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return handleResponse(response);
+};
+
+// Events
+
+export const createEvent = async (eventData) => {
+  const response = await fetch(`${API_BASE_URL}/api/events/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify(eventData),
+  });
+  return handleResponse(response);
+};
+
+export const updateEvent = async (eventId, eventData) => {
+  const response = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify(eventData),
+  });
+  return handleResponse(response);
+};
+
+export const getAllEvents = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/events/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return handleResponse(response);
+};
+
+export const getEventsById = async (eventId) => {
+  const response = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
   return handleResponse(response);
 };

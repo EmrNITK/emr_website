@@ -3,13 +3,9 @@ import { EventDynamicListSection } from "./EventDynamicListSection";
 import { EventFormProvider } from "../context/EventFormContext";
 import { EventFormSection } from "./EventFormSection";
 import { EventDescriptionSection } from "./EventDescripitonSection";
+import { EventFormControls } from "./EventFormControls";
 
 export const EventForm = ({ initialData, disabled }) => {
-  const handleSave = () => {
-    
-  };
-  const handleMakeLive = () => {};
-
   return (
     <>
       <EventFormProvider initialData={initialData}>
@@ -25,7 +21,7 @@ export const EventForm = ({ initialData, disabled }) => {
                 { type: "text", name: "venue", value: "", label: "Venue:" },
                 {
                   type: "number",
-                  name: "noOfMembers",
+                  name: "numberOfMember",
                   value: "",
                   label: "No of Members:",
                 },
@@ -40,12 +36,12 @@ export const EventForm = ({ initialData, disabled }) => {
             <EventDescriptionSection disabled={disabled} />
             <EventFormSection
               disabled={disabled}
-              section={"rulebook"}
+              section={"ruleBook"}
               title={"Rulebook"}
               fields={[
                 {
                   type: "text",
-                  name: "link",
+                  name: "ruleBook",
                   value: "",
                   label: "Rulebook Link:",
                 },
@@ -57,16 +53,16 @@ export const EventForm = ({ initialData, disabled }) => {
               title={"Registration Fee"}
               fields={[
                 { type: "number", name: "amount", value: "", label: "Amount:" },
-                { type: "file", name: "qr", value: "", label: "Upload QR:" },
+                { type: "file", name: "qrCode", value: "", label: "Upload QR:" },
               ]}
             />
             <EventDynamicListSection
               disabled={disabled}
-              section={"coordinators"}
+              section={"coordinator"}
               title={"Coordinators"}
               fields={[
-                { type: "text", name: "cName", value: "", label: "Name:" },
-                { type: "tel", value: "", name: "cMobile", label: "Mobile No" },
+                { type: "text", name: "name", value: "", label: "Name:" },
+                { type: "tel", value: "", name: "mobileNo", label: "Mobile No" },
               ]}
             />
             <EventDynamicListSection
@@ -80,25 +76,7 @@ export const EventForm = ({ initialData, disabled }) => {
             />
           </div>
           <div className="justify-self-end flex flex-col items-center justify-center text-center py-2">
-            <div className="flex space-x-4">
-              <button
-                className="px-5 py-2 bg-green-600 hover:bg-green-900 
-             text-gray-300 hover:text-gray-500 font-medium rounded-md border border-gray-600 
-             shadow-sm hover:shadow-md transition"
-                onClick={handleSave}
-              >
-                Save
-              </button>
-
-              <button
-                onClick={handleMakeLive}
-                className="px-5 py-2 bg-red-600 hover:bg-red-900
-             text-gray-300 font-medium rounded-md border border-gray-600 
-             shadow-sm hover:shadow-md transition"
-              >
-                Make Live
-              </button>
-            </div>
+            <EventFormControls disabled={disabled} />
           </div>
         </div>
       </EventFormProvider>
