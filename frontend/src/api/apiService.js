@@ -2,11 +2,13 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Replace with your act
 
 // Handle API Response
 const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Something went wrong");
-  }
-  return await response.json();
+  // if (!response.ok) {
+  //   const error = await response.json();
+  //   console.log(error);
+  //   throw new Error(error || "Something went wrong");
+  //   // return error;
+  // }
+  return await response;
 };
 
 // User Registration
