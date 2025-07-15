@@ -1,12 +1,11 @@
 import React from "react";
-import "./Card.css";
-import { useState } from "react";
-
+import "./TeamSection.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram } from "@fortawesome/free-brands-svg-icons";
-
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import {
+  faFacebookF,
+  faTwitter,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 import img1 from "../../assets/images/ProfileImage2/AMAN KUMAR.jpeg";
 import img2 from "../../assets/images/ProfileImage2/YUJIT YADAV.png";
 import img3 from "../../assets/images/ProfileImage2/MEGHA AGARWAL.png";
@@ -29,252 +28,243 @@ import img19 from "../../assets/images/ProfileImage2/Akshat_profile.jpg";
 import img20 from "../../assets/images/ProfileImage2/VISHWAS KAPOOR.jpg";
 import img21 from "../../assets/images/ProfileImage2/SHELJA SHARMA.jpeg";
 
-const cardData = [
+const teamMembers = [
   {
     name: "Aman Verma",
-    insta: "https://www.instagram.com/aman_verma3132/",
-    linkedin: "https://www.linkedin.com/in/aman-kumar-0929aa252/",
-    github: "https://github.com/Amanverma3132",
+    role: "PRESIDENT",
     image: img1,
-    role: "President"
-    
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/aman_verma3132/",
   },
   {
-    name: "Yujit",
-    insta: "https://www.instagram.com/yujit_2003/",
-    linkedin: "https://www.linkedin.com/in/yujit-yadav-7a6197225/",
-    github: "https://github.com/yujit2003",
+    name: "Yujit Yadav",
+    role: "VICE PRESIDENT",
     image: img2,
-    role: "Vice President",
+    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/yujit_2003/",
   },
   {
     name: "Megha Agarwal",
-    insta: "https://www.instagram.com/melophilicme_12/",
-    linkedin: "https://www.linkedin.com/in/megha-agarwal-27b878225/",
-    github: "https://github.com/mellophilic-me",
+    role: "JOINT SECRETARY",
     image: img3,
-    role: "Joint Secretary"
+    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/melophilicme_12/",
   },
   {
-    name: "Ashwani",
-    insta: "https://www.instagram.com/einstein._.there_/",
-    linkedin: "https://www.linkedin.com/in/ashwani-selwal-a177a6220/",
-    github: "https://github.com/Einstein-ash",
+    name: "Ashwani Selwal",
+    role: "SECRETARY",
     image: img4,
-    role: "Secretary",
+    desc: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/einstein._.there_/",
   },
   {
     name: "Harshit Chanana",
-    insta: "https://www.instagram.com/harshit_chanana03/",
-    linkedin: "https://www.linkedin.com/in/harshit-chanana-62882a247",
-    github: "https://github.com/Harshit-Chanana",
+    role: "PROJECT HEAD",
     image: img5,
-    role: "Project Head",
+    desc: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/harshit_chanana03/",
   },
   {
-    name: "Garvit",
-    insta: "https://www.instagram.com/garvit_prajapat19/",
-    linkedin: "https://www.linkedin.com/in/garvit-prajapati-3b03b125a/",
-    github: "https://github.com/Garvit101",
+    name: "Garvit Prajapat",
+    role: "PROJECT HEAD",
     image: img6,
-    role: "Project Head",
+    desc: "Anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/garvit_prajapat19/",
   },
   {
     name: "Aryan Kumar",
-    insta: "https://www.instagram.com/aryan_p.h/",
-    linkedin: "http://linkedin.com/in/aryan32134",
-    github: "http://github.com/aryan32134hello/",
+    role: "DIP HEAD",
     image: img7,
-    role: "DIP Head",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/aryan_p.h/",
   },
   {
-    name: "Rajneesh",
-    insta: "https://www.instagram.com/rrajneesh639/",
-    linkedin: "https://www.linkedin.com/in/rajneesh-rajpoot-a52361263",
-    github: "https://github.com/rrajneesh639",
+    name: "Rajneesh Rajpoot",
+    role: "EMBEDDED HEAD",
     image: img8,
-    role: "Embedded Head",
+    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/rrajneesh639/",
   },
   {
     name: "Shourya Tyagi",
-    insta: "",
-    linkedin: "https://www.linkedin.com/in/shourya-tyagi/",
-    github: "https://github.com/ShouryaTyagi042",
+    role: "RECENT TECH HEAD",
     image: img9,
-    role: "Recent Tech Head",
+    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "#",
   },
   {
     name: "Akshat Mangal",
-    insta: "https://www.instagram.com/akshat209141/",
-    linkedin: "https://www.linkedin.com/in/akshat-mangal-812aba223/",
-    github: "https://github.com/akshat209141",
+    role: "MEMBER",
     image: img19,
-    role: "Member",
+    desc: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/akshat209141/",
   },
   {
     name: "Sumit Kumar",
-    insta: "https://www.instagram.com/its_sumit_kumar1906/",
-    linkedin: "https://www.linkedin.com/in/sumit-kumar-1a59b9228/",
-    github: "https://github.com/Sumitkumar104",
+    role: "MEMBER",
     image: img10,
-    role: "Member",
+    desc: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/its_sumit_kumar1906/",
   },
   {
     name: "Harsh Bansal",
-    insta: "https://www.instagram.com/harshbansal_001/",
-    linkedin: "https://www.linkedin.com/in/harsh-bansal-296805229/",
-    github: "https://github.com/Harsh-Bansal-13",
+    role: "MEMBER",
     image: img11,
-    role: "Member",
+    desc: "Anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/harshbansal_001/",
   },
   {
     name: "Aman Jindal",
-    insta: "https://www.instagram.com/jindal.aman539/",
-    linkedin: "https://www.linkedin.com/in/aman-jindal-33a924236/",
-    github: "https://github.com/ladnijnama",
+    role: "MEMBER",
     image: img12,
-    role: "Member",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/jindal.aman539/",
   },
   {
     name: "Shivang Chauhan",
-    insta: "https://www.instagram.com/shivangchauhan._/?next=%2F",
-    linkedin: "https://www.linkedin.com/in/sch12/",
-    github: "https://github.com/Shivang-Chauhan",
+    role: "MEMBER",
     image: img13,
-    role: "Member",
+    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/shivangchauhan._/",
   },
-  
   {
     name: "Piyush Singh",
-    insta: "https://www.instagram.com/__i.r.i.d.e.s.c.e.n.t___/",
-    linkedin: "https://www.linkedin.com/in/darthinvader5/",
-    github: "https://github.com/Darth-InVader15",
+    role: "MEMBER",
     image: img14,
-    role: "Member",
+    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/__i.r.i.d.e.s.c.e.n.t___/",
   },
   {
-    name: "Bhagesh",
-    insta: "https://www.instagram.com/____bhagesh____?utm_source=ig_web_button_share_sheet&igsh=ODdmZWVhMTFiMw==",
-    linkedin: "https://www.linkedin.com/in/bhagesh-yadav-291702230",
-    github: "",
+    name: "Bhagesh Yadav",
+    role: "MEMBER",
     image: img15,
-    role: "Member",
+    desc: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/____bhagesh____",
   },
   {
     name: "Garv Bhatia",
-    insta: "https://www.instagram.com/_garvbhatia?igsh=MTZsN2J2OXk5ajJpbA==",
-    linkedin: "https://www.linkedin.com/in/garvbhatias",
-    github: "https://github.com/garvboss",
+    role: "MEMBER",
     image: img16,
-    role: "Member",
+    desc: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/_garvbhatia",
   },
   {
     name: "Nikhil Jain",
-    insta: "https://www.instagram.com/nikhil_jain_120/?hl=en",
-    linkedin: "https://www.linkedin.com/in/nikhil-jain-5a4a11226",
-    github: "https://github.com/jainikkhil",
+    role: "MEMBER",
     image: img17,
-    role: "Member",
+    desc: "Anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/nikhil_jain_120/",
   },
   {
-    name: "Anupriya",
-    insta: "https://www.instagram.com/anupriyabirman/",
-    linkedin: "https://www.linkedin.com/in/anupriya-birman-88206122a/",
-    github: "https://github.com/30Anupriya",
+    name: "Anupriya Birman",
+    role: "MEMBER",
     image: img18,
-    role: "Member",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/anupriyabirman/",
   },
-  
   {
     name: "Vishwas Kapoor",
-    insta: "https://www.instagram.com/_leftover._/",
-    linkedin: "https://www.linkedin.com/in/vishwas-kapoor-872a971b1/",
-    github: "https://www.github.com/leftover19/",
+    role: "MEMBER",
     image: img20,
-    role: "Member",
+    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/_leftover._/",
   },
   {
     name: "Shelja Sharma",
-    insta: "https://www.instagram.com/shelja_62/",
-    linkedin: "https://www.linkedin.com/in/shelja-sharma-697a5b231/",
-    github: "https://github.com/Shel-2607",
+    role: "MEMBER",
     image: img21,
-    role: "Member",
-  }
+    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    facebook: "#",
+    twitter: "#",
+    instagram: "https://www.instagram.com/shelja_62/",
+  },
 ];
 
 const Card2 = () => {
-  // const x = useMotionValue(0);
-  // const y = useMotionValue(0);
-  // const rotateX = useTransform(y, [-100, 100], [30, -30]);
-  // const rotateY = useTransform(x, [-100, 100], [-30, 30]);
-  const [visit1, setVisit1] = useState(false);
-  const [visit2, setVisit2] = useState(false);
-  const [visit3, setVisit3] = useState(false);
-
   return (
-    <div className="bod">
-      <div className="title">Present Team</div>
-      <div className="team-wrapper" style={{ perspective: 3000 }}>
-        {cardData.map((item, index) => (
-          <div className="Card">
-            <div className="imgbox">
-              <img src={item.image} alt="" className="img" />
+    <section className="team-section">
+      <div className="team-heading">
+        <h2>Our Team</h2>
+        <p className="team-subtitle">
+          Meet the creative minds behind our success
+        </p>
+      </div>
+      <div className="team-grid">
+        {teamMembers.map((member, idx) => (
+          <div className="team-card" key={idx}>
+            <div className="team-img-wrapper">
+              <img src={member.image} alt={member.name} className="team-img" />
             </div>
-            <div className="details">
-              <h3>{item.name}</h3>
-              <p>{item.role}</p>
-              <div className="socialicons">
-                <a
-                  href={item.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    setVisit1(true);
-                  }}
-                >
-                  <FontAwesomeIcon
-                    icon={faLinkedinIn}
-                    onClick={() => {
-                      setVisit1(true);
-                      setTimeout(() => {
-                        setVisit1(false);
-                      }, 3000);
-                    }}
-                    flip={visit1}
-                  />
-                </a>
-
-                <a href={item.github} target="_blank" rel="noopener noreferrer">
-                  <FontAwesomeIcon
-                    icon={faGithub}
-                    flip={visit2}
-                    onClick={() => {
-                      setVisit2(true);
-                      setTimeout(() => {
-                        setVisit2(false);
-                      }, 3000);
-                    }}
-                  />
-                </a>
-                <a href={item.insta} target="_blank" rel="noopener noreferrer">
-                  <FontAwesomeIcon
-                    icon={faInstagram}
-                    flip={visit3}
-                    onClick={() => {
-                      setVisit3(true);
-                      setTimeout(() => {
-                        setVisit3(false);
-                      }, 3000);
-                    }}
-                  />
-                </a>
-              </div>
+            <div className="team-role">{member.role}</div>
+            <div className="team-name">{member.name}</div>
+            <div className="team-desc">{member.desc}</div>
+            <div className="team-social">
+              <a
+                href={member.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faFacebookF} />
+              </a>
+              <a
+                href={member.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faTwitter} />
+              </a>
+              <a
+                href={member.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faInstagram} />
+              </a>
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
