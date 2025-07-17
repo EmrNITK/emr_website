@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose ,{Schema} from "mongoose";
 
-const ProjectSchema = new mongoose.Schema(
+const ProjectSchema = new Schema(
     {
         Status: {
             type: String,
@@ -27,6 +27,9 @@ const ProjectSchema = new mongoose.Schema(
             type: String,
             required: true,
         }
+    },
+    {
+        timestamps: true,
     }
 )
 
