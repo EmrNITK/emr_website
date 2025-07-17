@@ -10,6 +10,7 @@ const ProjectSchema = new Schema(
         Name : {
             type: String,
             required: true,
+            unique: true,
         },
         GitHub : {
             type: String,
@@ -24,8 +25,7 @@ const ProjectSchema = new Schema(
             required: true,
         },
         photo : {
-            type: String,
-            required: true,
+            type: String
         }
     },
     {
