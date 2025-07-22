@@ -1,14 +1,15 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import Project from "../models/Projects.model.js";
-import { uploadonCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 
 // create a new project
 const createProject = asyncHandler(async (req, res) => {
-    const { Name, GitHub, Description, techStack , Status } = req.body;
-    if (!Name || !GitHub || !Description || !techStack) {
+    const { Name, GitHub, Description, techStack, Status } = req.body;
+    if (!Name || !GitHub || !Description || !techStack || !Status) {
         return res.status(400).json({ message: "Please fill all the fields" });
     }
+    
     const existedProject = await Project.findOne({ Name });
     if (existedProject) {
         return res.status(400).json({ message: "Project with this name already exists" });
@@ -18,26 +19,20 @@ const createProject = asyncHandler(async (req, res) => {
     if (!photoLocalPath) {
         return res.status(400).json({ message: "Please provide a photo" });
     }
-    const photo = await uploadonCloudinary(photoLocalPath);
+    const photo = await uploadOnCloudinary(photoLocalPath);
 
-    const newProject = await Project.create({
-        Name,
-        GitHub,
-        Description,
-        techStack,
-        photo: photo ? photo.secure_url : null,
-        Status: Status || "Not started",
-    });
+const newProject = await Project.create({
+    Name,
+    GitHub,
+    Description,
+    techStack,
+    photo: photo ? photo.secure_url : null,
+    Status,
+});
 
-    const createdProject = await Project.findById(newProject._id);
-
-    if (!createdProject) {
-        return res.status(500).json({ message: "Failed to create project" });
-    }
-
-    res
-    .status(201)
-    .json({ message: "Project created successfully", project: createdProject });
+res
+.status(201)
+.json({ message: "Project created successfully", project: newProject });
 });
 
 
@@ -52,37 +47,71 @@ const getAllProjects = asyncHandler(async (req, res) => {
     .json({ projects });
 });
 
-// get a single project by Name
-const getProjectByName = asyncHandler(async (req, res) => {
-    const name = req.params.name.trim();
-    // Use case-insensitive exact match
-    const project = await Project.findOne({ Name: { $eq: name } }).collation({ locale: 'en', strength: 2 });
+// get a single project by id
+const getProjectById = asyncHandler(async (req, res) => {
+    const projectId = req.params.projectId;
+    if (!projectId) {
+        return res.status(400).json({ message: "Project ID is required" });
+    }
+    const project = await Project.findById(projectId);
     if (!project) {
         return res.status(404).json({ message: "Project not found" });
     }
-    res.status(200).json({ project });
+    res
+    .status(200)
+    .json({ project });
 });
 
-// update a project
-const updateProject = asyncHandler(async (req, res) => {
+// update project by ID 
+const updateProjectById = asyncHandler(async (req, res) => {
     const { Name, GitHub, Description, techStack, Status } = req.body;
+    const projectId = req.params.projectId;
+    const photoLocalPath = req.file?.path;
 
-    if (!Name || !GitHub || !Description || !techStack) {
-        return res.status(400).json({ message: "Please fill all the fields" });
+    if (!projectId) {
+        return res.status(400).json({ message: "Project ID is required" });
+    }
+
+    // Prepare update object
+    const updateFields = {};
+
+    // Update regular fields if provided and not empty/null
+    if (Name !== undefined && Name !== null && Name !== "") {
+        updateFields.Name = Name;
+    }
+    if (GitHub !== undefined && GitHub !== null && GitHub !== "") {
+        updateFields.GitHub = GitHub;
+    }
+    if (Description !== undefined && Description !== null && Description !== "") {
+        updateFields.Description = Description;
+    }
+    if (techStack !== undefined && techStack !== null && techStack !== "") {
+        updateFields.techStack = techStack;
+    }
+    if (Status !== undefined && Status !== null && Status !== "") {
+        updateFields.Status = Status;
+    }
+
+    // Update photo if provided
+    if (photoLocalPath) {
+        const photo = await uploadOnCloudinary(photoLocalPath);
+        if (!photo) {
+            return res.status(500).json({ message: "Failed to upload photo" });
+        }
+        updateFields.photo = photo.secure_url;
+    }
+
+    // Check if there's anything to update
+    if (Object.keys(updateFields).length === 0) {
+        return res.status(400).json({ message: "No fields provided to update" });
     }
 
     const project = await Project.findByIdAndUpdate( 
-        req.project._id,
-        {
-            $set: {
-                Name,
-                GitHub,
-                Description,
-                techStack,
-                Status: Status || "Not started",
-            }
-        },
-        { new: true }
+        projectId,
+        { $set: updateFields },
+        { new: true ,
+          runValidators: true
+        }
     );
 
     if (!project) {
@@ -94,37 +123,10 @@ const updateProject = asyncHandler(async (req, res) => {
     .json({ message: "Project updated successfully", project });
 });
 
-// update project photo
-const updateProjectPhoto = asyncHandler(async (req, res) => {
-    const photoLocalPath = req.file?.path;
-    if (!photoLocalPath) {
-        return res.status(400).json({ message: "Please provide a photo" });
-    }
-
-    const photo = await uploadonCloudinary(photoLocalPath);
-    if (!photo) {
-        return res.status(500).json({ message: "Failed to upload photo" });
-    }
-
-    const project = await Project.findByIdAndUpdate(
-        req.project._id,
-        { $set: { photo: photo.secure_url } },
-        { new: true }
-    );
-
-    if (!project) {
-        return res.status(404).json({ message: "Project not found" });
-    }
-
-    res
-    .status(200)
-    .json({ message: "Project photo updated successfully", project });
-});
-
 
 // delete a project
 const deleteProject = asyncHandler(async (req, res) => {
-    const projectId = req.params.id;
+    const projectId = req.params.projectId;
     if (!projectId) {
         return res.status(400).json({ message: "Project ID is required" });
     }
@@ -135,15 +137,16 @@ const deleteProject = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "Project not found" });
     }
 
-    res.status(200).json({ message: "Project deleted successfully" });
+    res
+    .status(200)
+    .json({ message: "Project deleted successfully" });
 });
 
 export {
     createProject,
     getAllProjects,
-    getProjectByName,
-    updateProject,
-    updateProjectPhoto,
+    getProjectById,
+    updateProjectById,
     deleteProject
 };
 

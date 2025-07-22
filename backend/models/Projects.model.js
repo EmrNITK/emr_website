@@ -1,11 +1,11 @@
 import mongoose ,{Schema} from "mongoose";
 
-const ProjectSchema = new Schema(
+const projectSchema = new Schema(
     {
         Status: {
             type: String,
             enum: ["Not started", "In Progress", "Completed"],
-            default: "Not started",
+            required: true
         },
         Name : {
             type: String,
@@ -36,5 +36,5 @@ const ProjectSchema = new Schema(
 
 
 
-const Project = mongoose.model("Project", ProjectSchema);
+const Project = mongoose.model("Project", projectSchema);
 export default Project;
