@@ -15,8 +15,8 @@ const projectRouter = express.Router();
 projectRouter.post("/", 
   verifyJwt, 
   isUserAdmin, 
-  processBase64Files([{ name: "projectPhoto", filename: "project-image.jpg" }]),
-  upload.single("projectPhoto"),
+  processBase64Files([{ name: "projectImg", filename: "project-image.jpg" }]),
+  upload.single("projectImg"),
   validateCreateProject,
   createProject
 );
@@ -28,8 +28,8 @@ projectRouter.get("/:projectId", getProjectById);
 projectRouter.put("/:projectId", 
   verifyJwt, 
   isUserAdmin, 
-  processBase64Files([{ name: "projectPhoto", filename: "project-image.jpg" }]),
-  upload.single("projectPhoto"),
+  processBase64Files([{ name: "projectImg", filename: "project-image.jpg" }]),
+  upload.single("projectImg"),
   validateUpdateProject,
   updateProjectById
 );

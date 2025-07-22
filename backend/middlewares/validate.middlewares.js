@@ -1,8 +1,32 @@
-import { body, validationResult, check } from "express-validator";
+import { body, validationResult } from "express-validator";
 
 // Constants for file validation
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-// const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+
+// Simple custom validation functions
+export const validateImageFile = () => {
+  return body().custom((value, { req }) => {
+    if (!req.file) {
+      throw new Error('Image file is required');
+    }
+    
+    if (!ALLOWED_IMAGE_TYPES.includes(req.file.mimetype)) {
+      throw new Error('Only JPEG, PNG, and WebP images are allowed');
+    }
+    
+    return true;
+  });
+};
+
+export const validateOptionalImageFile = () => {
+  return body().custom((value, { req }) => {
+    if (req.file && !ALLOWED_IMAGE_TYPES.includes(req.file.mimetype)) {
+      throw new Error('Only JPEG, PNG, and WebP images are allowed');
+    }
+    return true;
+  });
+};
+
 
 export const validateRegistration = [
   body("name").escape().trim(),
@@ -57,35 +81,41 @@ export const validateCreateEvent =[
 
 
 export const validateCreateProject = [
-  body("name").escape().trim().notEmpty(),
-  body("gitHub").escape().trim().notEmpty(),
-  body("description").escape().trim().notEmpty(),
-  body("techStack").isArray().notEmpty(),
-  body("status").escape().trim().notEmpty().isIn(["Not started", "In Progress", "Completed"]),
-  check().custom((value, { req }) => {
-    // Custom file validation using express-validator's custom method
-    if (!req.file) {
-      throw new Error('Project image is required');
+  
+  body("name").escape().trim().notEmpty().withMessage("Project name is required"),
+  body("gitHub").escape().trim().notEmpty().withMessage("GitHub URL is required"),
+  body("description").escape().trim().notEmpty().withMessage("Description is required"),
+  body("techStack").custom((value) => {
+    // Handle both JSON string and array formats
+    let techArray;
+    if (typeof value === 'string') {
+      try {
+        techArray = JSON.parse(value);
+      } catch (e) {
+        // If it's not JSON, treat as comma-separated string
+        techArray = value.split(',').map(tech => tech.trim()).filter(tech => tech);
+      }
+    } else if (Array.isArray(value)) {
+      techArray = value;
+    } else {
+      throw new Error('Tech stack must be an array or comma-separated string');
     }
     
-    // Check file type
-    if (!ALLOWED_IMAGE_TYPES.includes(req.file.mimetype)) {
-      throw new Error('Only JPEG, PNG, and WebP images are allowed');
+    if (!Array.isArray(techArray) || techArray.length === 0) {
+      throw new Error('Tech stack must contain at least one technology');
     }
-    
-    // Check file size
-    // if (req.file.size > MAX_FILE_SIZE) {
-    //   throw new Error('File size must be less than 5MB');
-    // }
     
     return true;
   }),
+  body("status").escape().trim().notEmpty().isIn(["Not started", "In Progress", "Completed"]).withMessage("Status must be 'Not started', 'In Progress', or 'Completed'"),
+  validateImageFile(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       next();
       return;
     }
+    console.log(" Validation errors:", errors.array());
     res.status(422).json({ errors: errors.array() });
   },
 ];
@@ -94,24 +124,35 @@ export const validateUpdateProject = [
   body("name").optional().escape().trim().notEmpty(),
   body("gitHub").optional().escape().trim().notEmpty(),
   body("description").optional().escape().trim().notEmpty(),
-  body("techStack").optional().isArray().notEmpty(),
-  body("status").optional().escape().trim().notEmpty().isIn(["Not started", "In Progress", "Completed"]),
-  check().custom((value, { req }) => {
-    // Custom file validation (optional for updates)
-    if (req.file) {
-      // Check file type if file is provided
-      if (!ALLOWED_IMAGE_TYPES.includes(req.file.mimetype)) {
-        throw new Error('Only JPEG, PNG, and WebP images are allowed');
+  body("techStack").custom((value) => {
+    // Handle both JSON string and array formats for updates
+    // For updates, techStack is required if provided
+    if (value === undefined || value === null || value === '') {
+      throw new Error('Tech stack is required');
+    }
+    
+    let techArray;
+    if (typeof value === 'string') {
+      try {
+        techArray = JSON.parse(value);
+      } catch (e) {
+        // If it's not JSON, treat as comma-separated string
+        techArray = value.split(',').map(tech => tech.trim()).filter(tech => tech);
       }
-      
-      // Check file size
-      // if (req.file.size > MAX_FILE_SIZE) {
-      //   throw new Error('File size must be less than 5MB');
-      // }
+    } else if (Array.isArray(value)) {
+      techArray = value;
+    } else {
+      throw new Error('Tech stack must be an array or comma-separated string');
+    }
+    
+    if (!Array.isArray(techArray) || techArray.length === 0) {
+      throw new Error('Tech stack must contain at least one technology');
     }
     
     return true;
   }),
+  body("status").optional().escape().trim().notEmpty().isIn(["Not started", "In Progress", "Completed"]),
+  validateOptionalImageFile(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {

@@ -1,15 +1,35 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import Project from "../models/Projects.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
 
 // create a new project
 const createProject = asyncHandler(async (req, res) => {
-    const { name, gitHub, description, techStack, status } = req.body;
+   
+    let { name, gitHub, description, techStack, status } = req.body;
+
+    // Handle techStack conversion for form-data
+    if (typeof techStack === 'string') {
+        try {
+            techStack = JSON.parse(techStack);
+        } catch (e) {
+            // If it's not JSON, treat as comma-separated string
+            techStack = techStack.split(',').map(tech => tech.trim()).filter(tech => tech);
+        }
+    }
 
     // Safety net validation (in case middleware is bypassed)
     if (!name || !gitHub || !description || !techStack || !status) {
-        return res.status(400).json({ message: "Please fill all the fields" });
+        return res.status(400).json({ 
+            message: "Please fill all the fields",
+            debug: {
+                name: !!name,
+                gitHub: !!gitHub,
+                description: !!description,
+                techStack: !!techStack,
+                status: !!status
+            }
+        });
     }
 
     const existedProject = await Project.findOne({ name });
@@ -21,6 +41,7 @@ const createProject = asyncHandler(async (req, res) => {
     if (!photoLocalPath) {
         return res.status(400).json({ message: "Please provide a photo" });
     }
+    
     const photo = await uploadOnCloudinary(photoLocalPath);
 
     const newProject = await Project.create({
@@ -66,12 +87,22 @@ const getProjectById = asyncHandler(async (req, res) => {
 
 // update project by ID 
 const updateProjectById = asyncHandler(async (req, res) => {
-    const { name, gitHub, description, techStack, status } = req.body;
+    let { name, gitHub, description, techStack, status } = req.body;
     const projectId = req.params.projectId;
     const photoLocalPath = req.file?.path;
 
     if (!projectId) {
         return res.status(400).json({ message: "Project ID is required" });
+    }
+
+    // Handle techStack conversion for form-data
+    if (techStack && typeof techStack === 'string') {
+        try {
+            techStack = JSON.parse(techStack);
+        } catch (e) {
+            // If it's not JSON, treat as comma-separated string
+            techStack = techStack.split(',').map(tech => tech.trim()).filter(tech => tech);
+        }
     }
 
     // Safety net validation for update fields (in case middleware is bypassed)
@@ -89,12 +120,21 @@ const updateProjectById = asyncHandler(async (req, res) => {
     if (techStack) updateFields.techStack = techStack;
     if (status) updateFields.status = status;
 
-    // Update photo if provided
-    if (photoLocalPath) {
-        const photo = await uploadOnCloudinary(photoLocalPath);
+    
+    if (req.file) {
+        // Get the existing project to delete old image
+        const existingProject = await Project.findById(projectId);
+        
+        const photo = await uploadOnCloudinary(req.file.path);
         if (!photo) {
             return res.status(500).json({ message: "Failed to upload project image" });
         }
+        
+        // Delete old image from Cloudinary if it exists
+        if (existingProject && existingProject.projectImg) {
+            await deleteFromCloudinary(existingProject.projectImg);
+        }
+        
         updateFields.projectImg = photo.secure_url;
     }
 
@@ -134,6 +174,11 @@ const deleteProject = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "Project not found" });
     }
 
+    // Delete the image from Cloudinary if it exists
+    if (project.projectImg) {
+        await deleteFromCloudinary(project.projectImg);
+    }
+    
     res
     .status(200)
     .json({ message: "Project deleted successfully" });
