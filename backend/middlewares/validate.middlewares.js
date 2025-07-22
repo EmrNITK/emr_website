@@ -126,11 +126,6 @@ export const validateUpdateProject = [
   body("description").optional().escape().trim().notEmpty(),
   body("techStack").optional().custom((value) => {
     // Handle both JSON string and array formats for updates
-    // For updates, techStack is required if provided
-    if (value === null || value === '') {
-      throw new Error('Tech stack is required');
-    }
-    
     let techArray;
     if (typeof value === 'string') {
       try {
