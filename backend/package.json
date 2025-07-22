@@ -14,11 +14,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
-<<<<<<< HEAD
-    "cloudinary": "^2.5.1",
-=======
     "cloudinary": "^2.7.0",
->>>>>>> 55b2f53 (Implement project creation logic and integrate Cloudinary for file uploads)
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
