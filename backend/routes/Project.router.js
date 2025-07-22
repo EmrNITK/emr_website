@@ -7,17 +7,32 @@ import {
     deleteProject
 } from "../controllers/Project.controller.js";
 import { verifyJwt, isUserAdmin } from "../middlewares/auth.middlewares.js";
-import { upload } from "../middlewares/multer.middleware.js";
+import { upload, processBase64Files } from "../middlewares/multer.middleware.js";
+import { validateCreateProject, validateUpdateProject } from "../middlewares/validate.middlewares.js";
 
 const projectRouter = express.Router();
 
-projectRouter.post("/", verifyJwt, isUserAdmin,upload.single("photo"), createProject);
+projectRouter.post("/", 
+  verifyJwt, 
+  isUserAdmin, 
+  processBase64Files([{ name: "projectPhoto", filename: "project-image.jpg" }]),
+  upload.single("projectPhoto"),
+  validateCreateProject,
+  createProject
+);
 
 projectRouter.get("/", getAllProjects);
 
 projectRouter.get("/:projectId", getProjectById);
 
-projectRouter.put("/:projectId", verifyJwt, isUserAdmin, upload.single("photo"), updateProjectById);
+projectRouter.put("/:projectId", 
+  verifyJwt, 
+  isUserAdmin, 
+  processBase64Files([{ name: "projectPhoto", filename: "project-image.jpg" }]),
+  upload.single("projectPhoto"),
+  validateUpdateProject,
+  updateProjectById
+);
 
 projectRouter.delete("/:projectId", verifyJwt, isUserAdmin, deleteProject);
 

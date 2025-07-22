@@ -6,6 +6,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 // create a new project
 const createProject = asyncHandler(async (req, res) => {
     const { name, gitHub, description, techStack, status } = req.body;
+
+    // Safety net validation (in case middleware is bypassed)
     if (!name || !gitHub || !description || !techStack || !status) {
         return res.status(400).json({ message: "Please fill all the fields" });
     }
@@ -26,7 +28,7 @@ const createProject = asyncHandler(async (req, res) => {
         gitHub,
         description,
         techStack,
-        photo: photo ? photo.secure_url : null,
+        projectImg: photo ? photo.secure_url : null,
         status,
     });
 
@@ -72,33 +74,28 @@ const updateProjectById = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Project ID is required" });
     }
 
+    // Safety net validation for update fields (in case middleware is bypassed)
+    if (name === "" || gitHub === "" || description === "" || status === "") {
+        return res.status(400).json({ message: "Fields cannot be empty" });
+    }
+
     // Prepare update object
     const updateFields = {};
 
-    // Update regular fields if provided and not empty/null
-    if (name !== undefined && name !== null && name !== "") {
-        updateFields.name = name;
-    }
-    if (gitHub !== undefined && gitHub !== null && gitHub !== "") {
-        updateFields.gitHub = gitHub;
-    }
-    if (description !== undefined && description !== null && description !== "") {
-        updateFields.description = description;
-    }
-    if (techStack !== undefined && techStack !== null && techStack !== "") {
-        updateFields.techStack = techStack;
-    }
-    if (status !== undefined && status !== null && status !== "") {
-        updateFields.status = status;
-    }
+    // Update fields if provided
+    if (name) updateFields.name = name;
+    if (gitHub) updateFields.gitHub = gitHub;
+    if (description) updateFields.description = description;
+    if (techStack) updateFields.techStack = techStack;
+    if (status) updateFields.status = status;
 
     // Update photo if provided
     if (photoLocalPath) {
         const photo = await uploadOnCloudinary(photoLocalPath);
         if (!photo) {
-            return res.status(500).json({ message: "Failed to upload photo" });
+            return res.status(500).json({ message: "Failed to upload project image" });
         }
-        updateFields.photo = photo.secure_url;
+        updateFields.projectImg = photo.secure_url;
     }
 
     // Check if there's anything to update

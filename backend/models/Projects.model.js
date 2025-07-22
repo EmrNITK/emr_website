@@ -24,7 +24,7 @@ const projectSchema = new Schema(
             type: [String],
             required: true,
         },
-        photo : {
+        projectImg : {
             type: String
         }
     },
