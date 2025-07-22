@@ -5,12 +5,12 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 // create a new project
 const createProject = asyncHandler(async (req, res) => {
-    const { Name, GitHub, Description, techStack, Status } = req.body;
-    if (!Name || !GitHub || !Description || !techStack || !Status) {
+    const { name, gitHub, description, techStack, status } = req.body;
+    if (!name || !gitHub || !description || !techStack || !status) {
         return res.status(400).json({ message: "Please fill all the fields" });
     }
-    
-    const existedProject = await Project.findOne({ Name });
+
+    const existedProject = await Project.findOne({ name });
     if (existedProject) {
         return res.status(400).json({ message: "Project with this name already exists" });
     }
@@ -21,18 +21,18 @@ const createProject = asyncHandler(async (req, res) => {
     }
     const photo = await uploadOnCloudinary(photoLocalPath);
 
-const newProject = await Project.create({
-    Name,
-    GitHub,
-    Description,
-    techStack,
-    photo: photo ? photo.secure_url : null,
-    Status,
-});
+    const newProject = await Project.create({
+        name,
+        gitHub,
+        description,
+        techStack,
+        photo: photo ? photo.secure_url : null,
+        status,
+    });
 
-res
-.status(201)
-.json({ message: "Project created successfully", project: newProject });
+    res
+    .status(201)
+    .json({ message: "Project created successfully", project: newProject });
 });
 
 
@@ -64,7 +64,7 @@ const getProjectById = asyncHandler(async (req, res) => {
 
 // update project by ID 
 const updateProjectById = asyncHandler(async (req, res) => {
-    const { Name, GitHub, Description, techStack, Status } = req.body;
+    const { name, gitHub, description, techStack, status } = req.body;
     const projectId = req.params.projectId;
     const photoLocalPath = req.file?.path;
 
@@ -76,20 +76,20 @@ const updateProjectById = asyncHandler(async (req, res) => {
     const updateFields = {};
 
     // Update regular fields if provided and not empty/null
-    if (Name !== undefined && Name !== null && Name !== "") {
-        updateFields.Name = Name;
+    if (name !== undefined && name !== null && name !== "") {
+        updateFields.name = name;
     }
-    if (GitHub !== undefined && GitHub !== null && GitHub !== "") {
-        updateFields.GitHub = GitHub;
+    if (gitHub !== undefined && gitHub !== null && gitHub !== "") {
+        updateFields.gitHub = gitHub;
     }
-    if (Description !== undefined && Description !== null && Description !== "") {
-        updateFields.Description = Description;
+    if (description !== undefined && description !== null && description !== "") {
+        updateFields.description = description;
     }
     if (techStack !== undefined && techStack !== null && techStack !== "") {
         updateFields.techStack = techStack;
     }
-    if (Status !== undefined && Status !== null && Status !== "") {
-        updateFields.Status = Status;
+    if (status !== undefined && status !== null && status !== "") {
+        updateFields.status = status;
     }
 
     // Update photo if provided

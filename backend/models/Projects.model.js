@@ -2,21 +2,21 @@ import mongoose ,{Schema} from "mongoose";
 
 const projectSchema = new Schema(
     {
-        Status: {
+        status: {
             type: String,
             enum: ["Not started", "In Progress", "Completed"],
             required: true
         },
-        Name : {
+        name : {
             type: String,
             required: true,
             unique: true,
         },
-        GitHub : {
+        gitHub : {
             type: String,
             required: true,
         },
-        Description: {
+        description: {
             type: String,
             required: true,
         },
