@@ -22,6 +22,7 @@ import TransactionVerifyPage from "./pages/TransactionVerifyPage";
 import WorkshopInfo from "./pages/WorkshopInfo";
 import TeamDetailsPage from "./pages/TeamDetailsPage";
 import SynapseEventPage from "./pages/SynapseEventPage";
+import AdminDashBoard from "./admin/AdminDashBoard";
 import UserDashboardPage from "./pages/UserDashboardPage";
 import EventDetailsPage from "./pages/EventDetailsPage.jsx";
 import CreateEventPage from "./pages/CreateEventPage.jsx";
@@ -45,6 +46,7 @@ const App = () => {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/admin" element={<AdminDashBoard />} />
 
               <Route
                 path="/userdashboard"

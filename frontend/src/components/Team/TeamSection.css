@@ -98,6 +98,74 @@
   color: #ad1457;
 }
 
+/* Year selector styles */
+.team-year-selector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.year-btn {
+  background: #fff;
+  color: #e91e63;
+  border: 2px solid #e91e63;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  outline: none;
+}
+
+.year-btn.active,
+.year-btn:hover {
+  background: #e91e63;
+  color: #fff;
+  border-color: #ad1457;
+}
+
+/* Skeleton loading styles */
+.year-skeleton {
+  color: #e91e63;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+.skeleton {
+  background: #f3f3f3;
+  box-shadow: none;
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+}
+
+.skeleton-img {
+  background: #e0e0e0;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+}
+
+.skeleton-text {
+  background: #e0e0e0;
+  height: 18px;
+  margin: 10px auto;
+  border-radius: 6px;
+  width: 60%;
+}
+
+.skeleton-social {
+  background: #e0e0e0;
+  height: 24px;
+  margin: 18px auto 0 auto;
+  border-radius: 8px;
+  width: 40%;
+}
+
 /* Responsive styles */
 @media (max-width: 900px) {
   .team-grid {
@@ -126,6 +194,15 @@
   }
   .team-name {
     font-size: 1.1rem;
+  }
+  .team-year-selector {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .year-btn {
+    padding: 6px 12px;
+    font-size: 0.95rem;
   }
 }
 

@@ -1,6 +1,6 @@
 //Web_dev_3.0/frontend/src/components/Team/Card2.jsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./TeamSection.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,263 +8,134 @@ import {
   faTwitter,
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
-import img1 from "../../assets/images/ProfileImage2/AMAN KUMAR.jpeg";
-import img2 from "../../assets/images/ProfileImage2/YUJIT YADAV.png";
-import img3 from "../../assets/images/ProfileImage2/MEGHA AGARWAL.png";
-import img4 from "../../assets/images/ProfileImage2/ASHWANI ASHWANI.jpg";
-import img5 from "../../assets/images/ProfileImage2/HARSHIT CHANANA.jpg";
-import img6 from "../../assets/images/ProfileImage2/GARVIT.jpg";
-import img7 from "../../assets/images/ProfileImage2/ARYAN KUMAR.jpg";
-import img8 from "../../assets/images/ProfileImage2/RAJNEESH RAJNEESH.jpg";
-import img9 from "../../assets/images/ProfileImage2/SHOURYA TYAGI.jpg";
-import img10 from "../../assets/images/ProfileImage2/SUMIT.jpg";
-import img11 from "../../assets/images/ProfileImage2/HARSH BANSAL.jpg";
-import img12 from "../../assets/images/ProfileImage2/AMAN JINDAL.jpg";
-import img13 from "../../assets/images/ProfileImage2/SHIVANG CHAUHAN.jpg";
-import img14 from "../../assets/images/ProfileImage2/Piyush.jpg";
-import img15 from "../../assets/images/ProfileImage2/BHAGESH.jpg";
-import img16 from "../../assets/images/ProfileImage2/GARV BHATIA.jpg";
-import img17 from "../../assets/images/ProfileImage2/NIKHIL JAIN.jpg";
-import img18 from "../../assets/images/ProfileImage2/ANUPRIYA BIRMAN.jpeg";
-import img19 from "../../assets/images/ProfileImage2/Akshat_profile.jpg";
-import img20 from "../../assets/images/ProfileImage2/VISHWAS KAPOOR.jpg";
-import img21 from "../../assets/images/ProfileImage2/SHELJA SHARMA.jpeg";
 
-const teamMembers = [
-  {
-    name: "Aman Verma",
-    role: "PRESIDENT",
-    image: img1,
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/aman_verma3132/",
-  },
-  {
-    name: "Yujit Yadav",
-    role: "VICE PRESIDENT",
-    image: img2,
-    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/yujit_2003/",
-  },
-  {
-    name: "Megha Agarwal",
-    role: "JOINT SECRETARY",
-    image: img3,
-    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/melophilicme_12/",
-  },
-  {
-    name: "Ashwani Selwal",
-    role: "SECRETARY",
-    image: img4,
-    desc: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/einstein._.there_/",
-  },
-  {
-    name: "Harshit Chanana",
-    role: "PROJECT HEAD",
-    image: img5,
-    desc: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/harshit_chanana03/",
-  },
-  {
-    name: "Garvit Prajapat",
-    role: "PROJECT HEAD",
-    image: img6,
-    desc: "Anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/garvit_prajapat19/",
-  },
-  {
-    name: "Aryan Kumar",
-    role: "DIP HEAD",
-    image: img7,
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/aryan_p.h/",
-  },
-  {
-    name: "Rajneesh Rajpoot",
-    role: "EMBEDDED HEAD",
-    image: img8,
-    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/rrajneesh639/",
-  },
-  {
-    name: "Shourya Tyagi",
-    role: "RECENT TECH HEAD",
-    image: img9,
-    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "#",
-  },
-  {
-    name: "Akshat Mangal",
-    role: "MEMBER",
-    image: img19,
-    desc: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/akshat209141/",
-  },
-  {
-    name: "Sumit Kumar",
-    role: "MEMBER",
-    image: img10,
-    desc: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/its_sumit_kumar1906/",
-  },
-  {
-    name: "Harsh Bansal",
-    role: "MEMBER",
-    image: img11,
-    desc: "Anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/harshbansal_001/",
-  },
-  {
-    name: "Aman Jindal",
-    role: "MEMBER",
-    image: img12,
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/jindal.aman539/",
-  },
-  {
-    name: "Shivang Chauhan",
-    role: "MEMBER",
-    image: img13,
-    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/shivangchauhan._/",
-  },
-  {
-    name: "Piyush Singh",
-    role: "MEMBER",
-    image: img14,
-    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/__i.r.i.d.e.s.c.e.n.t___/",
-  },
-  {
-    name: "Bhagesh Yadav",
-    role: "MEMBER",
-    image: img15,
-    desc: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/____bhagesh____",
-  },
-  {
-    name: "Garv Bhatia",
-    role: "MEMBER",
-    image: img16,
-    desc: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/_garvbhatia",
-  },
-  {
-    name: "Nikhil Jain",
-    role: "MEMBER",
-    image: img17,
-    desc: "Anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/nikhil_jain_120/",
-  },
-  {
-    name: "Anupriya Birman",
-    role: "MEMBER",
-    image: img18,
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/anupriyabirman/",
-  },
-  {
-    name: "Vishwas Kapoor",
-    role: "MEMBER",
-    image: img20,
-    desc: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/_leftover._/",
-  },
-  {
-    name: "Shelja Sharma",
-    role: "MEMBER",
-    image: img21,
-    desc: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    facebook: "#",
-    twitter: "#",
-    instagram: "https://www.instagram.com/shelja_62/",
-  },
-];
 
 const Card2 = () => {
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [years, setYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [yearsLoading, setYearsLoading] = useState(true);
+
+  useEffect(() => {
+    setYearsLoading(true);
+    fetch("http://localhost:3000/api/teampage/years") // API endpoint to get available years
+      .then((res) => res.json())
+      .then((data) => {
+        setYears(data);
+        setSelectedYear(data[0]); // Show latest year by default
+        setYearsLoading(false);
+      })
+      .catch(() => setYearsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedYear) return;
+    setLoading(true);
+    fetch(`http://localhost:3000/api/teampage?year=${selectedYear}`) // Correct API endpoint to get team by year
+      .then((res) => res.json())
+      .then((data) => {
+        // Sort by order ascending
+        setTeamMembers(data.sort((a, b) => a.order - b.order));
+        setLoading(false);
+      })
+      .catch(() => {
+        setTeamMembers([]);
+        setLoading(false);
+      });
+  }, [selectedYear]);
+
   return (
-    <section className="team-section">
-      <div className="team-heading">
-        <h2>Our Team</h2>
-        <p className="team-subtitle">
+    <section className="team-section w-full max-w-6xl mx-auto px-4 py-12">
+      <div className="team-heading text-center mb-8">
+        <h2 className="text-4xl font-bold text-pink-600 mb-2">Our Team</h2>
+        <p className="team-subtitle text-lg text-gray-500">
           Meet the creative minds behind our success
         </p>
       </div>
-      <div className="team-grid">
-        {teamMembers.map((member, idx) => (
-          <div className="team-card" key={idx}>
-            <div className="team-img-wrapper">
-              <img src={member.image} alt={member.name} className="team-img" />
-            </div>
-            <div className="team-role">{member.role}</div>
-            <div className="team-name">{member.name}</div>
-            <div className="team-desc">{member.desc}</div>
-            <div className="team-social">
-              <a
-                href={member.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FontAwesomeIcon icon={faFacebookF} />
-              </a>
-              <a
-                href={member.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FontAwesomeIcon icon={faTwitter} />
-              </a>
-              <a
-                href={member.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FontAwesomeIcon icon={faInstagram} />
-              </a>
-            </div>
+      <div className="team-year-selector flex justify-center gap-3 mb-8">
+        {yearsLoading ? (
+          <div className="text-pink-600 text-base font-medium animate-pulse">
+            Loading years...
           </div>
-        ))}
+        ) : (
+          years.map((year) => (
+            <button
+              key={year}
+              className={`year-btn px-5 py-2 rounded-lg border-2 font-semibold transition-colors duration-200 focus:outline-none ${
+                year === selectedYear
+                  ? "bg-pink-600 text-white border-pink-700"
+                  : "bg-white text-pink-600 border-pink-600 hover:bg-pink-50"
+              }`}
+              onClick={() => setSelectedYear(year)}
+            >
+              {year}
+            </button>
+          ))
+        )}
+      </div>
+      <div className="team-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {loading
+          ? Array.from({ length: 6 }).map((_, idx) => (
+              <div className="team-card animate-pulse bg-gray-100 rounded-2xl p-8 text-center min-h-[220px] flex flex-col items-center" key={idx}>
+                <div className="team-img-wrapper bg-gray-300 rounded-full w-24 h-24 mb-4" />
+                <div className="h-4 w-2/3 bg-gray-300 rounded mb-2" />
+                <div className="h-5 w-1/2 bg-gray-300 rounded mb-3" />
+                <div className="h-4 w-4/5 bg-gray-300 rounded mb-4" />
+                <div className="flex gap-4 justify-center w-1/3">
+                  <div className="h-6 w-6 bg-gray-300 rounded-full" />
+                  <div className="h-6 w-6 bg-gray-300 rounded-full" />
+                  <div className="h-6 w-6 bg-gray-300 rounded-full" />
+                </div>
+              </div>
+            ))
+          : teamMembers.map((member, idx) => (
+              <div className="team-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 text-center transition-shadow duration-200 hover:shadow-xl" key={member._id}>
+                <div className="team-img-wrapper w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden shadow">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="team-img w-full h-full object-cover"
+                  />
+                </div>
+                <div className="team-role text-sm text-pink-600 font-semibold uppercase mb-1 tracking-wide">
+                  {member.role}
+                </div>
+                <div className="team-name text-xl font-bold text-pink-700 mb-2">
+                  {member.name}
+                </div>
+                <div className="team-desc text-base text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                  {member.desc}
+                </div>
+                <div className="team-social flex justify-center gap-4 mb-2">
+                  <a
+                    href={member.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-600 hover:text-pink-800 text-lg transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faFacebookF} />
+                  </a>
+                  <a
+                    href={member.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-600 hover:text-pink-800 text-lg transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faTwitter} />
+                  </a>
+                  <a
+                    href={member.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-600 hover:text-pink-800 text-lg transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faInstagram} />
+                  </a>
+                </div>
+                {/* <div className="team-order text-xs text-gray-400">Order: {member.order}</div> */}
+              </div>
+            ))}
       </div>
     </section>
   );

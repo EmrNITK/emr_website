@@ -4,6 +4,7 @@ dotenv.config({path:'./.env'})
 import connectDB from "./db/db.js"
 import app from "./app.js"
 
+// app.use(express.json())
 connectDB()
 .then(()=>{
   const port=process.env.PORT || 3000;

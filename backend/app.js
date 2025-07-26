@@ -3,9 +3,12 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRouter from "./routes/Auth.router.js";
 import teamRouter from "./routes/Team.router.js";
+import adminRouter from "./routes/admin.router.js";
 import inviteRouter from "./routes/Invite.router.js";
 import userRouter from "./routes/User.router.js";
 import memberRouter from "./routes/Member.router.js";
+import teamPageRouter from "./routes/Team.page.router.js";
+
 import joinRouter from "./routes/Join.router.js";
 import eventRouter from "./routes/Event.router.js";
 import projectRouter from "./routes/Project.router.js";
@@ -22,7 +25,7 @@ app.use(cookieParser());
 app.use(methodOverride("_method"));
 
 // CORS Configuration
-const allowedOrigins = process.env.FRONTEND_DOMAIN_PROD || process.env.FRONTEND_DOMAIN_DEV;
+const allowedOrigins = process.env.FRONTEND_DOMAIN_PROD || process.env.FRONTEND_DOMAIN_DEV || "http://localhost:5173";
 console.log(allowedOrigins);
 const corsOptions = {
     origin: allowedOrigins,
@@ -51,6 +54,8 @@ app.use('/api/teams', joinRouter);
 app.use('/api/teams', memberRouter);
 app.use('/api/events', eventRouter);
 app.use('/api/projects', projectRouter);
+app.use('/api/teampage', teamPageRouter);
+app.use('/api/admin', adminRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
