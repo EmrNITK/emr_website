@@ -7,6 +7,7 @@ import Hero from "../components/Hero";
 import TabLinks from "../components/TabLinks";
 import Footer from "../components/Footer";
 import StarsCanvas from "../components/Stars";
+import ProjectPage from "./Project_Page/ProjectPage";
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
               <Hero />
             </div>
           </div>
+          <ProjectPage/>
           <TabLinks />
           <Footer />
           <StarsCanvas />
