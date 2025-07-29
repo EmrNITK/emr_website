@@ -21,7 +21,7 @@ const ProjectCard2 = () => {
           {/* left textual content */}
           <div className="w-full md:w-1/2 flex flex-col gap-6 justify-between">
             {/* description */}
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl lg:text-xl text-white leading-relaxed">
               A wireless gesture-controlled car that moves based on hand motions. 
               It uses accelerometer data transmitted via RF modules to control 
               motors in real time, making it an innovative project in robotics 
@@ -72,7 +72,7 @@ const ProjectCard2 = () => {
             <img
               src={image1}
               alt="Gesture Controlled Car"
-              className="max-h-96 w-auto object-contain rounded-xl z-10"
+              className="max-h-60 sm:max-h-67 md:max-h-72 lg:max-h-80 w-auto object-contain rounded-xl z-10"
             />
           </div>
         </div>

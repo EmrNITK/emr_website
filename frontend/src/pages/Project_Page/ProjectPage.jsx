@@ -33,19 +33,19 @@ const ProjectPage = () => {
 
       {/* Responsive Navigation Buttons */}
     <div className="w-full flex justify-end">
-      <div className="flex lg:w-3/4 w-full flex-col sm:flex-row justify-center items-center gap-4 mt-6">
+      <div className="flex lg:w-3/4 w-full flex-col sm:flex-row justify-center items-center gap-4 ">
      
         <button
           onClick={handlePrev}
           disabled={idx === 0}
-          className="w-32 sm:w-36 md:w-40 px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 text-sm sm:text-base"
+          className="w-32 sm:w-36 md:w-40 px-4 py-2 bg-gradient-to-t from-[#0f1840] to-[#43b1ae] text-white rounded-lg disabled:opacity-50 text-sm sm:text-base"
         >
           Previous
         </button>
         <button
           onClick={handleNext}
           disabled={idx === arr.length - 1}
-          className="w-32 sm:w-36 md:w-40 px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 text-sm sm:text-base"
+          className="w-32 sm:w-36 md:w-40 px-4 py-2 bg-gradient-to-t from-[#0f1840] to-[#43b1ae] text-white rounded-lg disabled:opacity-50 text-sm sm:text-base"
         >
           Next
         </button>

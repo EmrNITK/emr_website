@@ -21,7 +21,7 @@ const ProjectCard3 = () => {
           {/* left textual content */}
           <div className="w-full md:w-1/2 flex flex-col gap-6 justify-between">
             {/* description */}
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl lg:text-xl text-white leading-relaxed">
               Solves the cube autonomously using CV and ML algorithms. This
               project uses computer vision to detect the cube state and machine
               learning for solving. It combines real-time processing with
@@ -72,7 +72,7 @@ const ProjectCard3 = () => {
             <img
               src={image1}
               alt="Rubik's Cube Solver Screenshot"
-              className="max-h-96 w-auto object-contain rounded-xl z-10"
+              className="max-h-60 sm:max-h-67 md:max-h-72 lg:max-h-80 w-auto object-contain rounded-xl z-10"
             />
           </div>
         </div>
