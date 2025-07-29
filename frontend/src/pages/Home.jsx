@@ -23,7 +23,7 @@ export default function Home() {
           <ProjectPage/>
           <TabLinks />
           <Footer />
-          <StarsCanvas />
+          {/* <StarsCanvas /> */}
         </div>
       </div>
     </div>
