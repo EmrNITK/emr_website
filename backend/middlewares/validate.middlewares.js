@@ -66,9 +66,9 @@ export const validateCreateEvent =[
   body("venue").escape().notEmpty(),
   body("description").escape().notEmpty(),
   body("numberOfMember").escape().isInt({min:1}),
-  body("poster").escape().trim().notEmpty(),
   (req, res, next) => {
     const errors = validationResult(req);
+    console.log(errors)
     if (errors.isEmpty()) {
       next();
       return ;

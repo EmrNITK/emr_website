@@ -3,6 +3,10 @@ import User from './User.model.js';
 import Team from './Team.model.js';
 
 const EventSchema = new mongoose.Schema({
+    isWorkshop : {
+        type: Boolean,
+        required : true
+    },
     name : {
         type: String,
         required : true,
@@ -45,24 +49,6 @@ const EventSchema = new mongoose.Schema({
        title:String,
        link:String,
     }],
-    leaderboard: [
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref: User,   
-        }
-    ],
-    teams: [
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref: Team, 
-        }
-    ],
-    participants: [
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref: User,
-        }
-    ],
     isLive: {
         type: Boolean,
         default: false,

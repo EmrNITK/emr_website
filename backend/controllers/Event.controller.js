@@ -25,7 +25,7 @@ export const createEvent = asyncHandler(async (req, res) => {
   const posterLocalPath = req?.files?.poster[0]?.path;
 
   if (!posterLocalPath) {
-    return res.status(400).json({ message: "poster is required" });
+    return res.status(400).json({ success : false, message: "poster is required" });
   }
 
   const cloudinaryPosterPath = await uploadOnCloudinary(posterLocalPath);

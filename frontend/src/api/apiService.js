@@ -334,13 +334,22 @@ export const leaveTeam = async (teamId) => {
 // Events
 
 export const createEvent = async (eventData) => {
+  // Check if eventData is FormData or regular object
+  const isFormData = eventData instanceof FormData;
+  
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
+  
+  // Don't set Content-Type for FormData (browser will set it automatically with boundary)
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+  
   const response = await fetch(`${API_BASE_URL}/api/events/`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify(eventData),
+    headers,
+    body: isFormData ? eventData : JSON.stringify(eventData),
   });
   return handleResponse(response);
 };

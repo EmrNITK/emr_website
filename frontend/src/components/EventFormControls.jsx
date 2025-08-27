@@ -48,32 +48,35 @@ export const EventFormControls = ({ disabled }) => {
 
     if (response) navigate("/events/manage");
   };
-  return (
-    <>
-      <div className="flex space-x-4 items-center gap-4">
-        {loading ? (
-          <div className="font-mono text-green-400"> Processing...</div>
-        ) : (
-          ""
-        )}
-        <button
-          className="px-5 py-2 bg-green-600 active:bg-green-900 
-             text-gray-300 active:text-gray-500 font-medium rounded-md border border-gray-600 
-             shadow-sm hover:shadow-md "
-          onClick={handleSave}
-        >
-          {disabled ? "Update Event" : "Create Event"}
-        </button>
 
-        <button
-          onClick={handlePublishing}
-          className="px-5 py-2 bg-red-600 active:bg-red-900
-             text-gray-300 font-medium rounded-md border border-gray-600 
-             shadow-sm active:shadow-md transition"
-        >
-          {isLive ? "Unpublish" : "Publish"}
-        </button>
-      </div>
-    </>
+  return (
+    <div className="flex space-x-3 items-center gap-3">
+      {loading ? (
+        <div className="flex items-center text-green-400 font-medium">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-400 mr-2"></div>
+          Processing...
+        </div>
+      ) : null}
+      
+      <button
+        className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+        onClick={handleSave}
+        disabled={loading}
+      >
+        {disabled ? "Update Event" : "Create Event"}
+      </button>
+
+      <button
+        onClick={handlePublishing}
+        disabled={loading}
+        className={`px-5 py-2.5 font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 ${
+          isLive
+            ? "bg-orange-600 hover:bg-orange-700 text-white"
+            : "bg-blue-600 hover:bg-blue-700 text-white"
+        }`}
+      >
+        {isLive ? "Unpublish Event" : "Publish Event"}
+      </button>
+    </div>
   );
 };

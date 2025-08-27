@@ -221,3 +221,163 @@
     --radius: 0.5rem;
   }
 }
+
+/* Custom styles for markdown editor */
+.w-md-editor {
+  background-color: transparent !important;
+  border: none !important;
+  height: 100% !important;
+}
+
+.w-md-editor-content {
+  background-color: transparent !important;
+  height: 100% !important;
+}
+
+.w-md-editor-text {
+  background-color: transparent !important;
+  color: white !important;
+  height: 100% !important;
+}
+
+.w-md-editor-text-input {
+  background-color: transparent !important;
+  color: white !important;
+  height: 100% !important;
+}
+
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  color: white !important;
+  background-color: transparent !important;
+}
+
+.w-md-editor-toolbar {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  padding: 8px 12px !important;
+}
+
+.w-md-editor-toolbar-divider {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.w-md-editor-toolbar li > button {
+  color: white !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+}
+
+.w-md-editor-toolbar li > button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.w-md-editor-toolbar li > button:active {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Markdown preview styles */
+.w-md-editor-preview {
+  background-color: transparent !important;
+  color: white !important;
+  padding: 16px !important;
+}
+
+.w-md-editor-preview h1,
+.w-md-editor-preview h2,
+.w-md-editor-preview h3,
+.w-md-editor-preview h4,
+.w-md-editor-preview h5,
+.w-md-editor-preview h6 {
+  color: white !important;
+  margin-bottom: 12px !important;
+}
+
+.w-md-editor-preview p {
+  color: #e5e7eb !important;
+  margin-bottom: 12px !important;
+  line-height: 1.6 !important;
+}
+
+.w-md-editor-preview code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fbbf24 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-size: 0.875em !important;
+}
+
+.w-md-editor-preview pre {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+  margin: 12px 0 !important;
+  overflow-x: auto !important;
+}
+
+.w-md-editor-preview blockquote {
+  border-left: 4px solid #3b82f6 !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  padding: 12px 16px !important;
+  margin: 12px 0 !important;
+  border-radius: 0 6px 6px 0 !important;
+}
+
+.w-md-editor-preview a {
+  color: #60a5fa !important;
+  text-decoration: underline !important;
+}
+
+.w-md-editor-preview a:hover {
+  color: #93c5fd !important;
+}
+
+.w-md-editor-preview ul,
+.w-md-editor-preview ol {
+  margin: 12px 0 !important;
+  padding-left: 24px !important;
+}
+
+.w-md-editor-preview li {
+  margin-bottom: 4px !important;
+  color: #e5e7eb !important;
+}
+
+/* Fullscreen mode */
+.w-md-editor-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
+  background-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+/* Form input focus styles */
+input:focus,
+textarea:focus {
+  outline: none !important;
+  ring: 2px !important;
+  ring-color: #3b82f6 !important;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

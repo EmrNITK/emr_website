@@ -26,7 +26,7 @@ import UserDashboardPage from "./pages/UserDashboardPage";
 import EventDetailsPage from "./pages/EventDetailsPage.jsx";
 import CreateEventPage from "./pages/CreateEventPage.jsx";
 import ManageEventsPage from "./pages/ManageEventsPage.jsx";
-import { Toaster } from "./components/ui/toaster";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
@@ -36,7 +36,23 @@ const App = () => {
           <ScrollToTop />
           <StarsCanvas />
           <UserOptions />
-          <Toaster/>
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#050816',
+                color: '#f3f3f3',
+                border: '1px solid #aaa6c3',
+                borderRadius: '12px',
+                padding: '16px 20px',
+                fontSize: '16px',
+                fontWeight: '500',
+                boxShadow: '0px 35px 120px -15px #211e35',
+                backdropFilter: 'blur(10px)',
+              },
+            }}
+          />
           <div className="relative z-10">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -125,33 +141,23 @@ const App = () => {
               <Route
                 path="/events/create"
                 element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <CreateEventPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
+                  <CreateEventPage />
+
                 }
               />
               <Route
                 path="/events/manage"
                 element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <ManageEventsPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
+                  <ManageEventsPage />
                 }
               />
               <Route
                 path="/events/manage/event"
                 element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <EventDetailsPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
+                  <EventDetailsPage />
                 }
               />
+
             </Routes>
           </div>
         </BrowserRouter>
