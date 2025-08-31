@@ -355,13 +355,23 @@ export const createEvent = async (eventData) => {
 };
 
 export const updateEvent = async (eventId, eventData) => {
+  // Check if eventData is FormData or regular object
+  const isFormData = eventData instanceof FormData;
+  
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
+  
+  // Don't set Content-Type for FormData (browser will set it automatically with boundary)
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+  
   const response = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify(eventData),
+    credentials: "include",
+    headers,
+    body: isFormData ? eventData : JSON.stringify(eventData),
   });
   return handleResponse(response);
 };
@@ -380,6 +390,18 @@ export const getAllEvents = async () => {
 export const getEventsById = async (eventId) => {
   const response = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
     method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return handleResponse(response);
+};
+
+export const deleteEvent = async (eventId) => {
+  const response = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
+    method: "DELETE",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,

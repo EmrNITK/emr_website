@@ -1,22 +1,19 @@
 import React, { useState, useContext } from "react";
 import { EventFormProvider } from "../context/EventFormContext";
-import { EventFormSection } from "./EventFormSection";
-import { EventDescriptionSection } from "./EventDescripitonSection";
-import { EventDynamicListSection } from "./EventDynamicListSection";
 import { EventFormControls } from "./EventFormControls";
 import StepProgress from "./form/StepProgress";
-import DescriptionField from "./form/DescriptionField";
 import FormActions from "./form/FormActions";
 import FormField from "./form/FormField";
+import CustomRichTextEditor from "./form/CustomRichTextEditor";
 import { showToast } from "../utils/toast";
 import { createEvent } from "../api/apiService";
 import { useNavigate } from "react-router-dom";
 
-const MultiPageEventForm = ({ initialData, disabled }) => {
+const MultiPageEventForm = ({ initialData, disabled, onSave, isLoading }) => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
-    isWorkshop: false, // Default to event (false)
+    isWorkshop: false,
     name: "",
     date: "",
     venue: "",
@@ -32,22 +29,19 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Compact 3-step design
   const steps = [
     {
       title: "Basic Details",
-      subtitle: "Event name, date, and venue"
+      subtitle: "Event info, rules & poster"
     },
     {
       title: "Description", 
-      subtitle: "Tell participants about your event"
-    },
-    {
-      title: "Rules & Fees",
-      subtitle: "Registration details and requirements"
+      subtitle: "Rich description of your event"
     },
     {
       title: "Team & Links",
-      subtitle: "Coordinators and useful resources"
+      subtitle: "Coordinators & resources"
     }
   ];
 
@@ -62,15 +56,13 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
         if (!formData.venue?.trim()) newErrors.venue = "Venue is required";
         if (!formData.numberOfMember || formData.numberOfMember <= 0) newErrors.numberOfMember = "Number of members must be greater than 0";
         if (!formData.poster) newErrors.poster = "Event poster is required";
+        if (!formData.ruleBook?.trim()) newErrors.ruleBook = "Rulebook link is required";
+        if (!formData.amount || formData.amount <= 0) newErrors.amount = "Registration fee must be greater than 0";
         break;
       case 1:
         if (!formData.description?.trim()) newErrors.description = "Description is required";
         break;
       case 2:
-        if (!formData.ruleBook?.trim()) newErrors.ruleBook = "Rulebook link is required";
-        if (!formData.amount || formData.amount <= 0) newErrors.amount = "Registration fee must be greater than 0";
-        break;
-      case 3:
         if (!formData.coordinators?.length) newErrors.coordinators = "At least one coordinator is required";
         break;
     }
@@ -82,7 +74,6 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
   const validateAllSteps = () => {
     const allErrors = {};
     
-    // Validate all required fields from schema
     if (formData.isWorkshop === null || formData.isWorkshop === undefined) allErrors.isWorkshop = "Please select a type";
     if (!formData.name?.trim()) allErrors.name = "Event name is required";
     if (!formData.date) allErrors.date = "Event date is required";
@@ -109,43 +100,26 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
   };
 
   const handleStepClick = (stepIndex) => {
-    // Allow navigation to any step without validation
     setCurrentStep(stepIndex);
   };
 
   const handleFieldChange = (field, value) => {
-    // Special handling for file uploads
     if (field === 'poster' && value) {
       const file = value;
-      const maxSize = 16 * 1024; // 16KB in bytes
+      const maxSize = 16 * 1024;
       
       if (file.size > maxSize) {
         setErrors(prev => ({ 
           ...prev, 
           poster: `File size must be less than 16KB. Current size: ${(file.size / 1024).toFixed(1)}KB` 
         }));
-        return; // Don't update formData if file is too large
+        return;
       }
     }
     
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
-    }
-    
-    // Don't validate on every field change - only clear the current field's error
-  };
-
-  const handleSaveDraft = async () => {
-    setLoading(true);
-    try {
-      localStorage.setItem('event-draft', JSON.stringify(formData));
-      // Could also save to server here
-      setTimeout(() => setLoading(false), 1000);
-    } catch (error) {
-      console.error('Failed to save draft:', error);
-      setLoading(false);
     }
   };
 
@@ -157,59 +131,45 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
     
     setLoading(true);
     try {
-      // Create FormData for file uploads
       const formDataToSend = new FormData();
       
-      // Add all text fields
       formDataToSend.append('isWorkshop', formData.isWorkshop);
       formDataToSend.append('name', formData.name);
-      formDataToSend.append('date', formData.date); // Send as YYYY-MM-DD format
+      formDataToSend.append('date', formData.date);
       formDataToSend.append('venue', formData.venue);
       formDataToSend.append('numberOfMember', parseInt(formData.numberOfMember));
       formDataToSend.append('description', formData.description);
       formDataToSend.append('ruleBook', formData.ruleBook || "");
       formDataToSend.append('amount', parseFloat(formData.amount) || 0);
-      // Add coordinator array with proper format
+      
       const coordinators = formData.coordinators || [];
       coordinators.forEach((coord, index) => {
         formDataToSend.append(`coordinator[${index}][name]`, coord.name);
         formDataToSend.append(`coordinator[${index}][mobileNo]`, coord.mobileNo);
       });
       
-      // Add usefulLinks array with proper format
       const usefulLinks = formData.usefulLinks || [];
       usefulLinks.forEach((link, index) => {
         formDataToSend.append(`usefulLinks[${index}][title]`, link.title);
         formDataToSend.append(`usefulLinks[${index}][link]`, link.link);
       });
       
-      // Add files if they exist
       if (formData.poster) {
         formDataToSend.append('poster', formData.poster);
-        console.log('Poster file added:', formData.poster.name, formData.poster.size);
       } else {
-        console.log('No poster file found - adding placeholder');
-        // Add a placeholder to ensure the field is present
         formDataToSend.append('poster', '');
       }
       if (formData.qrCode) {
         formDataToSend.append('qrCode', formData.qrCode);
       }
 
-      // Debug: Log what's being sent
-      console.log('FormData contents:');
-      for (let [key, value] of formDataToSend.entries()) {
-        console.log(key, ':', value);
+      if (onSave) {
+        await onSave(formDataToSend);
+      } else {
+        const response = await createEvent(formDataToSend);
+        showToast.largeSuccess("Event created successfully!");
+        navigate("/events/manage");
       }
-
-      // Send to backend using API service
-      const response = await createEvent(formDataToSend);
-      
-      showToast.largeSuccess("Event created successfully!");
-      
-      console.log('Event created:', response);
-      
-      // Redirect to manage events page after successful creation
       
     } catch (error) {
       console.error('Failed to submit:', error);
@@ -223,13 +183,13 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
     switch (currentStep) {
       case 0:
         return (
-          <div className="space-y-6">
-            {/* Type Selection */}
-            <div className="space-y-3">
+          <div className="space-y-4">
+            {/* Type Selection - Compact */}
+            <div className="space-y-2">
               <label className="block text-sm font-medium text-white">
-                Choose type of event <span className="text-red-500">*</span>
+                Event Type <span className="text-red-500">*</span>
               </label>
-              <div className="flex gap-6">
+              <div className="flex gap-4">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="radio"
@@ -239,7 +199,7 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
                     onChange={(e) => handleFieldChange('isWorkshop', e.target.value === 'true')}
                     className="w-4 h-4 text-blue-600 bg-white/5 border-white/20 focus:ring-blue-500 focus:ring-2"
                   />
-                  <span className="text-white">Event</span>
+                  <span className="text-white text-sm">Event</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
@@ -250,7 +210,7 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
                     onChange={(e) => handleFieldChange('isWorkshop', e.target.value === 'true')}
                     className="w-4 h-4 text-blue-600 bg-white/5 border-white/20 focus:ring-blue-500 focus:ring-2"
                   />
-                  <span className="text-white">Workshop</span>
+                  <span className="text-white text-sm">Workshop</span>
                 </label>
               </div>
               {errors.isWorkshop && (
@@ -258,7 +218,8 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Basic Details - Compact Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 label="Event Name"
                 name="name"
@@ -287,54 +248,19 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
                 required
               />
               <FormField
-                label="Number of Members"
+                label="Max Participants"
                 name="numberOfMember"
                 type="number"
                 value={formData.numberOfMember}
                 onChange={(e) => handleFieldChange('numberOfMember', e.target.value)}
                 error={errors.numberOfMember}
-                placeholder="Max participants"
+                placeholder="0"
                 required
               />
             </div>
-            <FormField
-              label="Event Poster"
-              name="poster"
-              type="file"
-              value={formData.poster}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  handleFieldChange('poster', file);
-                }
-              }}
-              error={errors.poster}
-              accept="image/*"
-              required
-              helperText="Maximum file size: 16KB"
-            />
-          </div>
-        );
 
-      case 1:
-        return (
-          <div className="space-y-6">
-            <DescriptionField
-              value={formData.description}
-              onChange={(value) => handleFieldChange('description', value)}
-              placeholder="Describe your event in detail..."
-              storageKey="event-description-draft"
-            />
-            {errors.description && (
-              <p className="text-sm text-red-600">{errors.description}</p>
-            )}
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Rules & Fees - Compact Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 label="Rulebook Link"
                 name="ruleBook"
@@ -355,139 +281,179 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
                 required
               />
             </div>
-            <FormField
-              label="QR Code for Payment"
-              name="qrCode"
-              type="file"
-              value={formData.qrCode}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  handleFieldChange('qrCode', file);
-                }
-              }}
-              accept="image/*"
-            />
+            
+            {/* File Uploads - Compact */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Event Poster"
+                name="poster"
+                type="file"
+                value={formData.poster}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    handleFieldChange('poster', file);
+                  }
+                }}
+                error={errors.poster}
+                accept="image/*"
+                required
+                helperText="Max 16KB"
+              />
+              <FormField
+                label="Payment QR Code (Optional)"
+                name="qrCode"
+                type="file"
+                value={formData.qrCode}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    handleFieldChange('qrCode', file);
+                  }
+                }}
+                accept="image/*"
+              />
+            </div>
           </div>
         );
 
-      case 3:
+      case 1:
         return (
-          <div className="space-y-8">
-            {/* Coordinators Section */}
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-6">
-              <div className="flex items-center justify-between mb-4">
+          <div className="space-y-4">
+            {/* Custom Rich Text Editor - Full Page */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-white">
+                Event Description <span className="text-red-500">*</span>
+              </label>
+              <CustomRichTextEditor
+                value={formData.description}
+                onChange={(value) => handleFieldChange('description', value)}
+                placeholder="Describe your event in detail. Use the toolbar above to format your text with bold, italic, headings, lists, and links..."
+                height="600px"
+              />
+              {errors.description && (
+                <p className="text-sm text-red-600">{errors.description}</p>
+              )}
+            </div>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-4">
+            {/* Coordinators - Compact */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-4">
+              <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Coordinators</h3>
-                  <p className="text-sm text-secondary mt-1">Add event coordinators and their contact details</p>
+                  <h3 className="text-base font-semibold text-white">Coordinators</h3>
+                  <p className="text-xs text-secondary">Add event coordinators</p>
                 </div>
                 <button
                   onClick={() => handleFieldChange('coordinators', [...(formData.coordinators || []), { name: '', mobileNo: '' }])}
-                  className="px-3 py-1.5 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+                  className="px-2 py-1 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
                 >
-                  + Add Coordinator
+                  + Add
                 </button>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {(formData.coordinators || []).map((coordinator, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-white/5 rounded-md border border-white/10">
-                    <div className="flex-1 grid grid-cols-2 gap-3">
-                      <input
-                        type="text"
-                        placeholder="Coordinator name"
-                        value={coordinator.name || ''}
-                        onChange={(e) => {
-                          const updated = [...(formData.coordinators || [])];
-                          updated[index] = { ...updated[index], name: e.target.value };
-                          handleFieldChange('coordinators', updated);
-                        }}
-                        className="px-3 py-2 text-sm bg-white/5 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <input
-                        type="tel"
-                        placeholder="Mobile number"
-                        value={coordinator.mobileNo || ''}
-                        onChange={(e) => {
-                          const updated = [...(formData.coordinators || [])];
-                          updated[index] = { ...updated[index], mobileNo: e.target.value };
-                          handleFieldChange('coordinators', updated);
-                        }}
-                        className="px-3 py-2 text-sm bg-white/5 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
+                  <div key={index} className="flex items-center gap-2 p-2 bg-white/5 rounded border border-white/10">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={coordinator.name || ''}
+                      onChange={(e) => {
+                        const updated = [...(formData.coordinators || [])];
+                        updated[index] = { ...updated[index], name: e.target.value };
+                        handleFieldChange('coordinators', updated);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm bg-white/5 border border-white/20 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Mobile"
+                      value={coordinator.mobileNo || ''}
+                      onChange={(e) => {
+                        const updated = [...(formData.coordinators || [])];
+                        updated[index] = { ...updated[index], mobileNo: e.target.value };
+                        handleFieldChange('coordinators', updated);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm bg-white/5 border border-white/20 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
                     <button
                       onClick={() => {
                         const updated = (formData.coordinators || []).filter((_, i) => i !== index);
                         handleFieldChange('coordinators', updated);
                       }}
-                      className="px-2 py-1 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors"
+                      className="px-2 py-1 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors"
                     >
-                      Remove
+                      ×
                     </button>
                   </div>
                 ))}
                 {(formData.coordinators || []).length === 0 && (
-                  <p className="text-sm text-gray-400 text-center py-4">No coordinators added yet</p>
+                  <p className="text-xs text-gray-400 text-center py-2">No coordinators added</p>
                 )}
               </div>
+              {errors.coordinators && (
+                <p className="text-sm text-red-600 mt-1">{errors.coordinators}</p>
+              )}
             </div>
 
-            {/* Useful Links Section */}
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-6">
-              <div className="flex items-center justify-between mb-4">
+            {/* Useful Links - Compact */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-4">
+              <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Useful Links</h3>
-                  <p className="text-sm text-secondary mt-1">Add relevant links for participants</p>
+                  <h3 className="text-base font-semibold text-white">Useful Links</h3>
+                  <p className="text-xs text-secondary">Add relevant resources</p>
                 </div>
                 <button
                   onClick={() => handleFieldChange('usefulLinks', [...(formData.usefulLinks || []), { title: '', link: '' }])}
-                  className="px-3 py-1.5 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+                  className="px-2 py-1 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
                 >
-                  + Add Link
+                  + Add
                 </button>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {(formData.usefulLinks || []).map((link, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-white/5 rounded-md border border-white/10">
-                    <div className="flex-1 grid grid-cols-2 gap-3">
-                      <input
-                        type="text"
-                        placeholder="Link title"
-                        value={link.title || ''}
-                        onChange={(e) => {
-                          const updated = [...(formData.usefulLinks || [])];
-                          updated[index] = { ...updated[index], title: e.target.value };
-                          handleFieldChange('usefulLinks', updated);
-                        }}
-                        className="px-3 py-2 text-sm bg-white/5 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <input
-                        type="url"
-                        placeholder="https://..."
-                        value={link.link || ''}
-                        onChange={(e) => {
-                          const updated = [...(formData.usefulLinks || [])];
-                          updated[index] = { ...updated[index], link: e.target.value };
-                          handleFieldChange('usefulLinks', updated);
-                        }}
-                        className="px-3 py-2 text-sm bg-white/5 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
+                  <div key={index} className="flex items-center gap-2 p-2 bg-white/5 rounded border border-white/10">
+                    <input
+                      type="text"
+                      placeholder="Title"
+                      value={link.title || ''}
+                      onChange={(e) => {
+                        const updated = [...(formData.usefulLinks || [])];
+                        updated[index] = { ...updated[index], title: e.target.value };
+                        handleFieldChange('usefulLinks', updated);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm bg-white/5 border border-white/20 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                    <input
+                      type="url"
+                      placeholder="https://..."
+                      value={link.link || ''}
+                      onChange={(e) => {
+                        const updated = [...(formData.usefulLinks || [])];
+                        updated[index] = { ...updated[index], link: e.target.value };
+                        handleFieldChange('usefulLinks', updated);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm bg-white/5 border border-white/20 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
                     <button
                       onClick={() => {
                         const updated = (formData.usefulLinks || []).filter((_, i) => i !== index);
                         handleFieldChange('usefulLinks', updated);
                       }}
-                      className="px-2 py-1 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors"
+                      className="px-2 py-1 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors"
                     >
-                      Remove
+                      ×
                     </button>
                   </div>
                 ))}
                 {(formData.usefulLinks || []).length === 0 && (
-                  <p className="text-sm text-gray-400 text-center py-4">No useful links added yet</p>
+                  <p className="text-xs text-gray-400 text-center py-2">No links added</p>
                 )}
               </div>
             </div>
@@ -502,19 +468,19 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
   return (
     <EventFormProvider initialData={initialData}>
       <div className="min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Create Event
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          {/* Compact Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-white mb-1">
+              {onSave ? "Edit Event" : "Create Event"}
             </h1>
-            <p className="text-secondary">
-              Build your event step by step
+            <p className="text-secondary text-sm">
+              {onSave ? "Update your event" : "Build your event in 3 simple steps"}
             </p>
           </div>
 
           {/* Progress Bar */}
-          <div className="mb-8">
+          <div className="mb-6">
             <StepProgress
               steps={steps}
               currentStep={currentStep}
@@ -523,25 +489,25 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
             />
           </div>
 
-          {/* Form Container */}
-          <div className="bg-white/5 backdrop-blur-sm rounded-xl shadow-xl border border-white/10">
-            {/* Step Header */}
-            <div className="px-6 py-4 border-b border-white/10">
-              <h2 className="text-xl font-semibold text-white">
+          {/* Compact Form Container */}
+          <div className="bg-white/5 backdrop-blur-sm rounded-lg shadow-xl border border-white/10">
+            {/* Step Header - Compact */}
+            <div className="px-4 py-3 border-b border-white/10">
+              <h2 className="text-lg font-semibold text-white">
                 {steps[currentStep].title}
               </h2>
-              <p className="text-secondary text-sm mt-1">
+              <p className="text-secondary text-xs mt-0.5">
                 {steps[currentStep].subtitle}
               </p>
             </div>
 
-            {/* Form Content */}
-            <div className="p-6">
+            {/* Form Content - Compact */}
+            <div className="p-4">
               {renderStepContent()}
             </div>
 
-            {/* Actions */}
-            <div className="px-6 pb-6">
+            {/* Actions - Compact */}
+            <div className="px-4 pb-4">
               <FormActions
                 onBack={handleBack}
                 onNext={handleNext}
@@ -549,6 +515,7 @@ const MultiPageEventForm = ({ initialData, disabled }) => {
                 isFirst={currentStep === 0}
                 isLast={currentStep === steps.length - 1}
                 loading={loading}
+                isEditMode={!!onSave}
               />
             </div>
           </div>

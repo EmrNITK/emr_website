@@ -83,16 +83,17 @@ export const updateEventById = async (req, res) => {
   }
 
   const eventData = req.body;
+  console.log("New data : ", eventData);
 
   // checking if event name alrady exist in databse (as it is unique)
-  if (eventData.name) {
-    const ifExisted = await Event.findOne({ name: eventData.name });
-    if (ifExisted) {
-      return res.status(409).json({
-        message: "Event name already exists try using differnt event name",
-      });
-    }
-  }
+  // if (eventData.name) {
+  //   const ifExisted = await Event.findOne({ name: eventData.name });
+  //   if (ifExisted) {
+  //     return res.status(409).json({
+  //       message: "Event name already exists try using differnt event name",
+  //     });
+  //   }
+  // }
 
   const updatedEvent = await Event.findByIdAndUpdate(eventId, eventData, {
     new: true,

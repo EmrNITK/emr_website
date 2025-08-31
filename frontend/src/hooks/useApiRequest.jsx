@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { showToast } from "../utils/toast";
 
 export const useApiRequest = ({ enableToast }) => {
-  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
@@ -13,56 +12,57 @@ export const useApiRequest = ({ enableToast }) => {
 
     try {
       const response = await fetchData();
-
-      // If response is successful (status 2xx)
-      if (response?.status >= 200 && response?.status < 300) {
-        setData(response.data);
-        enableToast
-          ? toast({
-              title: "Success",
-              description: successMessage,
-              variant: "success",
-              className:
-                "bg-green-800 text-white shadow-lg border border-green-500",
-            })
-          : "";
-        return response.json();
+      setData(response.data);
+      
+      if (enableToast) {
+        showToast.success(successMessage);
       }
-
-      // If response indicates an error (status 4xx, 5xx)
-      throw response;
+      
+      return response;
     } catch (err) {
       let errorMessage = "Something went wrong.";
       let errorDetails = "";
 
-      const { status } = err;
-      const res = await err?.json();
-
-      if (status >= 400 && status < 500) {
-        // Client-side validation errors
-        if (!Array.isArray(res.errors) && !res?.success) {
-          errorDetails = res.message;
-        } else {
-          errorDetails = (
-            <div>
-              {" "}
-              {res.errors?.map((e, index) => (
-                <div key={index}>{`${e.path}: ${e.msg}`}</div>
-              ))}
-            </div>
-          );
+      // Handle different types of errors
+      if (err?.response) {
+        // Axios error with response
+        const { status, data } = err.response;
+        
+        if (status >= 400 && status < 500) {
+          // Client-side validation errors
+          if (data?.errors && Array.isArray(data.errors)) {
+            errorDetails = data.errors.map(e => `${e.path}: ${e.msg}`).join(', ');
+          } else if (data?.message) {
+            errorDetails = data.message;
+          }
+        } else if (status >= 500) {
+          errorMessage = "Server error. Please try again later.";
         }
-      } else if (status >= 500) {
-        // Server-side errors
-        errorMessage = "Server error. Please try again later.";
+      } else if (err?.status) {
+        // Fetch error with status
+        const { status } = err;
+        
+        if (status >= 400 && status < 500) {
+          try {
+            const res = await err.json();
+            if (res?.errors && Array.isArray(res.errors)) {
+              errorDetails = res.errors.map(e => `${e.path}: ${e.msg}`).join(', ');
+            } else if (res?.message) {
+              errorDetails = res.message;
+            }
+          } catch (parseError) {
+            errorDetails = "Invalid response format";
+          }
+        } else if (status >= 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+      } else {
+        // Generic error (network, etc.)
+        errorMessage = err?.message || "Network error. Please check your connection.";
       }
 
       setError(errorMessage);
-      toast({
-        title: "Error",
-        description: errorDetails || errorMessage,
-        variant: "destructive",
-      });
+      showToast.error(errorDetails || errorMessage);
 
       return null;
     } finally {

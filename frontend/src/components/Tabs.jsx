@@ -4,23 +4,26 @@ const Tabs = ({ tabs, content }) => {
   const [active, setActive] = useState(0);
 
   return (
-    <div className="w-full md:w-[80%] flex flex-col items-center gap-4">
+    <div className="w-full">
       {/* Tab Headers */}
-      <div className="w-full grid grid-cols-4 justify-items-center bg-white/10 backdrop-opacity-5 backdrop-brightness-10 shadow-lg backdrop-blur-sm rounded-2xl">
+      <div className="flex border-b border-gray-700 mb-6">
         {tabs.map((tab, index) => (
-          <div
+          <button
             key={index}
-            className={`w-full text-center text-xs text-nowrap md:text-base p-2 rounded-2xl cursor-pointer ${
-              active === index ? "bg-white/20" : ""
-            }`}
             onClick={() => setActive(index)}
+            className={`px-6 py-3 text-sm font-medium transition-all duration-200 ${
+              active === index
+                ? "text-blue-400 border-b-2 border-blue-400 bg-blue-400/5"
+                : "text-gray-400 hover:text-gray-300 hover:bg-gray-800/30"
+            }`}
           >
             {tab}
-          </div>
+          </button>
         ))}
       </div>
+      
       {/* Tab Content */}
-      <div className="w-full flex flex-col items-center text-center md:text-left bg-white/5 backdrop-opacity-100 backdrop-brightness-100 shadow-lg backdrop-blur-lg rounded-3xl p-4">
+      <div className="min-h-[500px]">
         {content[active]}
       </div>
     </div>
