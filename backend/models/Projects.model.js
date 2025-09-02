@@ -14,14 +14,15 @@ const projectSchema = new Schema(
         },
         gitHub : {
             type: String,
-            required: true,
+            required: true
+           
         },
         description: {
             type: String,
-            required: true,
+            required: true
         },
         techStack: {
-            type: [String],
+            type: [String],   
             required: true,
         },
         projectImg : {

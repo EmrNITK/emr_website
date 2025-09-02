@@ -22,16 +22,24 @@ app.use(cookieParser());
 app.use(methodOverride("_method"));
 
 // CORS Configuration
-const allowedOrigins = process.env.FRONTEND_DOMAIN_PROD || process.env.FRONTEND_DOMAIN_DEV;
+
+const allowedOrigins = process.env.FRONTEND_DOMAIN_PROD || process.env.FRONTEND_DOMAIN_DEV
+||"http://localhost:5173";
 console.log(allowedOrigins);
 const corsOptions = {
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    // allowedHeaders: ["Content-Type", "Authorization"],
+    // credentials: true,
+     credentials: false,
 };
 
 app.use(cors(corsOptions));
+// app.use(
+//   cors({
+//     origin: "*", // allows all origins (disable CORS restriction)
+//   })
+// );
 
 // Body parsing middleware
 app.use(express.json({ limit: "16kb" }));

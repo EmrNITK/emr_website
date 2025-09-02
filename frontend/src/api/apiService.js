@@ -2,13 +2,21 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Replace with your act
 
 // Handle API Response
 const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.json();
-    console.log(error);
-    throw new Error(error || "Something went wrong");
-    // return error;
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    data = null;
   }
-  return await response.json();
+
+  if (!response.ok) {
+    const message =
+      (data && (data.message || data.error)) ||
+      response.statusText ||
+      "Something went wrong";
+    throw new Error(message);
+  }
+  return data;
 };
 
 // User Registration
@@ -374,6 +382,44 @@ export const getEventsById = async (eventId) => {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return handleResponse(response);
+};
+
+
+export const fetchAllProjects = async () => {
+  const response = await fetch("http://localhost:3000/api/projects/");
+ return await response.json();
+};
+
+export const createProject = async (projectData) => {
+  const response = await fetch(`http://localhost:3000/api/projects/`, {
+    method: "POST",
+    
+    body: projectData,
+    // Authorization: `Bearer ${localStorage.getItem("token")}`
+  });
+  return handleResponse(response);
+};
+
+export const updateProject = async (projectId, projectData) => {
+  const response = await fetch(`http://localhost:3000/api/projects/${projectId}`, {
+    method: "PUT",
+
+    body: projectData,
+    // Authorization: `Bearer ${localStorage.getItem("token")}`
+  });
+  return handleResponse(response);
+}; 
+
+export const deleteProject = async (ProjectId) => {
+  const response = await fetch(`http://localhost:3000/api/projects/${ProjectId}`, {
+    method: "DELETE",
+    // credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+      // Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   return handleResponse(response);

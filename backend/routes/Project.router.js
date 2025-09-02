@@ -13,8 +13,7 @@ import { validateCreateProject, validateUpdateProject } from "../middlewares/val
 const projectRouter = express.Router();
 
 projectRouter.post("/", 
-  verifyJwt, 
-  isUserAdmin, 
+  // verifyJwt, 
   processBase64Files([{ name: "projectImg", filename: "project-image.jpg" }]),
   upload.single("projectImg"),
   validateCreateProject,
@@ -26,15 +25,16 @@ projectRouter.get("/", getAllProjects);
 projectRouter.get("/:projectId", getProjectById);
 
 projectRouter.put("/:projectId", 
-  verifyJwt, 
-  isUserAdmin, 
+  // verifyJwt, 
+  // isUserAdmin, 
   processBase64Files([{ name: "projectImg", filename: "project-image.jpg" }]),
   upload.single("projectImg"),
   validateUpdateProject,
   updateProjectById
 );
 
-projectRouter.delete("/:projectId", verifyJwt, isUserAdmin, deleteProject);
+// projectRouter.delete("/:projectId", verifyJwt, isUserAdmin, deleteProject);
+projectRouter.delete("/:projectId", deleteProject);
 
 
 export default projectRouter;
