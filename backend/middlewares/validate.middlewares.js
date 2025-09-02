@@ -157,3 +157,32 @@ export const validateUpdateProject = [
     res.status(422).json({ errors: errors.array() });
   },
 ];
+
+export const validateGalleryImageFile = () => {
+  return body('image').custom((value, { req }) => {
+    const files = req.files?.image;
+
+    if (!files || files.length === 0) {
+      throw new Error('At least one image file is required');
+    }
+
+    for (let file of files) {
+      if (!ALLOWED_IMAGE_TYPES.includes(file.mimetype)) {
+        throw new Error('Only JPEG, PNG, and WebP images are allowed');
+      }
+    }
+
+    return true;
+  });
+};
+
+export const validateCreateGallery = [
+  body("title").escape().trim().notEmpty().withMessage("Title (category) is required"),
+  body("year").escape().trim().notEmpty().withMessage("Year is required"),
+  validateGalleryImageFile(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) return next();
+    res.status(422).json({ errors: errors.array() });
+  },
+];

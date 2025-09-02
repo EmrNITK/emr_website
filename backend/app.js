@@ -9,6 +9,7 @@ import memberRouter from "./routes/Member.router.js";
 import joinRouter from "./routes/Join.router.js";
 import eventRouter from "./routes/Event.router.js";
 import projectRouter from "./routes/Project.router.js";
+import galleryRouter from "./routes/Gallery.router.js";
 import cors from "cors";
 import methodOverride from "method-override";
 dotenv.config();
@@ -51,6 +52,7 @@ app.use('/api/teams', joinRouter);
 app.use('/api/teams', memberRouter);
 app.use('/api/events', eventRouter);
 app.use('/api/projects', projectRouter);
+app.use("/api/gallery", galleryRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

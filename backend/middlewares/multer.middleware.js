@@ -15,37 +15,50 @@ const storage = multer.diskStorage({
 // Initialize Multer
 const upload = multer({ storage: storage });
 
-// Middleware to process base64 files dynamically
+// Helper function to save a base64 file to disk
+const saveBase64File = (base64String, filename, fieldName, shouldReturn = false) => {
+  if (!base64String) return;
+
+  const base64Data = base64String.split(",")[1]; // remove "data:image/jpeg;base64,"
+  const buffer = Buffer.from(base64Data, "base64");
+  const filePath = path.join("./public/temp", filename);
+
+  fs.writeFileSync(filePath, buffer);
+
+  const fileObj = {
+    path: filePath,
+    originalname: filename,
+    mimetype: base64String.split(";")[0].split(":")[1], // extract "image/jpeg" etc
+  };
+
+  return shouldReturn ? fileObj : undefined;
+};
+
+// Middleware to process base64 files
 const processBase64Files =
   (fileFields = []) =>
   async (req, res, next) => {
     try {
-      if (!fileFields.length) return next(); // Skip if no fields are defined
+      if (!fileFields.length) return next();
 
-      req.files = req.files || {}; // Ensure req.files is defined
+      req.files = req.files || {};
 
-      // Helper function to save base64-encoded files
-      const saveBase64File = (base64String, filename, fieldName) => {
-        if (!base64String) return;
-
-        const base64Data = base64String.split(",")[1]; // Remove metadata
-        const buffer = Buffer.from(base64Data, "base64");
-        const filePath = path.join("./public/temp", filename);
-
-        fs.writeFileSync(filePath, buffer);
-
-        req.files[fieldName] = [
-          {
-            path: filePath,
-            originalname: filename,
-            mimetype: base64String.split(";")[0].split(":")[1], // Extract MIME type
-          },
-        ];
-      };
-
-      // Process only fields that exist in req.body
       fileFields.forEach(({ name, filename }) => {
-        if (req.body[name]) saveBase64File(req.body[name], filename, name);
+        const input = req.body[name];
+
+        if (!input) return;
+
+        if (Array.isArray(input)) {
+          // Multiple base64 images (for gallery uploads)
+          req.files[name] = input.map((base64Str, idx) => {
+            const uniqueFilename = `${Date.now()}-${idx}-${filename}`;
+            return saveBase64File(base64Str, uniqueFilename, name, true);
+          });
+        } else {
+          // Single base64 image
+          const fileObj = saveBase64File(input, filename, name, true);
+          req.files[name] = [fileObj];
+        }
       });
 
       next();
