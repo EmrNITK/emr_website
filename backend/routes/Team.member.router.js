@@ -1,11 +1,11 @@
 import express from "express";
-import { getTeamYears, getTeamByYear, createTeamMember, updateTeamMember, deleteTeamMember } from "../controllers/Team..Member.controller.js";
+import { getCurrentTeam, getTeamByYear, createTeamMember, updateTeamMember, deleteTeamMember } from "../controllers/Team..Member.controller.js";
 
 const router = express.Router();
 
 // Public endpoints
-router.get("/years", getTeamYears);
-router.get("/", getTeamByYear);
+router.get("/years", getTeamByYears);
+// router.get("/", getCurrentTeam);
 
 // Admin endpoints
 router.post("/create-team-member", createTeamMember);

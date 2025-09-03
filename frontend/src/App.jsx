@@ -28,6 +28,7 @@ import EventDetailsPage from "./pages/EventDetailsPage.jsx";
 import CreateEventPage from "./pages/CreateEventPage.jsx";
 import ManageEventsPage from "./pages/ManageEventsPage.jsx";
 import { Toaster } from "./components/ui/toaster";
+import TeamPage from "./pages/TeamPage";
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/admin" element={<AdminDashBoard />} />
+              <Route path="/team" element={<TeamPage />} />
 
               <Route
                 path="/userdashboard"

@@ -1,6 +1,6 @@
 import TeamMember from "../models/TeamMember.model.js";
 
-export const getTeamYears = async (req, res) => {
+export const getTeamByYears = async (req, res) => {
   try {
     const years = await TeamMember.distinct("year");
     years.sort((a, b) => b - a);
@@ -10,7 +10,7 @@ export const getTeamYears = async (req, res) => {
   }
 };
 
-export const getTeamByYear = async (req, res) => {
+export const getCurrentTeam = async (req, res) => {
   try {
     const year = parseInt(req.query.year);
     if (!year) return res.status(400).json({ message: "Year is required" });

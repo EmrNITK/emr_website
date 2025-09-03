@@ -1,7 +1,9 @@
+import Card2 from '@/components/Team/Card2';
+import Navbar from '@/components/Team/Navbar';
 import React from 'react';
-import NavBar2 from '../components/Navbar2';
-import Card2 from '../components/Team/Card2';
-import { StarsCanvas } from "../components";
+// import NavBar2 from '../components/Navbar2';
+// import Card2 from '../components/Team/Card2';
+// import { StarsCanvas } from "../components";
 // import img1 from "../../assets/images/ProfileImage2/AMAN KUMAR.jpeg";
 // import img2 from "../../assets/images/ProfileImage2/YUJIT YADAV.png";
 // import img3 from "../../assets/images/ProfileImage2/MEGHA AGARWAL.png";
@@ -218,10 +220,11 @@ import { StarsCanvas } from "../components";
 function TeamPage() {
   return (
     <div>
-      <NavBar2 />
+      {/* <NavBar2 />
+       */}
       <div className="relative z-0 bg-primary">
         <Card2 />
-        <StarsCanvas />
+        {/* <StarsCanvas /> */}
       </div>
     </div>
   );
