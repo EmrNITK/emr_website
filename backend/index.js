@@ -1,16 +1,41 @@
-import dotenv from "dotenv"
-dotenv.config({path:'./.env'})
+import dotenv from 'dotenv';
+dotenv.config();
 
-import connectDB from "./db/db.js"
-import app from "./app.js"
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import connectDB from './config/db.js';
+import apiRoutes from './routes/apiRoutes.js';
 
-connectDB()
-.then(()=>{
-  const port=process.env.PORT || 3000;
-  app.listen(port,()=>{
-    console.log(`server is running at port ${port}`)
-  })
-})
-.catch((err)=>{
-  console.log("mongodb connection failed !!! :",err)
-}) 
+// Initialize App
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Database
+connectDB();
+
+// Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://your-frontend-domain.com'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true 
+}));
+
+app.use(express.json());
+app.use(cookieParser());
+
+// Routes
+app.use('/api', apiRoutes);
+
+// Start Server
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));

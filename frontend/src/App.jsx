@@ -1,163 +1,56 @@
-import React from "react";
-import "./index.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import ScrollToTop from "./utils/ScrollToTop";
+import './index.css';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-import StarsCanvas from "./components/Stars.jsx";
-import UserOptions from "./components/UserOptions.jsx";
-import TeamCard from "./components/TeamCard.jsx";
-import ProtectedRoute from "./hoc/ProtectedRoute.jsx";
-import VerifiedRoute from "./hoc/VerifiedRoute.jsx";
-import AdminRoute from "./hoc/AdminRoute.jsx";
-import CreateTeamPage from "./pages/CreateTeamPage.jsx";
-import JoinTeamPage from "./pages/JoinTeamPage.jsx";
-import Home from "./pages/Home";
-import LoginPage from "./pages/LoginPage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import SponsorPage from "./pages/Sponsor.jsx";
-import RegisterPage from "./pages/RegisterPage";
-import TransactionVerifyPage from "./pages/TransactionVerifyPage";
-import WorkshopInfo from "./pages/WorkshopInfo";
-import TeamDetailsPage from "./pages/TeamDetailsPage";
-import SynapseEventPage from "./pages/SynapseEventPage";
-import UserDashboardPage from "./pages/UserDashboardPage";
-import EventDetailsPage from "./pages/EventDetailsPage.jsx";
-import CreateEventPage from "./pages/CreateEventPage.jsx";
-import ManageEventsPage from "./pages/ManageEventsPage.jsx";
-import { Toaster } from "./components/ui/toaster";
+import Loader from "./components/Loader";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-const App = () => {
+import WorkshopsPage from "./pages/workshops/page";
+import EventsPage from "./pages/events/page";
+import GalleryPage from "./pages/gallery/page";
+import TeamPage from "./pages/team/page";
+import ProjectsPage from "./pages/projects/page";
+import SponsorPage from "./pages/sponsor/page";
+import EMRHomePage from './pages/home/page';
+import Header from './components/Header';
+import AdminDash from './adminDashboard/page';
+import NavPage from './pages/page';
+import NotFoundPage from './components/NotFoundPage';
+
+function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // simulate app loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
-    <div className="relative min-h-screen">
-      <AuthProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <StarsCanvas />
-          <UserOptions />
-          <Toaster/>
-          <div className="relative z-10">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/sponsor" element={<SponsorPage />} />
-              <Route path="/workshop" element={<WorkshopInfo />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
-              <Route
-                path="/userdashboard"
-                element={
-                  <ProtectedRoute>
-                    <AdminRoute>
-                      <UserDashboardPage />
-                    </AdminRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/teamcard"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <TeamCard />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/teamdetails"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <TeamDetailsPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/transactionverify"
-                element={
-                  <ProtectedRoute>
-                    <TransactionVerifyPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/change-password"
-                element={
-                  <ProtectedRoute>
-                    <ChangePasswordPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/workshop/createteam"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <CreateTeamPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/workshop/jointeam"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <JoinTeamPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/synapse"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <SynapseEventPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/events/create"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <CreateEventPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/events/manage"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <ManageEventsPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/events/manage/event"
-                element={
-                  <ProtectedRoute>
-                    <VerifiedRoute>
-                      <EventDetailsPage />
-                    </VerifiedRoute>
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </AuthProvider>
-    </div>
+    <>
+    
+      <Routes>
+        <Route path="/" element={<Navigate to="/p" />} />
+        <Route path="/p/*" element={<NavPage />}/>
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute>
+              <AdminDash />
+            </ProtectedRoute>
+          }
+        />
+         <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   );
-};
+}
 
 export default App;
