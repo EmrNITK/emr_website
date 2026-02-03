@@ -4,16 +4,18 @@ module.exports = {
     content: ["./src/**/*.{js,jsx}"],
   mode: "jit",
   theme: {
-  	extend: {
-  		colors: {
-  			primary: '#050816',
-  			primaryy: '#050816b8',
-  			secondary: '#aaa6c3',
-  			tertiary: '#151030',
-  			'black-100': '#100d25',
-  			'black-200': '#090325',
-  			'white-100': '#f3f3f3'
-  		},
+  
+   	extend: {
+ 		colors: {
+ 			// Restrict theme to the five provided colors
+ 			primary: {
+ 				DEFAULT: '#38984c',
+ 				dark: '#13703a',
+ 				light: '#51b749'
+ 			},
+ 			white: '#ffffff',
+ 			black: '#000000'
+ 		},
   		boxShadow: {
   			card: '0px 35px 120px -15px #211e35'
   		},

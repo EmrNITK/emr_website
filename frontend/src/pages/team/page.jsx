@@ -5,20 +5,31 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
 
+// Color Constants
+const COLORS = {
+  primary: '#13703a',    // Dark Green
+  secondary: '#38984c',  // Medium Green
+  accent: '#51b749',     // Light Green
+  white: '#ffffff',
+  black: '#000000',
+  darkBg: '#0a0a0a',
+  cardBg: '#111111',
+};
+
 // --- SKELETON LOADER ---
 const MemberSkeleton = () => {
   return (
-    <div className="flex flex-col items-center w-full sm:w-72 md:w-80 p-4 rounded-2xl border border-white/5 bg-zinc-900/30 animate-pulse">
+    <div className="flex flex-col items-center w-full sm:w-72 md:w-80 p-4 rounded-2xl border border-white/5 bg-[#111111] animate-pulse">
       {/* Image Placeholder - UPDATED TO CIRCLE */}
-      <div className="w-48 h-48 rounded-full bg-zinc-800/50 mb-6 border border-white/5 mx-auto" />
+      <div className="w-48 h-48 rounded-full bg-white/10 mb-6 border border-white/5 mx-auto" />
       
       {/* Text Lines (Centered) */}
       <div className="flex flex-col items-center w-full space-y-3 pb-2">
-        <div className="h-6 w-32 bg-zinc-800 rounded" /> {/* Name */}
-        <div className="h-5 w-20 bg-zinc-800/50 rounded" /> {/* Role Badge */}
+        <div className="h-6 w-32 bg-white/10 rounded" /> {/* Name */}
+        <div className="h-5 w-20 bg-white/5 rounded" /> {/* Role Badge */}
         <div className="space-y-1 w-full flex flex-col items-center pt-1">
-          <div className="h-3 w-48 bg-zinc-800/30 rounded" /> {/* Bio Line 1 */}
-          <div className="h-3 w-36 bg-zinc-800/30 rounded" /> {/* Bio Line 2 */}
+          <div className="h-3 w-48 bg-white/5 rounded" /> {/* Bio Line 1 */}
+          <div className="h-3 w-36 bg-white/5 rounded" /> {/* Bio Line 2 */}
         </div>
       </div>
     </div>
@@ -36,18 +47,17 @@ const MemberCard = ({ member }) => {
       className="group relative flex flex-col items-center w-full sm:w-72 md:w-80"
     >
       {/* Card Content Wrapper */}
-      <div className="relative w-full p-4 rounded-2xl border border-white/5 bg-zinc-900/30 backdrop-blur-sm group-hover:bg-zinc-900/50 group-hover:border-cyan-500/30 transition-all duration-500 overflow-hidden">
+      <div className="relative w-full p-4 rounded-2xl border border-white/5 bg-[#111111] backdrop-blur-sm group-hover:bg-[#151515] group-hover:border-[#51b749]/30 transition-all duration-500 overflow-hidden">
         
         {/* Decorative Corner Markers */}
-        <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-cyan-500/30 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-cyan-500/30 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-[#51b749]/30 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-[#51b749]/30 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
         {/* Image Frame - UPDATED TO CIRCLE */}
-        {/* Changed from w-full/aspect-[4/5] to w-48/h-48/rounded-full/mx-auto */}
-        <div className="relative w-48 h-48 mx-auto overflow-hidden rounded-full bg-black mb-6 border border-white/5 group-hover:border-cyan-500/50 transition-colors duration-500">
+        <div className="relative w-48 h-48 mx-auto overflow-hidden rounded-full bg-black mb-6 border border-white/5 group-hover:border-[#51b749]/50 transition-colors duration-500">
           
           {/* Hover Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#13703a]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
           
           {member.image ? (
             <img 
@@ -56,7 +66,7 @@ const MemberCard = ({ member }) => {
               className="w-full h-full object-cover scale-100 group-hover:scale-110 transition-all duration-700 ease-out"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-zinc-800 bg-zinc-950">
+            <div className="w-full h-full flex items-center justify-center text-white/20 bg-black">
               <User size={64} strokeWidth={1} />
             </div>
           )}
@@ -64,7 +74,7 @@ const MemberCard = ({ member }) => {
           {/* Social Dock */}
           <div className="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-2 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-100 ease-out">
              {member.linkedin && (
-               <a href={member.linkedin} target="_blank" rel="noreferrer" className="p-2 bg-black/50 backdrop-blur-md text-white border border-white/20 rounded-full hover:bg-cyan-500 hover:border-cyan-500 transition-all hover:scale-110">
+               <a href={member.linkedin} target="_blank" rel="noreferrer" className="p-2 bg-black/50 backdrop-blur-md text-white border border-white/20 rounded-full hover:bg-[#51b749] hover:border-[#51b749] transition-all hover:scale-110">
                  <Linkedin size={14} />
                </a>
              )}
@@ -74,7 +84,7 @@ const MemberCard = ({ member }) => {
                </a>
              )}
              {member.instagram && (
-               <a href={member.instagram} target="_blank" rel="noreferrer" className="p-2 bg-black/50 backdrop-blur-md text-white border border-white/20 rounded-full hover:bg-pink-600 hover:border-pink-600 transition-all hover:scale-110">
+               <a href={member.instagram} target="_blank" rel="noreferrer" className="p-2 bg-black/50 backdrop-blur-md text-white border border-white/20 rounded-full hover:bg-[#E1306C] hover:border-[#E1306C] transition-all hover:scale-110">
                  <Instagram size={14} />
                </a>
              )}
@@ -85,20 +95,20 @@ const MemberCard = ({ member }) => {
         <div className="flex flex-col items-center text-center space-y-3 pb-2">
           
           <div className="space-y-1">
-            <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">
+            <h3 className="text-xl font-bold text-white group-hover:text-[#51b749] transition-colors">
               {member.name}
             </h3>
-            <div className="h-0.5 w-12 bg-cyan-500/50 mx-auto rounded-full group-hover:w-24 transition-all duration-500"></div>
+            <div className="h-0.5 w-12 bg-[#51b749]/50 mx-auto rounded-full group-hover:w-24 transition-all duration-500"></div>
           </div>
           
           <div className="inline-flex items-center px-2.5 py-1 rounded bg-black/40 border border-white/5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] font-mono">
+            <span className="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em] font-mono">
               {member.role || 'MEMBER'}
             </span>
           </div>
           
           {member.bio && (
-            <p className="text-xs text-zinc-500 leading-relaxed line-clamp-2 max-w-[200px]">
+            <p className="text-xs text-white/60 leading-relaxed line-clamp-2 max-w-[200px]">
               {member.bio}
             </p>
           )}
@@ -161,12 +171,12 @@ const TeamPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 pb-32">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 pb-32">
       
       {/* --- BACKGROUND AMBIENCE --- */}
       <div className="fixed inset-0 pointer-events-none z-0">
          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-96 bg-cyan-900/10 blur-[150px] rounded-full"></div>
+         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-96 bg-[#13703a]/10 blur-[150px] rounded-full"></div>
       </div>
 
       {/* --- HERO SECTION --- */}
@@ -175,16 +185,16 @@ const TeamPage = () => {
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto space-y-6"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/30 text-cyan-400 text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(6,182,212,0.15)]">
-            <Zap size={12} className="fill-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#51b749]/20 bg-[#13703a]/30 text-[#51b749] text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(81,183,73,0.15)]">
+            <Zap size={12} className="fill-[#51b749]" />
             EMR_CORE_SYSTEMS // TEAM
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-            Meet The <span className="text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600">Architects</span>
+            Meet The <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#51b749] via-[#38984c] to-[#13703a]">Architects</span>
           </h1>
           
-          <p className="text-zinc-400 text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/70 text-lg max-w-2xl mx-auto leading-relaxed">
             The minds behind the machines. Innovators, engineers, and creators building the future of robotics and embedded systems at NIT Kurukshetra.
           </p>
         </motion.div>
@@ -200,8 +210,8 @@ const TeamPage = () => {
                 onClick={() => fetchMembersByYear(year)}
                 className={`relative px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
                   activeYear === year 
-                    ? 'text-black bg-white shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105' 
-                    : 'text-zinc-500 hover:text-white hover:bg-zinc-900'
+                    ? 'text-black bg-[#51b749] shadow-[0_0_20px_rgba(81,183,73,0.3)] scale-105' 
+                    : 'text-white/60 hover:text-white hover:bg-[#111111]'
                 }`}
               >
                 {year}
@@ -224,9 +234,9 @@ const TeamPage = () => {
               ))}
             </>
           ) : members.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 opacity-50 border border-dashed border-zinc-800 rounded-3xl w-full max-w-2xl">
-               <Terminal size={48} className="mb-4 text-zinc-600"/>
-               <p className="text-zinc-400">No records found for the year {activeYear}.</p>
+            <div className="flex flex-col items-center justify-center py-20 opacity-50 border border-dashed border-white/10 rounded-3xl w-full max-w-2xl">
+               <Terminal size={48} className="mb-4 text-white/30"/>
+               <p className="text-white/60">No records found for the year {activeYear}.</p>
             </div>
           ) : (
             <motion.div 

@@ -10,6 +10,17 @@ import {
 
 const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
 
+// Color Constants
+const COLORS = {
+  primary: '#13703a',    // Dark Green
+  secondary: '#38984c',  // Medium Green
+  accent: '#51b749',     // Light Green
+  white: '#ffffff',
+  black: '#000000',
+  darkBg: '#0a0a0a',
+  cardBg: '#111111',
+};
+
 // Initialize Parser
 const mdParser = new MarkdownIt({
   html: true,       
@@ -49,25 +60,25 @@ const ProjectDetail = () => {
 
   if (loading) return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
-      <Loader2 className="animate-spin text-violet-500" size={40}/>
-      <span className="text-zinc-500 text-xs font-mono uppercase tracking-widest animate-pulse">Loading Project Data...</span>
+      <Loader2 className="animate-spin text-[#51b749]" size={40}/>
+      <span className="text-white/60 text-xs font-mono uppercase tracking-widest animate-pulse">Loading Project Data...</span>
     </div>
   );
 
   if (error || !project) return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white gap-6">
-      <div className="p-4 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">
+      <div className="p-4 rounded-full bg-[#51b749]/10 text-[#51b749] border border-[#51b749]/20">
         <AlertCircle size={48}/>
       </div>
       <h2 className="text-2xl font-bold">Project Not Found</h2>
-      <Link to="/p/projects" className="px-6 py-2 rounded-full bg-white text-black font-medium hover:bg-zinc-200 transition-colors">
+      <Link to="/p/projects" className="px-6 py-2 rounded-full bg-[#51b749] text-black font-medium hover:bg-[#38984c] transition-colors">
         Return to Repository
       </Link>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-violet-500/30">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30">
       
       {/* --- HERO SECTION --- */}
       <div className="relative h-[65vh] w-full overflow-hidden">
@@ -80,14 +91,14 @@ const ProjectDetail = () => {
           />
           {/* Layered Gradients for readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20"></div>
-          <div className="absolute inset-0 bg-violet-900/10 mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-[#13703a]/10 mix-blend-overlay"></div>
         </div>
 
         {/* Header Content */}
         <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-16">
            
            {/* Navigation */}
-           <Link to="/p/projects" className="absolute top-8 left-6 md:left-6 flex items-center gap-2 text-zinc-300 hover:text-white transition-all bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 hover:border-white/30 group z-50">
+           <Link to="/p/projects" className="absolute top-8 left-6 md:left-6 flex items-center gap-2 text-white/70 hover:text-white transition-all bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 hover:border-white/30 group z-50">
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform"/> 
               <span className="text-xs font-medium uppercase tracking-wide">Back</span>
            </Link>
@@ -100,11 +111,11 @@ const ProjectDetail = () => {
            >
              {/* Metadata Badges */}
              <div className="flex flex-wrap gap-3 items-center">
-               <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border backdrop-blur-md ${project.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-amber-500/10 border-amber-500/30 text-amber-400'}`}>
-                 <span className={`inline-block w-2 h-2 rounded-full mr-2 ${project.status === 'completed' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`}></span>
+               <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border backdrop-blur-md ${project.status === 'completed' ? 'bg-[#51b749]/10 border-[#51b749]/30 text-[#51b749]' : 'bg-[#38984c]/10 border-[#38984c]/30 text-[#38984c]'}`}>
+                 <span className={`inline-block w-2 h-2 rounded-full mr-2 ${project.status === 'completed' ? 'bg-[#51b749]' : 'bg-[#38984c] animate-pulse'}`}></span>
                  {project.status || 'Ongoing'}
                </span>
-               <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-zinc-800/50 border border-zinc-700 text-zinc-300 backdrop-blur-md">
+               <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#111111] border border-white/10 text-white/70 backdrop-blur-md">
                  <Layers size={12} /> {project.category || "Engineering"}
                </span>
              </div>
@@ -118,7 +129,7 @@ const ProjectDetail = () => {
              {project.techStack && project.techStack.length > 0 && (
                <div className="flex flex-wrap gap-2 pt-2">
                   {project.techStack.map((tech, i) => (
-                    <span key={i} className="px-2.5 py-1 text-xs font-mono text-violet-200 bg-violet-900/30 border border-violet-500/30 rounded backdrop-blur-sm">
+                    <span key={i} className="px-2.5 py-1 text-xs font-mono text-[#51b749] bg-[#13703a]/30 border border-[#51b749]/30 rounded backdrop-blur-sm">
                       {tech}
                     </span>
                   ))}
@@ -154,36 +165,36 @@ const ProjectDetail = () => {
           >
             
             {/* Resources Card */}
-            <div className="p-6 bg-zinc-900/40 border border-white/5 backdrop-blur-sm rounded-2xl">
-              <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+            <div className="p-6 bg-[#111111] border border-white/5 backdrop-blur-sm rounded-2xl">
+              <h3 className="text-sm font-bold text-white/60 uppercase tracking-widest mb-6 flex items-center gap-2">
                 <Terminal size={14}/> Project Access
               </h3>
               
               <div className="space-y-3">
                 {/* Github Link */}
                 {project.githubLink ? (
-                  <a href={project.githubLink} target="_blank" rel="noreferrer" className="flex items-center justify-between w-full p-4 bg-zinc-950 border border-zinc-800 rounded-xl hover:border-violet-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.1)] transition-all group">
+                  <a href={project.githubLink} target="_blank" rel="noreferrer" className="flex items-center justify-between w-full p-4 bg-black border border-white/10 rounded-xl hover:border-[#51b749]/50 hover:shadow-[0_0_20px_rgba(81,183,73,0.1)] transition-all group">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-zinc-900 rounded-lg group-hover:bg-white group-hover:text-black transition-colors">
+                      <div className="p-2 bg-[#111111] rounded-lg group-hover:bg-[#51b749] group-hover:text-black transition-colors">
                         <Github size={20}/>
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-zinc-200 group-hover:text-white">Repository</span>
-                        <span className="text-xs text-zinc-500">View Source Code</span>
+                        <span className="font-bold text-white/80 group-hover:text-white">Repository</span>
+                        <span className="text-xs text-white/50">View Source Code</span>
                       </div>
                     </div>
-                    <ExternalLink size={16} className="text-zinc-600 group-hover:text-white"/>
+                    <ExternalLink size={16} className="text-white/40 group-hover:text-white"/>
                   </a>
                 ) : (
-                   <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl opacity-50 flex items-center gap-3 cursor-not-allowed">
-                      <Github size={20} className="text-zinc-600"/> 
-                      <span className="text-zinc-500 text-sm font-medium">Source Private</span>
+                   <div className="p-4 bg-[#111111] border border-white/10 rounded-xl opacity-50 flex items-center gap-3 cursor-not-allowed">
+                      <Github size={20} className="text-white/40"/> 
+                      <span className="text-white/40 text-sm font-medium">Source Private</span>
                    </div>
                 )}
 
                 {/* Demo Link */}
                 {project.demoLink && (
-                  <a href={project.demoLink} target="_blank" rel="noreferrer" className="flex items-center justify-between w-full p-4 bg-violet-600 border border-violet-500 rounded-xl hover:bg-violet-500 transition-all group shadow-lg shadow-violet-900/20">
+                  <a href={project.demoLink} target="_blank" rel="noreferrer" className="flex items-center justify-between w-full p-4 bg-[#13703a] border border-[#38984c] rounded-xl hover:bg-[#38984c] transition-all group shadow-lg shadow-[#13703a]/20">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-white/20 rounded-lg text-white">
                          <Globe size={20} />
@@ -201,8 +212,8 @@ const ProjectDetail = () => {
               {/* Meta Info */}
               <div className="mt-6 pt-6 border-t border-white/5 space-y-3">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-zinc-500 flex items-center gap-2"><User size={14}/> Lead Team</span>
-                  <span className="text-zinc-200 font-medium">EMR Core</span>
+                  <span className="text-white/60 flex items-center gap-2"><User size={14}/> Lead Team</span>
+                  <span className="text-white font-medium">EMR Core</span>
                 </div>
                
               </div>
@@ -210,13 +221,13 @@ const ProjectDetail = () => {
 
             {/* Quick Tech Summary */}
             {project.techStack && (
-              <div className="p-6 border border-white/5 rounded-2xl bg-zinc-900/20">
-                 <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <div className="p-6 border border-white/5 rounded-2xl bg-[#111111]">
+                 <h4 className="text-xs font-bold text-white/60 uppercase tracking-widest mb-4 flex items-center gap-2">
                    <Code2 size={14}/> Technologies Used
                  </h4>
                  <div className="flex flex-wrap gap-2">
                    {project.techStack.map(t => (
-                     <span key={t} className="text-[11px] font-mono text-zinc-400 bg-black px-2 py-1 rounded border border-zinc-800">
+                     <span key={t} className="text-[11px] font-mono text-white/60 bg-black px-2 py-1 rounded border border-white/10">
                        {t}
                      </span>
                    ))}
@@ -253,12 +264,12 @@ const ProjectDetail = () => {
         
         /* Links */
         .prose-content a {
-          color: #a78bfa; /* violet-400 */
+          color: #51b749; /* accent green */
           text-decoration: none;
-          border-bottom: 1px solid rgba(167, 139, 250, 0.4);
+          border-bottom: 1px solid rgba(81, 183, 73, 0.4);
           transition: all 0.2s;
         }
-        .prose-content a:hover { color: #fff; border-color: #a78bfa; }
+        .prose-content a:hover { color: #fff; border-color: #51b749; }
 
         /* Images */
         .prose-content img {
@@ -277,11 +288,11 @@ const ProjectDetail = () => {
 
         /* Blockquotes */
         .prose-content blockquote {
-          border-left: 4px solid #7c3aed;
+          border-left: 4px solid #38984c; /* secondary green */
           padding: 1rem 1.5rem;
           font-style: italic;
           color: #e4e4e7;
-          background: rgba(124, 58, 237, 0.05);
+          background: rgba(56, 152, 76, 0.05);
           border-radius: 0 12px 12px 0;
           margin: 2rem 0;
         }
@@ -300,7 +311,7 @@ const ProjectDetail = () => {
           padding: 0.2rem 0.4rem;
           border-radius: 4px;
           font-family: 'Menlo', 'Monaco', monospace;
-          color: #e879f9; /* fuchsia-400 */
+          color: #51b749; /* accent green */
           font-size: 0.85em;
         }
         .prose-content pre code {

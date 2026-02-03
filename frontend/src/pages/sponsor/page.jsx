@@ -6,38 +6,49 @@ import axios from 'axios';
 // --- CONFIGURATION ---
 const API_URL = import.meta.env.VITE_API_BASE_URL+'/api/sponsors';
 
-// Visual Configuration for Tiers
+// Color Constants
+const COLORS = {
+  primary: '#13703a',    // Dark Green
+  secondary: '#38984c',  // Medium Green
+  accent: '#51b749',     // Light Green
+  white: '#ffffff',
+  black: '#000000',
+  darkBg: '#0a0a0a',
+  cardBg: '#111111',
+};
+
+// Visual Configuration for Tiers - Updated with green theme
 const TIER_CONFIG = {
   platinum: { 
     rank: 1, 
     label: 'Platinum',
-    colorClass: 'text-cyan-400',
-    borderClass: 'border-cyan-500/30 hover:border-cyan-400', 
-    bgClass: 'bg-cyan-950/10 hover:bg-cyan-900/20',
+    colorClass: 'text-[#51b749]', // Light green
+    borderClass: 'border-[#51b749]/30 hover:border-[#51b749]', 
+    bgClass: 'bg-[#13703a]/10 hover:bg-[#13703a]/20',
     icon: Trophy
   },
   gold: { 
     rank: 2, 
     label: 'Gold',
-    colorClass: 'text-yellow-400',
-    borderClass: 'border-yellow-500/30 hover:border-yellow-400', 
-    bgClass: 'bg-yellow-950/10 hover:bg-yellow-900/20',
+    colorClass: 'text-[#38984c]', // Medium green
+    borderClass: 'border-[#38984c]/30 hover:border-[#38984c]', 
+    bgClass: 'bg-[#38984c]/10 hover:bg-[#38984c]/20',
     icon: Award
   },
   silver: { 
     rank: 3, 
     label: 'Silver',
-    colorClass: 'text-zinc-300',
-    borderClass: 'border-zinc-600/30 hover:border-zinc-400', 
-    bgClass: 'bg-zinc-800/10 hover:bg-zinc-800/30',
+    colorClass: 'text-white/80',
+    borderClass: 'border-white/30 hover:border-white/60', 
+    bgClass: 'bg-white/5 hover:bg-white/10',
     icon: Hexagon
   },
   bronze: { 
     rank: 4, 
     label: 'Bronze',
-    colorClass: 'text-orange-400',
-    borderClass: 'border-orange-600/30 hover:border-orange-500', 
-    bgClass: 'bg-orange-950/10 hover:bg-orange-900/20',
+    colorClass: 'text-white/60',
+    borderClass: 'border-white/20 hover:border-white/40', 
+    bgClass: 'bg-white/3 hover:bg-white/8',
     icon: Hexagon
   }
 };
@@ -45,23 +56,23 @@ const TIER_CONFIG = {
 // --- SKELETON LOADER ---
 const SponsorSkeleton = () => {
   return (
-    <div className="flex flex-col p-6 w-full sm:w-80 md:w-96 rounded-2xl border border-white/5 bg-zinc-900/30 animate-pulse">
+    <div className="flex flex-col p-6 w-full sm:w-80 md:w-96 rounded-2xl border border-white/5 bg-[#111111] animate-pulse">
       {/* Header: Badge Placeholder */}
       <div className="flex justify-between items-start mb-6">
-        <div className="h-6 w-20 bg-zinc-800 rounded" />
-        <div className="h-4 w-4 bg-zinc-800 rounded-full" />
+        <div className="h-6 w-20 bg-white/10 rounded" />
+        <div className="h-4 w-4 bg-white/10 rounded-full" />
       </div>
 
       {/* Logo Placeholder */}
       <div className="flex-1 min-h-[120px] flex items-center justify-center mb-4">
-        <div className="h-16 w-16 rounded-full bg-zinc-800/50" />
+        <div className="h-16 w-16 rounded-full bg-white/10" />
       </div>
 
       {/* Footer Placeholder */}
       <div className="mt-auto pt-4 border-t border-white/5 flex flex-col items-center gap-3">
-        <div className="h-6 w-3/4 bg-zinc-800 rounded" />
-        <div className="h-3 w-full bg-zinc-800/50 rounded" />
-        <div className="h-3 w-1/2 bg-zinc-800/50 rounded" />
+        <div className="h-6 w-3/4 bg-white/10 rounded" />
+        <div className="h-3 w-full bg-white/5 rounded" />
+        <div className="h-3 w-1/2 bg-white/5 rounded" />
       </div>
     </div>
   );
@@ -109,7 +120,7 @@ const SponsorPublic = () => {
   }, [sponsors]);
 
   return (
-    <section className="relative w-full min-h-screen bg-black py-32 overflow-hidden font-sans selection:bg-cyan-500/30">
+    <section className="relative w-full min-h-screen bg-black py-32 overflow-hidden font-sans selection:bg-[#51b749]/30">
       
       <div className="relative max-w-7xl mx-auto px-6">
         
@@ -119,9 +130,9 @@ const SponsorPublic = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/30 text-cyan-400 text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#51b749]/20 bg-[#13703a]/30 text-[#51b749] text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(81,183,73,0.15)]"
           >
-            <Zap size={12} className="fill-cyan-400" />
+            <Zap size={12} className="fill-[#51b749]" />
             System Fuel
           </motion.div>
           
@@ -132,7 +143,7 @@ const SponsorPublic = () => {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold text-white tracking-tight"
           >
-            Mission <span className="text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600">Partners</span>
+            Mission <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#51b749] via-[#38984c] to-[#13703a]">Partners</span>
           </motion.h2>
           
           <motion.p 
@@ -140,7 +151,7 @@ const SponsorPublic = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed"
+            className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed"
           >
             The industry titans and innovators empowering EMR's robotics and embedded systems initiatives.
           </motion.p>
@@ -154,9 +165,9 @@ const SponsorPublic = () => {
              <div className="space-y-12">
                 {/* Fake Year Header */}
                 <div className="flex items-center justify-center gap-6 opacity-50 animate-pulse">
-                   <div className="h-px bg-zinc-800 flex-1 max-w-[200px]"></div>
-                   <div className="h-8 w-32 bg-zinc-800 rounded-full"></div>
-                   <div className="h-px bg-zinc-800 flex-1 max-w-[200px]"></div>
+                   <div className="h-px bg-white/10 flex-1 max-w-[200px]"></div>
+                   <div className="h-8 w-32 bg-white/10 rounded-full"></div>
+                   <div className="h-px bg-white/10 flex-1 max-w-[200px]"></div>
                 </div>
                 {/* Skeleton Grid */}
                 <div className="flex flex-wrap justify-center gap-6">
@@ -176,11 +187,11 @@ const SponsorPublic = () => {
                 {/* Year Heading */}
                 <div className="flex items-center justify-center gap-6 mb-12">
                   <div className="relative flex items-center justify-center gap-4 w-full max-w-2xl">
-                     <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent flex-1"></div>
-                     <span className="text-xl font-bold text-white tracking-widest uppercase border border-white/10 bg-zinc-900/50 px-6 py-2 rounded-full backdrop-blur-xl shadow-lg shrink-0">
+                     <div className="h-px bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent flex-1"></div>
+                     <span className="text-xl font-bold text-white tracking-widest uppercase border border-white/10 bg-[#111111]/80 px-6 py-2 rounded-full backdrop-blur-xl shadow-lg shrink-0">
                         Season {group.year}
                      </span>
-                     <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent flex-1"></div>
+                     <div className="h-px bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent flex-1"></div>
                   </div>
                 </div>
 
@@ -201,7 +212,7 @@ const SponsorPublic = () => {
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
                             whileHover={{ y: -5 }}
-                            className={`group relative flex flex-col p-6 w-full sm:w-80 md:w-96 rounded-2xl border backdrop-blur-md transition-all duration-300 cursor-pointer overflow-hidden ${styles.borderClass} ${styles.bgClass}`}
+                            className={`group relative flex flex-col p-6 w-full sm:w-60 md:w-60 rounded-2xl border backdrop-blur-md transition-all duration-300 cursor-pointer overflow-hidden ${styles.borderClass} ${styles.bgClass}`}
                             onClick={() => sponsor.website && window.open(sponsor.website, '_blank')}
                           >
                             {/* Decorative Corner Markers */}
@@ -210,14 +221,14 @@ const SponsorPublic = () => {
 
                             {/* Header: Tier Badge & Link */}
                             <div className="flex justify-between items-start mb-6">
-                              <div className={`flex items-center gap-1.5 px-2 py-1 rounded bg-black/40 border border-white/5`}>
+                              {/* <div className={`flex items-center gap-1.5 px-2 py-1 rounded bg-black/40 border border-white/5`}>
                                 <Icon size={12} className={styles.colorClass} />
                                 <span className={`text-[10px] font-bold uppercase tracking-widest ${styles.colorClass}`}>
                                   {styles.label}
                                 </span>
-                              </div>
+                              </div> */}
                               {sponsor.website && (
-                                <ExternalLink size={16} className={`text-slate-600 group-hover:text-white transition-colors`} />
+                                <ExternalLink size={16} className={`text-white/40 group-hover:text-[#51b749] transition-colors`} />
                               )}
                             </div>
 
@@ -227,10 +238,10 @@ const SponsorPublic = () => {
                                 <img 
                                   src={sponsor.logo} 
                                   alt={sponsor.name} 
-                                  className="max-h-16 max-w-[80%] object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 drop-shadow-lg" 
+                                  className="max-h-24 max-w-[80%] object-contain transition-all duration-500 drop-shadow-lg" 
                                 />
                               ) : (
-                                <div className={`text-3xl font-black ${styles.colorClass} opacity-30 group-hover:opacity-100 transition-opacity tracking-tighter`}>
+                                <div className={`text-4xl font-black ${styles.colorClass} transition-opacity tracking-tighter`}>
                                   {sponsor.name.substring(0,2).toUpperCase()}
                                 </div>
                               )}
@@ -238,20 +249,20 @@ const SponsorPublic = () => {
 
                             {/* Footer: Details */}
                             <div className="mt-auto text-center border-t border-white/5 pt-4">
-                              <h4 className="text-white font-bold text-lg group-hover:text-cyan-400 transition-colors truncate">
+                              <h4 className="text-white font-bold text-lg group-hover:text-[#51b749] transition-colors truncate">
                                 {sponsor.name}
                               </h4>
                               
                               {sponsor.description ? (
-                                <p className="text-slate-500 group-hover:text-slate-400 text-xs mt-2 leading-relaxed line-clamp-2 transition-colors">
+                                <p className="text-white/60 group-hover:text-white/80 text-xs mt-2 leading-relaxed line-clamp-2 transition-colors">
                                   {sponsor.description}
                                 </p>
                               ) : (
-                                  <p className="text-slate-600 text-[10px] mt-2 italic">Proud Partner of EMR</p>
+                                  <p className="text-white/40 text-[10px] mt-2 italic">Proud Partner of EMR</p>
                               )}
 
                                {/* Link Centered */}
-                               <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-600 mt-4 font-mono group-hover:text-cyan-500/70 transition-colors">
+                               <div className="flex items-center justify-center gap-1.5 text-[10px] text-white/40 mt-4 font-mono group-hover:text-[#51b749]/70 transition-colors">
                                  <Globe size={10} /> 
                                  <span className="truncate max-w-[150px]">
                                    {sponsor.website ? new URL(sponsor.website).hostname : 'Official Partner'}
@@ -269,7 +280,7 @@ const SponsorPublic = () => {
           )}
           
           {!loading && groupedData.length === 0 && (
-             <div className="text-center text-slate-500 py-20 border border-dashed border-white/10 rounded-2xl mx-auto max-w-3xl">
+             <div className="text-center text-white/50 py-20 border border-dashed border-white/10 rounded-2xl mx-auto max-w-3xl">
                 <p>No active sponsor data detected.</p>
              </div>
           )}
