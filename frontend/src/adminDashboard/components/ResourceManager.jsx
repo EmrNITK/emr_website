@@ -140,6 +140,7 @@ const ResourceManager = ({ title, endpoint, fields }) => {
                     {field.type === 'image' ? (
                       <ImageUploader
                         currentImage={formData[field.name]}
+                        width={800}
                         onUpload={(url) => setFormData({ ...formData, [field.name]: url })}
                       />
                     ) : field.type === 'textarea' ? (

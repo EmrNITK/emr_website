@@ -296,6 +296,7 @@ const TeamPage = () => {
                 {/* Image Upload */}
                 <ImageUploader 
                     currentImage={formData.image} 
+                    width={300}
                     onUpload={(url) => setFormData({...formData, image: url})} 
                 />
 

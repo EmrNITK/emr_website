@@ -298,7 +298,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
                 {/* Image Upload */}
                 <div>
                   <label className="text-xs font-semibold text-zinc-400 uppercase">Image</label>
-                  <ImageUploader currentImage={formData.src} onUpload={(url) => setFormData({ ...formData, src: url })} />
+                  <ImageUploader currentImage={formData.src} width={1500} onUpload={(url) => setFormData({ ...formData, src: url })} />
                 </div>
 
                 {/* Description */}

@@ -349,19 +349,19 @@ const EMRHomePage = () => {
                 <Card key={proj._id} className="w-full max-w-xl group">
                   <div className="h-64 w-full border-b border-white/5 relative">
                     <SmartImage src={proj.image} alt={proj.title} className="w-full h-full" />
-                    <div className="absolute top-4 right-4 flex gap-2">
+                  </div>
+                  <div className="py-8 pb-8 pt-4 text-center">
+                    <div className="">
                       {proj.techStack?.slice(0, 3).map((tech, i) => (
                         <span
                           key={i}
-                          className="bg-black/80 backdrop-blur text-[#51b749] text-[10px] px-2 py-1 rounded border border-[#51b749]/30"
+                          className="bg-black/80 backdrop-blur text-[#51b749] text-[10px] px-2 py-1 rounded border border-[#51b749]/30 mx-0.5"
                         >
                           {tech}
                         </span>
                       ))}
                     </div>
-                  </div>
-                  <div className="p-8 text-center">
-                    <h3 className="text-2xl font-bold text-white mb-3">{proj.title}</h3>
+                    <h3 className="text-2xl font-bold text-white my-3">{proj.title}</h3>
                     <p className="text-white/60 text-sm mb-6 line-clamp-2 px-4">
                       {proj.description}
                     </p>
@@ -393,13 +393,13 @@ const EMRHomePage = () => {
           <section className="max-w-6xl mx-auto px-6">
             <SectionHeader title="Gallery" subtitle="Captured Moments" />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {data.gallery.map((img) => (
-                <div key={img._id} className="bg-[#111111] border border-white/5 p-2 rounded-2xl h-80 flex flex-col">
+                <div key={img._id} className="group relative bg-[#111111] border border-white/5 p-2 rounded-2xl h-80 flex flex-col">
                   <div className="flex-1 relative overflow-hidden rounded-xl">
                     <SmartImage src={img.src} className="w-full h-full" />
                   </div>
-                  <div className="pt-3 pb-1 text-center">
+                  <div className="z-[10] bottom-4 left-4 px-4 rounded-lg py-2 bg-black/80 group-hover:block absolute text-left hidden">
                     <p className="text-white font-medium text-sm">{img.title}</p>
                     <p className="text-white/60 text-xs">{img.year}</p>
                   </div>

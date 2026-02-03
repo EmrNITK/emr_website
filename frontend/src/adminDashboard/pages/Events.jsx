@@ -209,6 +209,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
                     {field.type === 'image' ? (
                       <ImageUploader
                         currentImage={formData[field.name]}
+                        width={800}
                         onUpload={(url) => setFormData({ ...formData, [field.name]: url })}
                       />
                     

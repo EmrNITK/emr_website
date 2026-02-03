@@ -391,6 +391,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
                         {/* 4. Logo Upload */}
                         <ImageUploader 
                             currentImage={formData.logo}
+                            width={300}
                             onUpload={(url) => setFormData({...formData, logo: url})}
                         />
 
