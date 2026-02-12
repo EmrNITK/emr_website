@@ -81,7 +81,7 @@ const ProjectDetail = () => {
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30">
       
       {/* --- HERO SECTION --- */}
-      <div className="relative h-[65vh] w-full overflow-hidden">
+      <div className="relative h-[65vh] w-full overflow-hidden mt-24">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
