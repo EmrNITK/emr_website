@@ -22,7 +22,7 @@ export default function Footer() {
           </div>
 
           <p className="text-zinc-600 text-xs">
-  © {new Date().getFullYear()} All rights reserved | EMR Club
+  © {new Date().getFullYear()} All rights reserved | EMR
 </p>
 
         </div>

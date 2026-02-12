@@ -249,17 +249,15 @@ const ProjectsPage = () => {
         {/* Page Header */}
         <div className="flex flex-col md:flex-row items-end justify-between gap-12 sm:mb-24 mb-10">
           <div className="max-w-3xl space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#13703a]/30 border border-[#51b749]/20 text-[#51b749] text-xs font-mono tracking-widest uppercase"
-            >
-               <GitBranch size={12}/> 
-               Project Repository
-            </motion.div>
+            
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111111] border border-white/5 text-white/60 text-xs font-medium">
+          <GitBranch size={14} className="text-[#51b749]" />
+          Project Repository
+        </div>
             
             <motion.h1 
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl font-bold text-white tracking-tighter"
+              className="text-4xl md:text-5xl font-bold text-white tracking-tighter"
             >
               Innovation <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#38984c]">Pipeline</span>
             </motion.h1>

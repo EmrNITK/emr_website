@@ -120,28 +120,24 @@ const SponsorPublic = () => {
   }, [sponsors]);
 
   return (
-    <section className="relative w-full min-h-screen bg-black sm:py-32 py-20 overflow-hidden font-sans selection:bg-[#51b749]/30">
+    <section className="relative w-full min-h-screen bg-black sm:py-32 py-24 overflow-hidden font-sans selection:bg-[#51b749]/30">
       
       <div className="relative max-w-7xl mx-auto px-6">
         
         {/* --- HEADER --- */}
         <div className="text-center sm:mb-24 mb-10 space-y-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#51b749]/20 bg-[#13703a]/30 text-[#51b749] text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(81,183,73,0.15)]"
-          >
-            <Zap size={12} className="fill-[#51b749]" />
-            System Fuel
-          </motion.div>
+         
           
+<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111111] border border-white/5 text-white/60 text-xs font-medium">
+          <Zap size={14} className="text-[#51b749]" />
+          System Fuel
+        </div>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold text-white tracking-tight"
+            className="text-4xl md:text-7xl font-bold text-white tracking-tight"
           >
             Mission <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#51b749] via-[#38984c] to-[#13703a]">Partners</span>
           </motion.h2>

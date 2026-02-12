@@ -185,12 +185,13 @@ const TeamPage = () => {
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto space-y-6"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#51b749]/20 bg-[#13703a]/30 text-[#51b749] text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(81,183,73,0.15)]">
-            <Zap size={12} className="fill-[#51b749]" />
-            EMR_CORE_SYSTEMS // TEAM
-          </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111111] border border-white/5 text-white/60 text-xs font-medium">
+          <Zap size={14} className="text-[#51b749]" />
+          EMR_CORE_SYSTEMS // TEAM
+        </div>
+          
+          <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-white">
             Meet The <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#51b749] via-[#38984c] to-[#13703a]">Architects</span>
           </h1>
           

@@ -182,7 +182,7 @@ const WorkshopsPage = () => {
   return (
     <div className="min-h-screen text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] bg-black">
       
-      <main className="relative z-10 sm:pt-32 pt-20 pb-24 max-w-6xl mx-auto px-6">
+      <main className="relative z-10 sm:pt-32 pt-24 pb-24 max-w-6xl mx-auto px-6">
         
         {/* Header */}
         <div className="text-center mb-12 max-w-3xl mx-auto space-y-4">
@@ -190,7 +190,7 @@ const WorkshopsPage = () => {
               <Terminal size={12} />
               Technical Training
            </div>
-           <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight">
+           <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
               Master the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#38984c]">Machines</span>
            </h1>
            <p className="text-white/70 text-lg leading-relaxed">

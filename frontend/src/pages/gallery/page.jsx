@@ -282,12 +282,12 @@ const GalleryPage = () => {
       
       {/* --- Header / Filters --- */}
       <header className="sticky top-0 z-40 bg-black/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-[1600px] mx-auto ">
+        <div className="max-w-[1600px] mx-auto pt-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 h-16 px-4 md:px-8">
             
             {/* Logo & Search */}
             <div className="flex items-center gap-6 w-full md:w-auto">
-               <div className="text-xl font-bold tracking-tighter text-white">
+               <div className="text-xl font-bold tracking-tighter text-white mx-1">
                   EMR<span className="text-white/40 ml-0.5">GALLERY</span>
                </div>
                

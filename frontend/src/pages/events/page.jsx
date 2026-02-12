@@ -317,7 +317,7 @@ const EventsPage = () => {
     <div className="min-h-screen text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] bg-black">
       
       {/* Hero Section - Always visible now */}
-      <header className="relative z-10 sm:pt-32 pt-20 pb-20 px-6 max-w-4xl mx-auto text-center space-y-6">
+      <header className="relative z-10 sm:pt-32 pt-24 pb-20 px-6 max-w-4xl mx-auto text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111111] border border-white/5 text-white/60 text-xs font-medium">
           <Trophy size={14} className="text-[#51b749]" />
           Competitions & Hackathons
