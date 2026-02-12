@@ -171,7 +171,7 @@ const TeamPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 pb-32">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 pb-20">
       
       {/* --- BACKGROUND AMBIENCE --- */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -180,7 +180,7 @@ const TeamPage = () => {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <section className="relative z-10 pt-32 pb-12 px-6 overflow-hidden text-center">
+      <section className="relative z-10 sm:pt-32 pt-24 pb-10 px-6 overflow-hidden text-center">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto space-y-6"
@@ -201,7 +201,7 @@ const TeamPage = () => {
       </section>
 
       {/* --- STICKY YEAR NAVIGATION --- */}
-      <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-y border-white/5 py-4 mb-20">
+      <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-y border-white/5 py-4 mb-10">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-center flex-wrap gap-2 md:gap-4">
             {availableYears.map((year) => (

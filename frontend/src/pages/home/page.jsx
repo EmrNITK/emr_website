@@ -232,34 +232,7 @@ const EMRHomePage = () => {
           </motion.div>
         </section>
 
-        {/* --- LEADERSHIP (Centered) --- */}
-        {data.team.length > 0 && (
-          <section className="max-w-7xl mx-auto px-6">
-            <SectionHeader title="Core Leadership" subtitle="Final Year of EMR" />
-
-            <div className="flex flex-wrap justify-center gap-10">
-              {data.team.map((member, i) => (
-                <motion.div
-                  key={member._id}
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                  className="group flex flex-col items-center text-center"
-                >
-                  <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-b from-[#51b749]/50 to-transparent mb-6 relative">
-                    <div className="w-full h-full rounded-full overflow-hidden bg-[#111111] border border-black">
-                      <img
-                        src={member.image || "https://via.placeholder.com/150"}
-                        alt={member.name}
-                        className="w-full h-full object-cover transition-all duration-500"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-bold text-white">{member.name}</h3>
-                  <p className="text-[#51b749] text-xs uppercase tracking-widest mt-2 font-mono">{member.role}</p>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-        )}
+     
 
         {/* --- WORKSHOPS (Centered Grid) --- */}
         {data.workshops.length > 0 && (
@@ -409,6 +382,64 @@ const EMRHomePage = () => {
             <SeeMore sectionName="Gallery" />
           </section>
         )}
+        {data.sponsor && (
+  <section className="max-w-7xl mx-auto px-6 py-12 relative">
+    {/* Background decoration */}
+    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#13703a]/10 to-transparent blur-3xl -z-10" />
+    
+    <div className="text-center mb-10">
+      <span className="text-[#51b749] text-xs font-bold tracking-[0.3em] uppercase">
+        SUPPORTED BY
+      </span>
+      <h2 className="text-3xl md:text-4xl font-bold text-white mt-3">
+        Our Valued <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">Sponsors</span>
+      </h2>
+      <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent rounded-full mt-4 mx-auto" />
+    </div>
+
+ 
+
+    {/* Sponsor Grid - If you want to show multiple recent sponsors */}
+    {data.sponsor && data.sponsor.length >0 && (
+      <div className="mt-4">
+        
+        
+        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+          {data.sponsor.map((sp) => (
+            <a
+              key={sp._id}
+              href={sp.website}
+              target="_blank"
+              rel="noreferrer"
+              className="group/sponsor relative"
+            >
+              {/* <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-white/5 border border-white/10 hover:border-[#51b749]/30 hover:bg-white/10 transition-all duration-300">
+                <div className="relative w-full h-full grayscale group-hover/sponsor:grayscale-0 transition-all duration-300">
+                </div>
+              </div> */}
+             <div
+            className="group flex rounded-md items-center justify-center px-3 pt-3 hover:bg-slate-950"
+          >
+          <div className='text-center'>
+            <img
+              src={sp.logo}
+              alt="Sponsor"
+              className="
+                h-20 
+              "
+            />
+            <span className="flex justify-center items-center gap-1 text-xs font-bold text-white group-hover:translate-x-1 transition-transform pt-2">
+                        {sp.name} <ArrowUpRight size={12} />
+                      </span></div>
+          </div>
+             
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+)}
 
       </main>
     </div>

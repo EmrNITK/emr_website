@@ -41,20 +41,34 @@ const SmartImage = ({ src, alt }) => (
 
 const StatusBadge = ({ status }) => {
   const styles = {
-    completed: "bg-[#51b749]/10 border-[#51b749]/20 text-[#51b749]",
-    ongoing: "bg-[#38984c]/10 border-[#38984c]/20 text-[#38984c]",
-    archived: "bg-[#111111] border-white/10 text-white/70",
+    completed: "bg-[#51b749] text-black border-[#51b749]",
+    ongoing: "bg-[#38984c] text-black border-[#38984c]",
+    archived: "bg-[#1a1a1a] text-white border-white/10",
   };
 
   const currentStyle = styles[status] || styles.archived;
-  const isOngoing = status === 'ongoing';
+  const isOngoing = status === "ongoing";
 
   return (
-    <span className={`
-      flex items-center gap-1.5 px-2.5 py-1 rounded-full border backdrop-blur-md text-[10px] font-bold uppercase tracking-wider shadow-lg
-      ${currentStyle}
-    `}>
-      <span className={`w-1.5 h-1.5 rounded-full ${status === 'completed' ? 'bg-[#51b749]' : isOngoing ? 'bg-[#38984c] animate-pulse' : 'bg-white/40'}`}></span>
+    <span
+      className={`
+        flex items-center gap-1.5
+        px-2 py-1 rounded-full
+        border text-[10px] font-bold uppercase tracking-wider
+        shadow-md
+        ${currentStyle}
+      `}
+    >
+      <span
+        className={`w-2 h-2 rounded-full
+          ${
+            status === "completed"
+              ? "bg-black"
+              : isOngoing
+              ? "bg-black animate-pulse"
+              : "bg-white/40"
+          }`}
+      ></span>
       {status}
     </span>
   );
@@ -230,10 +244,10 @@ const ProjectsPage = () => {
          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#38984c]/10 blur-[120px] rounded-full mix-blend-screen"></div>
       </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 py-32">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-24 sm:py-32">
 
         {/* Page Header */}
-        <div className="flex flex-col md:flex-row items-end justify-between gap-12 mb-24">
+        <div className="flex flex-col md:flex-row items-end justify-between gap-12 sm:mb-24 mb-10">
           <div className="max-w-3xl space-y-6">
             <motion.div 
               initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
@@ -262,7 +276,7 @@ const ProjectsPage = () => {
           {/* Filter Bar */}
           <motion.div 
              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-             className="flex flex-wrap gap-3 p-1.5 bg-[#111111]/80 backdrop-blur-md border border-white/5 rounded-full"
+             className="flex flex-wrap gap-3 p-3 bg-[#111111]/80 backdrop-blur-md border border-white/5 rounded-3xl"
           >
              {['all', 'completed', 'ongoing'].map((status) => (
                <FilterPill 

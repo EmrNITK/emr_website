@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className="border-t border-white/10 bg-black py-12">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
-            <h4 className="text-xl font-bold text-white mb-2">EMR CLUB</h4>
+            <h4 className="text-xl font-bold text-white mb-2">EMR</h4>
             <p className="text-zinc-500 text-sm">NIT Kurukshetra, Haryana, India</p>
           </div>
 

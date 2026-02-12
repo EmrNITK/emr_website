@@ -120,12 +120,12 @@ const SponsorPublic = () => {
   }, [sponsors]);
 
   return (
-    <section className="relative w-full min-h-screen bg-black py-32 overflow-hidden font-sans selection:bg-[#51b749]/30">
+    <section className="relative w-full min-h-screen bg-black sm:py-32 py-20 overflow-hidden font-sans selection:bg-[#51b749]/30">
       
       <div className="relative max-w-7xl mx-auto px-6">
         
         {/* --- HEADER --- */}
-        <div className="text-center mb-24 space-y-6">
+        <div className="text-center sm:mb-24 mb-10 space-y-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -158,7 +158,7 @@ const SponsorPublic = () => {
         </div>
 
         {/* --- CONTENT AREA --- */}
-        <div className="space-y-32">
+        <div className="space-y-16">
           
           {loading ? (
              // SKELETON LOADING STATE
@@ -188,7 +188,7 @@ const SponsorPublic = () => {
                 <div className="flex items-center justify-center gap-6 mb-12">
                   <div className="relative flex items-center justify-center gap-4 w-full max-w-2xl">
                      <div className="h-px bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent flex-1"></div>
-                     <span className="text-xl font-bold text-white tracking-widest uppercase border border-white/10 bg-[#111111]/80 px-6 py-2 rounded-full backdrop-blur-xl shadow-lg shrink-0">
+                     <span className="text-md font-bold text-white tracking-widest uppercase border border-white/10 bg-[#111111]/80 px-4 py-1 rounded-full backdrop-blur-xl shadow-lg shrink-0">
                         Season {group.year}
                      </span>
                      <div className="h-px bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent flex-1"></div>

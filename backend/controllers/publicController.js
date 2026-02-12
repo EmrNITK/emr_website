@@ -1,20 +1,28 @@
-import { Workshop, Event, Project, Gallery, Team, GalleryOption } from '../models/index.js';
+// In your backend controller file
+import { Workshop, Event, Project, Gallery, Sponsor, GalleryOption, Team } from '../models/index.js';
 
 export const getHomeContent = async (req, res) => {
   try {
-    const [workshops, events, projects, gallery, latestTeamDoc] = await Promise.all([
+    const [workshops, events, projects, gallery] = await Promise.all([
       Workshop.find().sort({ createdAt: -1 }).limit(3),
       Event.find({ status: { $in: ['upcoming', 'LIVE'] } }).sort({ targetDate: 1 }).limit(3),
       Project.find().sort({ createdAt: -1 }).limit(3),
       Gallery.find().sort({ createdAt: -1 }).limit(4),
-      Team.findOne().sort({ year: -1 })
+      // Get the most recent sponsor based on year (assuming year is stored as string like "2024")
+      // Sponsor.findOne().sort({ year: -1, createdAt: -1 })
     ]);
 
-    let team = [];
-    if (latestTeamDoc) {
-      team = await Team.find({ year: latestTeamDoc.year }).sort({ rank: 1 }).limit(5);
-    }
-    res.json({ workshops, events, projects, gallery, team });
+    // Optional: If you want to feature multiple sponsors
+const sponsor = await Sponsor.find({ tier: 'platinum' })
+      .sort({ year: -1, createdAt: -1 })
+      .lean();    
+    res.json({ 
+      workshops, 
+      events, 
+      projects, 
+      gallery, 
+      sponsor   // Multiple sponsors for display
+    });
   } catch (err) {
     console.error("Home content fetch error:", err);
     res.status(500).json({ error: "Failed to fetch home content" });

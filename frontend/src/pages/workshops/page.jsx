@@ -182,10 +182,10 @@ const WorkshopsPage = () => {
   return (
     <div className="min-h-screen text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] bg-black">
       
-      <main className="relative z-10 pt-32 pb-24 max-w-6xl mx-auto px-6">
+      <main className="relative z-10 sm:pt-32 pt-20 pb-24 max-w-6xl mx-auto px-6">
         
         {/* Header */}
-        <div className="text-center mb-24 max-w-3xl mx-auto space-y-6">
+        <div className="text-center mb-12 max-w-3xl mx-auto space-y-4">
            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111111] border border-white/10 text-white/70 text-xs font-medium uppercase tracking-wider">
               <Terminal size={12} />
               Technical Training
@@ -208,16 +208,16 @@ const WorkshopsPage = () => {
 
         {/* Content */}
         {!loading && (
-            <div className="space-y-24">
+            <div className="space-y-10">
                 
                 {/* Upcoming Section */}
                 {upcomingWorkshops.length > 0 && (
                     <section>
                         <div className="flex items-center gap-3 mb-8 ml-2">
-                           <div className="w-10 h-10 rounded-lg bg-[#51b749]/10 flex items-center justify-center border border-[#51b749]/20">
-                              <Zap className="text-[#51b749]" size={20} />
+                           <div className="w-8 h-8 rounded-lg bg-[#51b749]/10 flex items-center justify-center border border-[#51b749]/20">
+                              <Zap className="text-[#51b749]" size={16} />
                            </div>
-                           <h3 className="text-2xl font-bold text-white">Upcoming Sessions</h3>
+                           <h3 className="text-xl font-bold text-white">Upcoming Sessions</h3>
                         </div>
                         <div className="grid gap-8">
                            {upcomingWorkshops.map((ws) => (
@@ -231,10 +231,10 @@ const WorkshopsPage = () => {
                 {pastWorkshops.length > 0 && (
                      <section>
                         <div className="flex items-center gap-3 mb-8 ml-2">
-                           <div className="w-10 h-10 rounded-lg bg-[#111111] flex items-center justify-center border border-white/10">
-                              <Layers className="text-white/70" size={20} />
+                           <div className="w-8 h-8 rounded-lg bg-[#111111] flex items-center justify-center border border-white/10">
+                              <Layers className="text-white/70" size={16} />
                            </div>
-                           <h3 className="text-2xl font-bold text-white/80">Past Archives</h3>
+                           <h3 className="text-xl font-bold text-white/80">Past Archives</h3>
                         </div>
                         <div className="grid gap-8 transition-opacity">
                             {pastWorkshops.map((ws) => (

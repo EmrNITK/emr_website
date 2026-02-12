@@ -317,7 +317,7 @@ const EventsPage = () => {
     <div className="min-h-screen text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] bg-black">
       
       {/* Hero Section - Always visible now */}
-      <header className="relative z-10 pt-32 pb-20 px-6 max-w-4xl mx-auto text-center space-y-6">
+      <header className="relative z-10 sm:pt-32 pt-20 pb-20 px-6 max-w-4xl mx-auto text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111111] border border-white/5 text-white/60 text-xs font-medium">
           <Trophy size={14} className="text-[#51b749]" />
           Competitions & Hackathons
@@ -331,7 +331,7 @@ const EventsPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-6 pb-32 max-w-6xl mx-auto space-y-20">
+      <main className="relative z-10 px-6 pb-32 max-w-6xl mx-auto space-y-16">
         
         {loading ? (
           // SKELETON LOADING STATE
@@ -356,9 +356,9 @@ const EventsPage = () => {
               <section>
                 <div className="flex items-center gap-3 mb-8">
                   <div className="p-2 bg-[#51b749]/10 rounded-lg">
-                    <Zap className="text-[#51b749]" size={20} />
+                    <Zap className="text-[#51b749]" size={16} />
                   </div>
-                  <h2 className="text-2xl font-bold text-white">Happening Now</h2>
+                  <h2 className="text-xl font-bold text-white">Happening Now</h2>
                 </div>
                 <div className="grid gap-10">
                   {live.map(e => <EventCard key={e._id} event={e} />)}
@@ -369,7 +369,7 @@ const EventsPage = () => {
             {/* Upcoming Events */}
             {upcoming.length > 0 && (
               <section>
-                <div className="flex items-center gap-3 mb-8">
+                <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 bg-[#38984c]/10 rounded-lg">
                     <Clock className="text-[#38984c]" size={20} />
                   </div>
@@ -384,11 +384,11 @@ const EventsPage = () => {
             {/* Past Events */}
             {past.length > 0 && (
               <section>
-                <div className="flex items-center gap-3 mb-8">
+                <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 bg-[#111111] rounded-lg">
-                    <CheckCircle className="text-white/40" size={20} />
+                    <CheckCircle className="text-white/40" size={16} />
                   </div>
-                  <h2 className="text-2xl font-bold text-white/80">Past Events</h2>
+                  <h2 className="text-xl font-bold text-white/80">Past Events</h2>
                 </div>
                 <div className="grid gap-10 transition-opacity">
                   {past.map(e => <EventCard key={e._id} event={e} />)}
