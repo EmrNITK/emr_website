@@ -122,6 +122,13 @@ const SponsorPublic = () => {
   return (
     <section className="relative w-full min-h-screen bg-black sm:py-32 py-24 overflow-hidden font-sans selection:bg-[#51b749]/30">
       
+      {/* Background Ambience */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+         <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+         <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-[#13703a]/10 blur-[120px] rounded-full mix-blend-screen"></div>
+         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#38984c]/10 blur-[120px] rounded-full mix-blend-screen"></div>
+      </div>
+
       <div className="relative max-w-7xl mx-auto px-6">
         
         {/* --- HEADER --- */}

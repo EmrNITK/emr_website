@@ -1,302 +1,272 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Link as LinkIcon, Calendar, Trophy, ScrollText } from 'lucide-react';
+import { 
+  Plus, Trash2, Edit2, X, UploadCloud, Loader2, 
+  Calendar, Trophy, Lock, Unlock, Link as LinkIcon, List 
+} from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import ImageUploader from '../components/ImageUploader'; // Ensure this path is correct
+import ImageUploader from '../components/ImageUploader'; 
+
+import MarkdownIt from 'markdown-it';
+import MdEditor from 'react-markdown-editor-lite';
+import 'react-markdown-editor-lite/lib/index.css';
+
+const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
+const mdParser = new MarkdownIt({ html: true, linkify: true, typographer: true });
 
 const Events = () => {
-const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
-  const title = "Events";
-  const endpoint = "events";
-
-  // --- CONFIGURATION ---
-  const fields = [
-    { name: 'title', label: 'Title', type: 'text' },
-    { name: 'tagline', label: 'Tagline', type: 'text' },
-    { 
-      name: 'status', 
-      label: 'Status', 
-      type: 'select', 
-      options: ['upcoming', 'LIVE', 'completed'] 
-    },
-
-    { name: 'targetDate', label: 'Event Date & Time', type: 'datetime-local' },
-    { name: 'posterUrl', label: 'Poster Image', type: 'image' },
-    { name: 'description', label: 'Description', type: 'textarea' },
-    { name: 'regLink', label: 'Registration Link', type: 'text' },
-    { name: 'rulebooklink', label: 'Rulebook Link', type: 'text' },
-    
-    // New Dynamic List Types
-    { name: 'rules', label: 'Rules List', type: 'array-string' },
-    { name: 'prizes', label: 'Prizes List', type: 'array-string' },
-  ];
-
-  // --- STATE ---
   const [items, setItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({});
+  const [isSlugLocked, setIsSlugLocked] = useState(true);
+  const [isEditorUploading, setIsEditorUploading] = useState(false);
 
   const token = localStorage.getItem('token');
   const headers = { Authorization: token };
 
-  // --- FETCHING ---
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  useEffect(() => { fetchItems(); }, []);
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get(`${API_URL}/${endpoint}`, { withCredentials: true });
+      const res = await axios.get(`${API_URL}/events`, { withCredentials: true });
       setItems(res.data);
-    } catch (err) { toast.error("Failed to fetch data"); }
+    } catch (err) { toast.error("Failed to fetch events"); }
   };
 
-  // --- FORM HANDLERS ---
+  const generateSlug = (text) => text?.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '') || "";
+
+  const handleInputChange = (field, value) => {
+    let newData = { ...formData, [field]: value };
+    if (field === 'title' && !editingItem && isSlugLocked) newData['slug'] = generateSlug(value);
+    setFormData(newData);
+  };
+
+  // --- LIST HANDLERS (Rules/Prizes) ---
+  const handleListChange = (field, index, value) => {
+    const list = [...(formData[field] || [])];
+    list[index] = value;
+    setFormData({ ...formData, [field]: list });
+  };
+  const addListItem = (field) => setFormData({ ...formData, [field]: [...(formData[field]||[]), ""] });
+  const removeListItem = (field, index) => {
+    const list = [...(formData[field] || [])];
+    list.splice(index, 1);
+    setFormData({ ...formData, [field]: list });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = { ...formData, status: formData.status || 'upcoming' };
       if (editingItem) {
-        await axios.put(`${API_URL}/${endpoint}/${editingItem._id}`, formData, { headers,
-          withCredentials: true 
-         });
-        toast.success("Updated successfully");
+        await axios.put(`${API_URL}/events/${editingItem._id}`, payload, { headers, withCredentials: true });
+        toast.success("Event Updated");
       } else {
-        await axios.post(`${API_URL}/${endpoint}`, formData, { headers ,
-          withCredentials: true });
-        toast.success("Created successfully");
+        await axios.post(`${API_URL}/events`, payload, { headers, withCredentials: true });
+        toast.success("Event Created");
       }
       setIsModalOpen(false);
-      setEditingItem(null);
-      setFormData({});
       fetchItems();
     } catch (err) { toast.error("Operation failed"); }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
+    if (!confirm("Delete this event?")) return;
     try {
-      await axios.delete(`${API_URL}/${endpoint}/${id}`, { headers,
-          withCredentials: true  });
-      toast.success("Deleted");
+      await axios.delete(`${API_URL}/events/${id}`, { headers, withCredentials: true });
       fetchItems();
+      toast.success("Deleted");
     } catch (err) { toast.error("Delete failed"); }
   };
 
   const openModal = (item = null) => {
     setEditingItem(item);
-    
-    // Initialize empty arrays for dynamic fields if they don't exist
-    const initialData = item || {};
-    if (!initialData.rules) initialData.rules = [];
-    if (!initialData.prizes) initialData.prizes = [];
-    
-    setFormData(initialData);
-    setIsModalOpen(true);
-  };
-
-  // --- DYNAMIC ARRAY HELPERS ---
-  const handleArrayChange = (fieldName, index, value) => {
-    const updatedArray = [...(formData[fieldName] || [])];
-    updatedArray[index] = value;
-    setFormData({ ...formData, [fieldName]: updatedArray });
-  };
-
-  const addArrayItem = (fieldName) => {
-    setFormData({ 
-      ...formData, 
-      [fieldName]: [...(formData[fieldName] || []), ""] 
+    setFormData(item || { 
+        status: 'upcoming', 
+        rules: [], 
+        prizes: [], 
+        content: '', 
+        description: '' 
     });
-  };
-
-  const removeArrayItem = (fieldName, index) => {
-    const updatedArray = [...(formData[fieldName] || [])];
-    updatedArray.splice(index, 1);
-    setFormData({ ...formData, [fieldName]: updatedArray });
+    setIsSlugLocked(!item);
+    setIsModalOpen(true);
   };
 
   return (
     <div className="p-8 ml-64 min-h-screen bg-black text-white font-sans">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h2 className="text-3xl font-bold">{title}</h2>
-          <p className="text-zinc-400 mt-1">Manage your {title.toLowerCase()}</p>
-        </div>
-        <button onClick={() => openModal()} className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg hover:bg-zinc-200 transition-all font-semibold shadow-lg shadow-white/10">
-          <Plus size={18} /> Add New
-        </button>
+      <div className="flex justify-between items-center mb-10 border-b border-zinc-800 pb-6">
+        <div><h2 className="text-4xl font-bold">Events</h2><p className="text-zinc-400 mt-2">Manage competitions & hackathons</p></div>
+        <button onClick={() => openModal()} className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-full font-bold hover:bg-zinc-200"><Plus size={20}/> New Event</button>
       </div>
 
-      {/* Grid Display */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item) => (
-          <motion.div layout key={item._id || item.id} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden group hover:border-zinc-600 transition-all relative">
-            
-            {/* Status Badge */}
-            <div className="absolute top-3 left-3 z-10">
-               <span className={`text-xs font-bold px-2 py-1 rounded shadow-md uppercase tracking-wide
-                 ${item.status === 'LIVE' ? 'bg-red-600 text-white animate-pulse' : 
-                   item.status === 'upcoming' ? 'bg-blue-600 text-white' : 'bg-zinc-700 text-zinc-300'}`}>
-                 {item.status}
-               </span>
-            </div>
-
-            {/* Actions */}
-            <div className="absolute top-3 right-3 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => openModal(item)} className="p-2 bg-black/60 backdrop-blur rounded-full hover:bg-blue-600 text-white"><Edit2 size={16} /></button>
-              <button onClick={() => handleDelete(item._id || item.id)} className="p-2 bg-black/60 backdrop-blur rounded-full hover:bg-red-600 text-white"><Trash2 size={16} /></button>
-            </div>
-
-            {/* Poster */}
-            <div className="h-48 overflow-hidden bg-zinc-800">
-              {item.posterUrl ? (
-                <img src={item.posterUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={item.title} />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-zinc-600"><Calendar size={40} /></div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-              <h3 className="font-bold text-xl mb-1 text-white leading-tight">{item.title}</h3>
-              <p className="text-blue-400 text-sm font-medium mb-3">{item.tagline}</p>
-              
-              <div className="text-zinc-400 text-xs space-y-2 mb-4">
-                 <div className="flex items-center gap-2">
-                    <Calendar size={14} />
-                    {item.targetDate ? new Date(item.targetDate).toLocaleString() : 'Date TBA'}
-                 </div>
-                 {item.prizes && item.prizes.length > 0 && (
-                    <div className="flex items-center gap-2">
-                        <Trophy size={14} className="text-yellow-500"/>
-                        <span>{item.prizes[0]}</span>
-                    </div>
-                 )}
-              </div>
-
-              <div className="flex gap-2 mt-3 pt-3 border-t border-zinc-800">
-                 {item.regLink && <a href={item.regLink} target="_blank" className="text-xs bg-white text-black px-3 py-1.5 rounded font-bold hover:bg-zinc-200">Register</a>}
-                 {item.rulebooklink && <a href={item.rulebooklink} target="_blank" className="text-xs border border-zinc-600 text-zinc-300 px-3 py-1.5 rounded hover:bg-zinc-800 flex items-center gap-1"><ScrollText size={12}/> Rules</a>}
-              </div>
-            </div>
+          <motion.div layout key={item._id} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-600 transition-all flex flex-col group relative">
+             <div className="absolute top-3 left-3 z-10"><span className={`text-[10px] font-bold px-2 py-1 rounded border uppercase ${item.status === 'LIVE' ? 'bg-red-600 border-red-500 text-white animate-pulse' : 'bg-black border-zinc-700 text-zinc-400'}`}>{item.status}</span></div>
+             <div className="h-48 overflow-hidden relative">
+               <img src={item.image || item.posterUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all" alt="" />
+               <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                  <button onClick={() => openModal(item)} className="p-2 bg-white/10 backdrop-blur rounded-full hover:bg-white hover:text-black"><Edit2 size={16}/></button>
+                  <button onClick={() => handleDelete(item._id)} className="p-2 bg-red-500/10 backdrop-blur rounded-full text-red-500 hover:bg-red-600 hover:text-white"><Trash2 size={16}/></button>
+               </div>
+             </div>
+             <div className="p-5 flex flex-col flex-1">
+               <h3 className="font-bold text-lg text-white mb-1">{item.title}</h3>
+               <p className="text-xs text-[#51b749] mb-3 font-medium">{item.tagline}</p>
+               <div className="mt-auto flex items-center gap-2 text-xs text-zinc-500">
+                  <Calendar size={12}/> {new Date(item.targetDate).toLocaleDateString()}
+               </div>
+             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* Create/Edit Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-              className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-blue-900/10"
-            >
-              <div className="p-6 border-b border-zinc-800 flex justify-between items-center sticky top-0 bg-zinc-950 z-20">
-                <h3 className="text-xl font-bold text-white">{editingItem ? 'Edit Event' : 'Create Event'}</h3>
-                <button onClick={() => setIsModalOpen(false)}><X className="text-zinc-400 hover:text-white" /></button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+              
+              <div className="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-950 sticky top-0 z-10">
+                <h3 className="text-xl font-bold">{editingItem ? 'Edit Event' : 'New Event'}</h3>
+                <button onClick={() => setIsModalOpen(false)}><X className="text-zinc-500 hover:text-white"/></button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                {fields.map((field) => (
-                  <div key={field.name} className="space-y-1.5">
+              <form onSubmit={handleSubmit} className="p-8 space-y-8">
+                
+                {/* --- BASIC INFO --- */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-zinc-500 uppercase">Title</label>
+                        <input type="text" className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white outline-none focus:border-[#51b749]"
+                            value={formData.title || ''} onChange={(e) => handleInputChange('title', e.target.value)} required />
+                    </div>
                     
-                    {/* 1. Image Handler */}
-                    {field.type === 'image' ? (
-                      <ImageUploader
-                        currentImage={formData[field.name]}
-                        width={800}
-                        onUpload={(url) => setFormData({ ...formData, [field.name]: url })}
-                      />
-                    
-                    /* 2. Textarea Handler */
-                    ) : field.type === 'textarea' ? (
-                      <>
-                        <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">{field.label}</label>
-                        <textarea
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none min-h-[100px]"
-                          value={formData[field.name] || ''}
-                          onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
-                        />
-                      </>
-
-                    /* 3. Array String Handler (Rules & Prizes) */
-                    ) : field.type === 'array-string' ? (
-                      <div className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 space-y-3">
-                         <div className="flex justify-between items-center">
-                            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">{field.label}</label>
-                            <button type="button" onClick={() => addArrayItem(field.name)} className="text-xs flex items-center gap-1 text-blue-400 hover:text-blue-300">
-                               <Plus size={14}/> Add Line
-                            </button>
-                         </div>
-                         {(formData[field.name] || []).map((item, idx) => (
-                             <div key={idx} className="flex gap-2">
-                                <input 
-                                  className="flex-1 bg-black border border-zinc-700 rounded-lg p-2 text-sm text-white focus:border-blue-500 outline-none"
-                                  value={item}
-                                  placeholder={`Add ${field.label.slice(0, -5)}...`}
-                                  onChange={(e) => handleArrayChange(field.name, idx, e.target.value)}
-                                />
-                                <button type="button" onClick={() => removeArrayItem(field.name, idx)} className="text-red-500 hover:bg-red-500/10 p-2 rounded-lg transition-colors">
-                                   <Trash2 size={16} />
-                                </button>
-                             </div>
-                         ))}
-                         {(formData[field.name] || []).length === 0 && (
-                            <p className="text-xs text-zinc-600 italic text-center py-2">No items added yet.</p>
-                         )}
-                      </div>
-
-                    /* 4. Select Dropdown */
-                    ) : field.type === 'select' ? (
-                      <>
-                        <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">{field.label}</label>
-                        <div className="relative">
-                          <select
-                            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none appearance-none cursor-pointer"
-                            value={formData[field.name] || ''}
-                            onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
-                          >
-                            <option value="" disabled>Select Status</option>
-                            {field.options.map((opt) => (
-                              <option key={opt} value={opt} className="bg-zinc-900">
-                                {opt.toUpperCase()}
-                              </option>
-                            ))}
-                          </select>
-                          <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-zinc-400">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                          </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-zinc-500 uppercase">Slug</label>
+                        <div className="flex gap-2">
+                           <div className="relative flex-1">
+                             <span className="absolute left-3 top-3 text-zinc-600 font-mono text-sm">/e/</span>
+                             <input type="text" readOnly={isSlugLocked} className={`w-full bg-zinc-900 border ${isSlugLocked?'border-zinc-800 text-zinc-500':'border-blue-900'} rounded-lg p-3 pl-9 font-mono text-sm outline-none`}
+                                value={formData.slug || ''} onChange={(e) => handleInputChange('slug', e.target.value)} />
+                           </div>
+                           <button type="button" onClick={() => setIsSlugLocked(!isSlugLocked)} className="p-3 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400 hover:text-white">{isSlugLocked ? <Lock size={18}/> : <Unlock size={18}/>}</button>
                         </div>
-                      </>
+                    </div>
 
-                    /* 5. Default Input (Text, Date, Link) */
-                    ) : (
-                      <>
-                        <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">{field.label}</label>
-                        <input
-                          type={field.type || 'text'}
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none"
-                          value={formData[field.name] || ''}
-                          onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
-                        />
-                      </>
-                    )}
-                  </div>
-                ))}
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-zinc-500 uppercase">Tagline</label>
+                        <input type="text" className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white outline-none focus:border-[#51b749]"
+                            value={formData.tagline || ''} onChange={(e) => handleInputChange('tagline', e.target.value)} />
+                    </div>
 
-                <button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold py-4 rounded-xl hover:opacity-90 transition-all mt-6 shadow-lg shadow-blue-900/20">
-                  {editingItem ? 'Save Changes' : 'Create Event'}
-                </button>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-zinc-500 uppercase">Status</label>
+                            <select className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white outline-none"
+                                value={formData.status || 'upcoming'} onChange={(e) => handleInputChange('status', e.target.value)}>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="LIVE">LIVE NOW</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-zinc-500 uppercase">Event Date</label>
+                            <input type="datetime-local" className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white outline-none focus:border-[#51b749]"
+                                value={formData.targetDate ? new Date(formData.targetDate).toISOString().slice(0, 16) : ''} 
+                                onChange={(e) => handleInputChange('targetDate', e.target.value)} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* --- LINKS & MEDIA --- */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-zinc-500 uppercase">Registration Link</label>
+                            <input type="text" className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white outline-none focus:border-[#51b749]"
+                                value={formData.regLink || ''} onChange={(e) => handleInputChange('regLink', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-zinc-500 uppercase">Rulebook URL</label>
+                            <input type="text" className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white outline-none focus:border-[#51b749]"
+                                value={formData.rulebooklink || ''} onChange={(e) => handleInputChange('rulebooklink', e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-zinc-500 uppercase">Cover Poster</label>
+                        <ImageUploader currentImage={formData.image || formData.posterUrl} onUpload={(url) => setFormData({...formData, image: url, posterUrl: url})} />
+                    </div>
+                </div>
+
+                {/* --- LISTS (PRIZES & RULES) --- */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="bg-zinc-900/30 p-4 rounded-xl border border-zinc-800">
+                        <div className="flex justify-between items-center mb-3">
+                            <label className="text-xs font-bold text-zinc-500 uppercase flex items-center gap-2"><Trophy size={12}/> Prizes</label>
+                            <button type="button" onClick={() => addListItem('prizes')} className="text-xs text-blue-400 hover:text-blue-300">+ Add Prize</button>
+                        </div>
+                        <div className="space-y-2">
+                            {formData.prizes?.map((p, i) => (
+                                <div key={i} className="flex gap-2">
+                                    <input className="flex-1 bg-black border border-zinc-800 rounded p-2 text-sm text-white outline-none" 
+                                        value={p} onChange={(e) => handleListChange('prizes', i, e.target.value)} placeholder={`Prize #${i+1}`}/>
+                                    <button type="button" onClick={() => removeListItem('prizes', i)} className="text-red-500 hover:bg-zinc-800 p-2 rounded"><Trash2 size={14}/></button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="bg-zinc-900/30 p-4 rounded-xl border border-zinc-800">
+                        <div className="flex justify-between items-center mb-3">
+                            <label className="text-xs font-bold text-zinc-500 uppercase flex items-center gap-2"><List size={12}/> Quick Rules</label>
+                            <button type="button" onClick={() => addListItem('rules')} className="text-xs text-blue-400 hover:text-blue-300">+ Add Rule</button>
+                        </div>
+                        <div className="space-y-2">
+                            {formData.rules?.map((r, i) => (
+                                <div key={i} className="flex gap-2">
+                                    <input className="flex-1 bg-black border border-zinc-800 rounded p-2 text-sm text-white outline-none" 
+                                        value={r} onChange={(e) => handleListChange('rules', i, e.target.value)} placeholder="Rule..."/>
+                                    <button type="button" onClick={() => removeListItem('rules', i)} className="text-red-500 hover:bg-zinc-800 p-2 rounded"><Trash2 size={14}/></button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* --- DESCRIPTIONS --- */}
+                <div className="space-y-2">
+                    <label className="text-xs font-bold text-zinc-500 uppercase">Short Description</label>
+                    <textarea className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-white outline-none h-20 resize-none focus:border-[#51b749]"
+                        value={formData.description || ''} onChange={(e) => handleInputChange('description', e.target.value)} />
+                </div>
+
+                <div className="space-y-2">
+                   <label className="text-xs font-bold text-zinc-500 uppercase">Detailed Content (Markdown)</label>
+                   <div className="border border-zinc-800 rounded-xl overflow-hidden h-[400px]">
+                      <MdEditor style={{ height: '100%' }} renderHTML={text => mdParser.render(text)}
+                        value={formData.content || ''} onChange={({ text }) => setFormData({ ...formData, content: text })}
+                        view={{ menu: true, md: true, html: false }} />
+                   </div>
+                </div>
+
+                {/* --- FOOTER --- */}
+                <div className="flex justify-end gap-4 pt-4 border-t border-zinc-800">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 rounded-lg text-zinc-400 hover:text-white font-medium">Cancel</button>
+                  <button type="submit" className="px-8 py-3 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 flex items-center gap-2">
+                     <UploadCloud size={18}/> {editingItem ? 'Save Changes' : 'Publish Event'}
+                  </button>
+                </div>
               </form>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+      <style jsx global>{`
+        .rc-md-editor { background-color: #09090b !important; border: none !important; color: #fff; }
+        .rc-md-editor .rc-md-navigation { background-color: #18181b !important; border-bottom: 1px solid #27272a !important; }
+        .rc-md-editor .editor-container .section { background-color: #09090b !important; }
+      `}</style>
     </div>
   );
 };

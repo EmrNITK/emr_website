@@ -2,17 +2,46 @@ import mongoose from 'mongoose';
 
 const createSchema = (structure) => new mongoose.Schema(structure, { timestamps: true });
 
+// ... existing imports
+
 const Workshop = mongoose.model('Workshop', createSchema({
-  title: String, subtitle: String, description: String,
-  details: { date: String, time: String, venue: String, prereq: String },
-  posterImg: String, tags: [String], regLink: String, section : String, gallery: String
+  title: { type: String, required: true },
+  slug: { type: String, unique: true }, // NEW: For routing /w/workshop-name
+  description: String, // Short summary for cards
+  content: String,     // NEW: Long form Markdown content
+  image: String,       // Standardized from posterImg
+  details: { 
+    date: String, 
+    time: String, 
+    venue: String, 
+    prereq: String 
+  },
+  regLink: String,
+  status: { type: String, enum: ['upcoming', 'completed'], default: 'upcoming' },
+  gallery: [String]    // Optional: For post-event photos
 }));
 
+// ... rest of the models
+
+// ... existing imports
+
 const Event = mongoose.model('Event', createSchema({
-  title: String, tagline: String, status: String, targetDate: Date,
-  posterUrl: String, description: String, rules: [String], prizes: [String],
-  regLink: String, rulebooklink: String
+  title: { type: String, required: true },
+  slug: { type: String, unique: true }, // NEW: URL friendly ID
+  tagline: String,
+  description: String, // Short summary
+  content: String,     // NEW: Long form Markdown (Detailed Rules, etc.)
+  status: { type: String, enum: ['upcoming', 'LIVE', 'completed'], default: 'upcoming' },
+  targetDate: Date,
+  image: String,       // Standardized from posterUrl
+  rules: [String],     // Quick list of rules
+  prizes: [String],    // Quick list of prizes
+  regLink: String,
+  rulebooklink: String,
+  gallery: [String]    // Optional: Post-event photos
 }));
+
+// ... rest of models
 
 const GalleryOption = mongoose.model('GalleryOption', createSchema({
   type: String, value: String

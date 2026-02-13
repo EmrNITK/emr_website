@@ -19,12 +19,12 @@ export default function NavPage() {
     <Routes>
 
       <Route path="/" element={<EMRHomePage />} />
-    <Route path="/events" element={<EventsPage />} />
+    <Route path="/events/*" element={<EventsPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
 
         {/* Protected Routes */}
         <Route
-          path="/workshops"
+          path="/workshops/*"
           element={
             <ProtectedRoute>
               <WorkshopsPage />

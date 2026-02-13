@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Linkedin, Github, Instagram, User, Terminal, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Linkedin, Github, Instagram, User, Terminal, Zap, ChevronDown, Calendar, Check } from 'lucide-react';
 import axios from 'axios';
-
 const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
 
 // Color Constants
@@ -125,8 +124,21 @@ const TeamPage = () => {
   const [availableYears, setAvailableYears] = useState([]);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const membersCache = useRef({});
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const init = async () => {
@@ -134,12 +146,8 @@ const TeamPage = () => {
         const res = await axios.get(`${API_URL}/team/years`); 
         const years = res.data.sort((a, b) => b - a);
         setAvailableYears(years);
-        
-        if (years.length > 0) {
-          fetchMembersByYear(years[0]);
-        } else {
-          setLoading(false);
-        }
+        if (years.length > 0) fetchMembersByYear(years[0]);
+        else setLoading(false);
       } catch (err) {
         console.error("Failed to init team", err);
         setLoading(false);
@@ -150,17 +158,15 @@ const TeamPage = () => {
 
   const fetchMembersByYear = async (year) => {
     setActiveYear(year);
-    
+    setIsDropdownOpen(false);
     if (membersCache.current[year]) {
       setMembers(membersCache.current[year]);
       return;
     }
-
     setLoading(true);
     try {
       const res = await axios.get(`${API_URL}/team`, { params: { year } });
       const sorted = res.data.sort((a, b) => (a.rank || 99) - (b.rank || 99));
-      
       membersCache.current[year] = sorted;
       setMembers(sorted);
     } catch (err) {
@@ -173,55 +179,95 @@ const TeamPage = () => {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 pb-20">
       
-      {/* --- BACKGROUND AMBIENCE --- */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-         <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-96 bg-[#13703a]/10 blur-[150px] rounded-full"></div>
+      {/* Background Ambience */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+         <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+         <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-[#13703a]/10 blur-[120px] rounded-full mix-blend-screen"></div>
+         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#38984c]/10 blur-[120px] rounded-full mix-blend-screen"></div>
       </div>
 
       {/* --- HERO SECTION --- */}
       <section className="relative z-10 sm:pt-32 pt-24 pb-10 px-6 overflow-hidden text-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          className="max-w-4xl mx-auto space-y-6"
-        >
-          
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111111] border border-white/5 text-white/60 text-xs font-medium">
-          <Zap size={14} className="text-[#51b749]" />
-          EMR_CORE_SYSTEMS // TEAM
-        </div>
-          
+            <Zap size={14} className="text-[#51b749]" />
+            EMR_CORE_SYSTEMS // TEAM
+          </div>
           <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-white">
             Meet The <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#51b749] via-[#38984c] to-[#13703a]">Architects</span>
           </h1>
-          
           <p className="text-white/70 text-lg max-w-2xl mx-auto leading-relaxed">
-            The minds behind the machines. Innovators, engineers, and creators building the future of robotics and embedded systems at NIT Kurukshetra.
+            The minds behind the machines. Innovators, engineers, and creators building the future.
           </p>
         </motion.div>
       </section>
 
-      {/* --- STICKY YEAR NAVIGATION --- */}
-      <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-y border-white/5 py-4 mb-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-center flex-wrap gap-2 md:gap-4">
+      {/* --- STICKY NAVIGATION --- */}
+      <div className="sticky top-0 z-50 bg-black/60 backdrop-blur-xl border-y border-white/5 py-4 mb-10">
+        <div className="max-w-7xl mx-auto px-6 flex justify-center">
+          
+          {/* DESKTOP VIEW: Premium Pills */}
+          {/* <div className="hidden md:flex flex-wrap gap-3">
             {availableYears.map((year) => (
               <button
                 key={year}
                 onClick={() => fetchMembersByYear(year)}
-                className={`relative px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
+                className={`group relative px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 border ${
                   activeYear === year 
-                    ? 'text-black bg-[#51b749] shadow-[0_0_20px_rgba(81,183,73,0.3)] scale-105' 
-                    : 'text-white/60 hover:text-white hover:bg-[#111111]'
+                    ? 'text-white border-[#51b749] bg-[#51b749]/10 shadow-[0_0_15px_rgba(81,183,73,0.2)]' 
+                    : 'text-white/40 border-white/5 hover:border-white/20 hover:text-white bg-white/5'
                 }`}
               >
                 {year}
                 {activeYear === year && (
-                  <motion.div layoutId="activeTab" className="absolute inset-0 rounded-full border-2 border-transparent" />
+                  <motion.div layoutId="activeGlow" className="absolute inset-0 rounded-full bg-[#51b749]/10 blur-md -z-10" />
                 )}
               </button>
             ))}
+          </div> */}
+
+          {/* MOBILE VIEW: Modern Dropdown */}
+          <div className=" w-full max-w-[280px]" ref={dropdownRef}>
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full flex items-center justify-between px-5 py-3 rounded-2xl bg-[#111111] border border-white/10 text-white shadow-xl"
+              >
+                <div className="flex items-center gap-3">
+                  <Calendar size={18} className="text-[#51b749]" />
+                  <span className="font-bold tracking-wide">{activeYear || 'Select Year'}</span>
+                </div>
+                <ChevronDown size={18} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-[#111111] border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50 backdrop-blur-2xl"
+                  >
+                    <div className="max-h-60 overflow-y-auto py-2">
+                      {availableYears.map((year) => (
+                        <button
+                          key={year}
+                          onClick={() => fetchMembersByYear(year)}
+                          className="w-full flex items-center justify-between px-5 py-3 text-left hover:bg-[#51b749]/10 transition-colors"
+                        >
+                          <span className={`text-sm ${activeYear === year ? 'text-[#51b749] font-bold' : 'text-white/60'}`}>
+                            Batch of {year}
+                          </span>
+                          {activeYear === year && <Check size={16} className="text-[#51b749]" />}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
+
         </div>
       </div>
 
@@ -229,15 +275,11 @@ const TeamPage = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-6 min-h-[50vh]">
         <div className="flex flex-wrap justify-center gap-8">
           {loading ? (
-            <>
-              {[...Array(8)].map((_, i) => (
-                <MemberSkeleton key={i} />
-              ))}
-            </>
+            <>{[...Array(6)].map((_, i) => <MemberSkeleton key={i} />)}</>
           ) : members.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 opacity-50 border border-dashed border-white/10 rounded-3xl w-full max-w-2xl">
                <Terminal size={48} className="mb-4 text-white/30"/>
-               <p className="text-white/60">No records found for the year {activeYear}.</p>
+               <p className="text-white/60 font-mono text-sm uppercase tracking-widest">No records found for {activeYear}</p>
             </div>
           ) : (
             <motion.div 
@@ -245,9 +287,7 @@ const TeamPage = () => {
               className="contents"
               initial="hidden"
               animate="visible"
-              variants={{
-                visible: { transition: { staggerChildren: 0.05 } }
-              }}
+              variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
             >
               {members.map((member) => (
                 <MemberCard key={member._id} member={member} />

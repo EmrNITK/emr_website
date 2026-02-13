@@ -263,12 +263,17 @@ const ProjectDetail = () => {
         .prose-content p { margin-bottom: 1.5rem; color: #a1a1aa; }
         
         /* Links */
-        .prose-content a {
-          color: #51b749; /* accent green */
-          text-decoration: none;
-          border-bottom: 1px solid rgba(81, 183, 73, 0.4);
-          transition: all 0.2s;
-        }
+       .prose-content a {
+  color: #51b749; /* accent green */
+  text-decoration: none;
+  border-bottom: 1px solid rgba(81, 183, 73, 0.4);
+  transition: all 0.2s;
+
+  /* allow long URLs and text to wrap */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
         .prose-content a:hover { color: #fff; border-color: #51b749; }
 
         /* Images */
