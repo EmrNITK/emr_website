@@ -120,7 +120,7 @@ const SponsorPublic = () => {
   }, [sponsors]);
 
   return (
-    <section className="relative w-full min-h-screen bg-black sm:py-32 py-24 overflow-hidden font-sans selection:bg-[#51b749]/30">
+    <section className="relative w-full min-h-screen bg-black pt-24 pb-8 overflow-hidden font-sans selection:bg-[#51b749]/30">
       
       {/* Background Ambience */}
       <div className="fixed inset-0 z-0 pointer-events-none">

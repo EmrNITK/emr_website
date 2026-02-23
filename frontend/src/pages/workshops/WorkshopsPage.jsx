@@ -161,7 +161,7 @@ const WorkshopsPage = () => {
          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#38984c]/10 blur-[120px] rounded-full mix-blend-screen"></div>
       </div>
       
-      <main className="relative z-10 sm:pt-32 pt-24 pb-24 max-w-6xl mx-auto px-6">
+      <main className="relative z-10 sm:pt-32 pt-24 pb-6 max-w-6xl mx-auto px-6">
         
         {/* Header */}
         <div className="text-center mb-12 max-w-3xl mx-auto space-y-4">

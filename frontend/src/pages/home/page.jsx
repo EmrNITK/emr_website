@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   Zap, Calendar, Image as ImageIcon, ChevronRight, Terminal,
-  CircuitBoard, User, ExternalLink, ArrowRight, ArrowUpRight
+  CircuitBoard, School, ExternalLink, ArrowRight, ArrowUpRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { BackgroundPaths } from "@/components/ui/background-paths"
+import { Badge } from '@/components/ui/badge';
 
 // --- Configuration ---
 const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
@@ -30,10 +32,10 @@ const COLORS = {
 // --- UI Components ---
 
 const Button = ({ children, variant = "solid", className = "", ...props }) => {
-  const base = "relative px-8 py-3 rounded-full font-medium text-sm transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 select-none overflow-hidden mx-auto";
+  const base = "relative px-6 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 select-none overflow-hidden mx-auto";
 
   const styles = {
-    solid: `bg-[${COLORS.primary}] hover:bg-[${COLORS.secondary}] text-${COLORS.white} shadow-[0_0_20px_-5px_rgba(19,112,58,0.5)]`,
+    solid: `bg-[#51b749]/80 hover:bg-[${COLORS.secondary}] text-${COLORS.white} shadow-[0_0_20px_-5px_rgba(19,112,58,0.5)]`,
     bordered: `border border-white/10 hover:border-[${COLORS.accent}]/50 text-${COLORS.white} hover:text-[${COLORS.accent}] bg-transparent hover:bg-[${COLORS.primary}]/10`,
     ghost: `text-white/60 hover:text-${COLORS.white} hover:bg-white/5`,
   };
@@ -57,16 +59,45 @@ const SmartImage = ({ src, alt, className = "" }) => (
     <img
       src={src || "https://via.placeholder.com/400x300?text=No+Image"}
       alt={alt}
-      className="relative z-10 w-full h-full object-contain p-4 transition-transform duration-500 hover:scale-105"
+      className="relative z-10 w-full h-full object-contain p-1 transition-transform duration-500 hover:scale-105"
     />
   </div>
 );
 
 const SectionHeader = ({ title, subtitle }) => (
-  <div className="flex flex-col items-center justify-center mb-12 text-center space-y-3">
-    <span className="text-[#51b749] text-xs font-bold tracking-[0.3em] uppercase">{subtitle}</span>
-    <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">{title}</h2>
-    <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent rounded-full mt-4" />
+  <div className="flex flex-col items-center justify-center mb-12 text-center space-y-1 overflow-hidden">
+    
+    {/* Subtitle: Fades and slides down slightly */}
+    <motion.span 
+      initial={{ opacity: 0, y: -10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="text-[#51b749] text-xs font-bold tracking-[0.3em] uppercase"
+    >
+      {subtitle}
+    </motion.span>
+
+    {/* Title: Fades and slides up */}
+    <motion.h2 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+      className="text-3xl md:text-5xl font-bold text-white tracking-tight mt-2"
+    >
+      {title}
+    </motion.h2>
+
+    {/* Decorative Line: Expands outward from the center */}
+    <motion.div 
+      initial={{ opacity: 0, scaleX: 0 }}
+      whileInView={{ opacity: 1, scaleX: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.7, delay: 0.3, ease: "anticipate" }}
+      className="w-24 h-1 bg-gradient-to-r from-transparent via-[#51b749]/80 to-transparent rounded-full mt-6"
+    />
+    
   </div>
 );
 
@@ -184,7 +215,8 @@ const EMRHomePage = () => {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] overflow-x-hidden">
       {/*  Diagonal Cross Grid Top Background */}
-      <div
+      <BackgroundPaths title="Background Paths" />
+      {/* <div
         className="absolute inset-0"
         style={{
           backgroundImage: `
@@ -197,10 +229,10 @@ const EMRHomePage = () => {
           maskImage:
             "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
         }}
-      />
+      /> */}
       {/* Your Content/Components */}
 
-      <main className="relative z-10 pt-24 pb-12 space-y-20">
+      <main className="relative z-10 pt-24 pb-12 space-y-16 md:space-y-20">
 
         {/* --- HERO SECTION (Centered) --- */}
         <section className="max-w-4xl mx-auto px-6 text-center">
@@ -208,10 +240,17 @@ const EMRHomePage = () => {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             className="space-y-8 flex flex-col items-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#51b749]/20 bg-[#13703a]/20 text-[#51b749] text-xs font-mono uppercase tracking-widest">
+            {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#51b749]/20 bg-[#13703a]/20 text-[#51b749] text-xs font-mono uppercase tracking-widest">
               <span className="w-2 h-2 rounded-full bg-[#51b749] animate-pulse shadow-[0_0_10px_rgba(81,183,73,0.8)]" />
               System Online
-            </div>
+            </div> */}
+            <Badge
+  variant="outline"
+  className="group flex w-fit cursor-default items-center gap-1.5 rounded-full border-white/30 bg-white/5 px-3 py-1 text-white/70 backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:border-white/70 hover:bg-white/10 hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]"
+>
+  <School className="size-3.5 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:scale-110" />
+  NIT Kurukshetra
+</Badge>
 
             <h1 className="text-5xl md:text-8xl font-bold text-white tracking-tighter">
               Forging the <br />
@@ -232,16 +271,16 @@ const EMRHomePage = () => {
           </motion.div>
         </section>
 
-     
+
 
         {/* --- WORKSHOPS (Centered Grid) --- */}
         {data.workshops.length > 0 && (
           <section className="max-w-7xl mx-auto px-6">
             <SectionHeader title="Workshops" subtitle="Upgrade Skills" />
 
-            <div className="flex flex-wrap justify-center gap-8">
+            <div className="flex flex-wrap justify-center gap-5">
               {data.workshops.map((ws) => (
-                <Card key={ws._id} className="w-full max-w-md flex flex-col group">
+                <Card key={ws._id} className="w-full max-w-md flex flex-col group rounded-xl">
                   <div className="h-64 w-full border-b border-white/5 bg-white/5">
                     <SmartImage src={ws.posterImg} alt={ws.title} className="w-full h-full" />
                   </div>
@@ -257,11 +296,11 @@ const EMRHomePage = () => {
                     <p className="text-white/60 text-sm leading-relaxed line-clamp-3 mb-6">
                       {ws.description}
                     </p>
-                    {(ws.regLink && ws.section === 'upcoming') &&  (
-<a href={ws.regLink} target="_blank" rel="noreferrer" className="mt-auto w-full">                        <Button>Register Now <ArrowRight size={16} /></Button>
+                    {(ws.regLink && ws.section === 'upcoming') && (
+                      <a href={ws.regLink} target="_blank" rel="noreferrer" className="mt-auto w-full">                        <Button>Register Now <ArrowRight size={16} /></Button>
                       </a>
                     )}
-                    
+
                   </div>
                 </Card>
               ))}
@@ -383,63 +422,53 @@ const EMRHomePage = () => {
           </section>
         )}
         {data.sponsor && (
-  <section className="max-w-7xl mx-auto px-6 py-12 relative">
-    {/* Background decoration */}
-    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#13703a]/10 to-transparent blur-3xl -z-10" />
-    
-    <div className="text-center mb-10">
-      <span className="text-[#51b749] text-xs font-bold tracking-[0.3em] uppercase">
-        SUPPORTED BY
-      </span>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mt-3">
-        Our Valued <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">Sponsors</span>
-      </h2>
-      <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent rounded-full mt-4 mx-auto" />
-    </div>
+          <section className="max-w-7xl mx-auto px-6 py-12 relative">
+            {/* Background decoration */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#13703a]/10 to-transparent blur-3xl -z-10" />
 
- 
+            <div className="text-center mb-6">
+              <span className="text-[#51b749] text-xs font-bold tracking-[0.3em] uppercase">
+                SUPPORTED BY
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mt-1">
+                Our Valued <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">Sponsors</span>
+              </h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent rounded-full mt-2 mx-auto" />
+            </div>
 
-    {/* Sponsor Grid - If you want to show multiple recent sponsors */}
-    {data.sponsor && data.sponsor.length >0 && (
-      <div className="mt-4">
-        
-        
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-          {data.sponsor.map((sp) => (
-            <a
-              key={sp._id}
-              href={sp.website}
-              target="_blank"
-              rel="noreferrer"
-              className="group/sponsor relative"
-            >
-              {/* <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-white/5 border border-white/10 hover:border-[#51b749]/30 hover:bg-white/10 transition-all duration-300">
-                <div className="relative w-full h-full grayscale group-hover/sponsor:grayscale-0 transition-all duration-300">
+
+
+            {/* Sponsor Grid - If you want to show multiple recent sponsors */}
+            {data.sponsor && data.sponsor.length > 0 && (
+              <div className="mt-4">
+                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+                  {data.sponsor.map((sp) => (
+                    <a
+                      key={sp._id}
+                      href={sp.website}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group/sponsor relative"
+                    >
+                      <div className="group flex rounded-md items-center justify-center px-3 pt-3 hover:bg-slate-950 transition-colors">
+                        <div className='text-center'>
+                          <img
+                            src={sp.logo}
+                            alt={sp.name}
+                            className="h-20 object-contain mix-blend-multiply"
+                          />
+                          <span className="flex justify-center items-center gap-1 text-xs font-bold text-white group-hover:translate-x-1 transition-transform pt-2">
+                            {sp.name} <ArrowUpRight size={12} />
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
                 </div>
-              </div> */}
-             <div
-            className="group flex rounded-md items-center justify-center px-3 pt-3 hover:bg-slate-950"
-          >
-          <div className='text-center'>
-            <img
-              src={sp.logo}
-              alt="Sponsor"
-              className="
-                h-20 
-              "
-            />
-            <span className="flex justify-center items-center gap-1 text-xs font-bold text-white group-hover:translate-x-1 transition-transform pt-2">
-                        {sp.name} <ArrowUpRight size={12} />
-                      </span></div>
-          </div>
-             
-            </a>
-          ))}
-        </div>
-      </div>
-    )}
-  </section>
-)}
+              </div>
+            )}
+          </section>
+        )}
 
       </main>
     </div>

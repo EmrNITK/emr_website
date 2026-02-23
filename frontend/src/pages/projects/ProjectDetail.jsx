@@ -81,7 +81,7 @@ const ProjectDetail = () => {
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30">
       
       {/* --- HERO SECTION --- */}
-      <div className="relative h-[65vh] w-full overflow-hidden mt-24">
+      <div className="relative h-[65vh] w-full overflow-hidden mt-12">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
@@ -95,7 +95,7 @@ const ProjectDetail = () => {
         </div>
 
         {/* Header Content */}
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-16">
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-8">
            
            {/* Navigation */}
            <Link to="/p/projects" className="absolute top-8 left-6 md:left-6 flex items-center gap-2 text-white/70 hover:text-white transition-all bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 hover:border-white/30 group z-50">
@@ -140,7 +140,7 @@ const ProjectDetail = () => {
       </div>
 
       {/* --- MAIN CONTENT GRID --- */}
-      <main className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-12 lg:gap-20">
+      <main className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-12 lg:gap-20">
         
         {/* Left: Markdown Content */}
         <motion.div 
@@ -257,6 +257,12 @@ const ProjectDetail = () => {
           letter-spacing: -0.02em;
           line-height: 1.2;
         }
+          .prose-content hr {
+    margin-top: 15px;              /* removes top & bottom spacing */
+    height: 1px;            /* control thickness */
+    border: none;           /* remove default border */
+    background-color: #3a3a3a; /* line color */
+} 
         .prose-content h1 { font-size: 2.25rem; padding-bottom: 1rem; border-bottom: 1px solid #27272a; }
         .prose-content h2 { font-size: 1.875rem; }
         .prose-content h3 { font-size: 1.5rem; color: #f4f4f5; }

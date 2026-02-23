@@ -94,14 +94,14 @@ const EventDetail = () => {
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30">
       
       {/* --- HERO SECTION --- */}
-      <div className="relative h-[60vh] w-full overflow-hidden mt-24">
+      <div className="relative h-[60vh] w-full overflow-hidden mt-12">
         <div className="absolute inset-0">
           <img src={event.image || event.posterUrl} className="w-full h-full object-cover" alt="Cover"/>
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/30"></div>
           <div className="absolute inset-0 bg-[#13703a]/20 mix-blend-overlay"></div>
         </div>
 
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-16">
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-8">
            <Link to="/p/events" className="absolute top-8 left-6 flex items-center gap-2 text-white/70 hover:text-white bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 transition-all">
               <ArrowLeft size={16}/> <span className="text-xs font-bold uppercase">All Events</span>
            </Link>
@@ -214,7 +214,7 @@ const EventDetail = () => {
 
               <div className="pt-6 border-t border-white/5 space-y-3">
                 {!isPast && (
-                  <a href={event.regLink} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-[#13703a] hover:bg-[#1a8545] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#13703a]/20">
+                  <a href={event.regLink} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-[#51b749] hover:bg-[#51b749]/80 text-white font-bold rounded-xl transition-all shadow-lg shadow-[#13703a]/20">
                     <Zap size={18}/> {isLive ? 'Join Now' : 'Register Team'} 
                   </a>
                 )}
@@ -240,29 +240,28 @@ const EventDetail = () => {
       </main>
 
       {/* --- REUSED MARKDOWN STYLES --- */}
-      <style jsx global>{`
+       <style jsx global>{`
         .prose-content { color: #d4d4d8; font-size: 1.125rem; line-height: 1.8; }
-        .prose-content h1, .prose-content h2, .prose-content h3 { color: #fff; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+        .prose-content h1, .prose-content h2, .prose-content h3 { color: #fff; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; line-height: 1.3;}
         .prose-content h1 { font-size: 2rem; border-bottom: 1px solid #27272a; padding-bottom: 1rem; }
-        .prose-content h2 { font-size: 1.5rem; }
 .prose-content a {
   color: #51b749; /* accent green */
   text-decoration: none;
   border-bottom: 1px solid rgba(81, 183, 73, 0.4);
   transition: all 0.2s;
-
-  /* allow long URLs and text to wrap */
   word-break: break-word;
   overflow-wrap: anywhere;
   white-space: normal;
-}        .prose-content a:hover { color: #fff; border-color: #51b749; }
-        .prose-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; }
-        .prose-content li { margin-bottom: 0.5rem; }
+}    
+      .prose-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; }
         .prose-content code { background-color: #27272a; padding: 0.2rem 0.4rem; rounded: 4px; color: #51b749; font-size: 0.9em; font-family: monospace; }
-        .prose-content img { border-radius: 12px; margin: 2rem 0; border: 1px solid #27272a; }
-        .prose-content strong { color: #fff; font-weight: 700; }
-        .prose-content blockquote { border-left: 4px solid #3f3f46; padding-left: 1rem; color: #a1a1aa; font-style: italic; }
-      `}</style>
+        .prose-content img { border-radius: 12px; margin: 1.5rem 0; border: 1px solid #27272a; }
+.prose-content hr {
+    margin-top: 15px;              /* removes top & bottom spacing */
+    height: 1px;            /* control thickness */
+    border: none;           /* remove default border */
+    background-color: #3a3a3a; /* line color */
+}      `}</style>
     </div>
   );
 };

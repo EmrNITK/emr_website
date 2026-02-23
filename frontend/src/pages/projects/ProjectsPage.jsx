@@ -80,7 +80,7 @@ const FilterPill = ({ label, active, onClick, count }) => (
     className={`
       relative px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-300 border
       ${active 
-        ? "bg-[#51b749]/20 border-[#51b749] text-[#51b749] shadow-[0_0_15px_rgba(81,183,73,0.3)]" 
+        ? "bg-[#51b749]/10 border-[#51b749] text-[#51b749]" 
         : "bg-[#111111] border-white/5 text-white/60 hover:border-white/20 hover:text-white"
       }
     `}
@@ -244,7 +244,7 @@ const ProjectsPage = () => {
          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#38984c]/10 blur-[120px] rounded-full mix-blend-screen"></div>
       </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 py-24 sm:py-32">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-10 mt-12">
 
         {/* Page Header */}
         <div className="flex flex-col md:flex-row items-end justify-between gap-12 sm:mb-24 mb-10">

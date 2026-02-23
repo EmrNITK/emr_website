@@ -97,7 +97,7 @@ const SmartImage = ({ src, alt }) => (
 const Countdown = ({ targetDate }) => {
   const time = useCountdown(targetDate);
   return (
-    <div className="flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg border border-white/10">
+    <div className="flex items-center gap-2 bg-black/80 px-3 py-2 rounded-lg border border-white/10">
       {Object.entries(time).map(([unit, val]) => (
         <div key={unit} className="flex flex-col items-center min-w-[30px]">
           <span className="text-lg font-bold text-white leading-none font-mono">
@@ -195,7 +195,7 @@ const EventCard = ({ event }) => {
             <h3 className="text-2xl font-bold text-white mb-1">{event.title}</h3>
             <p className="text-white/60 text-sm font-medium">{event.tagline || "Technical Competition"}</p>
           </div>
-          {!isPast && <div className=""><Countdown targetDate={event.targetDate} /></div>}
+          {!isPast && <div className="md:relative absolute top-2 z-[100] right-2"><Countdown targetDate={event.targetDate} /></div>}
         </div>
 
         {/* Navigation */}
@@ -337,7 +337,7 @@ const EventsPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-6 pb-32 max-w-6xl mx-auto space-y-16">
+      <main className="relative z-10 px-6 pb-6 max-w-6xl mx-auto space-y-14">
         
         {loading ? (
           // SKELETON LOADING STATE

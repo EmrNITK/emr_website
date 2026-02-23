@@ -19,55 +19,12 @@ const COLORS = {
   cardBg: '#111111',
 };
 
-const YearDropdown = ({ selectedYear, years, onChange }) => {
+
+const FilterDropdown = ({ label, options, selected, onChange, icon: Icon, classNames }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative inline-block text-left">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex w-[103px] items-center gap-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm text-white"
-      >
-        <span className="text-white/60">
-          {selectedYear === '' ? 'All Years' : selectedYear}
-        </span>
-        <ChevronDown size={14} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
-
-      {isOpen && (
-        <>
-          {/* Transparent overlay to close dropdown on outside click */}
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)}></div>
-
-          <div className="absolute left-0 mt-2 w-32 origin-top-left rounded-xl bg-[#0A0A0A] border border-white/10 shadow-2xl z-20 overflow-hidden backdrop-blur-md">
-            <div className="py-1 max-h-60 overflow-y-auto custom-scrollbar">
-              <button
-                onClick={() => { onChange(''); setIsOpen(false); }}
-                className="w-full text-left px-4 py-2 text-sm text-white/60 hover:bg-white/5 hover:text-white transition-colors"
-              >
-                All Years
-              </button>
-              {years.map((yr) => (
-                <button
-                  key={yr}
-                  onClick={() => { onChange(yr); setIsOpen(false); }}
-                  className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedYear === yr ? 'text-white bg-white/10' : 'text-white/60 hover:bg-white/5 hover:text-white'
-                    }`}
-                >
-                  {yr}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}; const FilterDropdown = ({ label, options, selected, onChange, icon: Icon,classNames }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className={"relative inline-block text-left md:w-auto "+classNames}>
+    <div className={"relative inline-block text-left md:w-auto " + classNames}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full md:w-auto gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm text-white"
@@ -158,6 +115,7 @@ const GalleryCard = React.forwardRef(({ item, onOpen, index }, ref) => (
 
 // --- PROFESSIONAL LIGHTBOX ---
 
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 const Lightbox = ({ items, currentId, onClose, onChangeItem, hasMore, onLoadMore, loading }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const currentIndex = items.findIndex(i => i._id === currentId);
@@ -166,7 +124,7 @@ const Lightbox = ({ items, currentId, onClose, onChangeItem, hasMore, onLoadMore
   // Reset expand on slide change
   useEffect(() => { setIsExpanded(false); }, [currentId]);
 
-  // Infinite Scroll Trigger inside Lightbox
+  // Infinite Scroll Trigger
   useEffect(() => {
     if (currentIndex >= items.length - 2 && hasMore && !loading) {
       onLoadMore();
@@ -190,80 +148,119 @@ const Lightbox = ({ items, currentId, onClose, onChangeItem, hasMore, onLoadMore
 
   return (
     <motion.div
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[1100] bg-black/95 backdrop-blur-2xl flex items-center justify-center overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[1100] bg-black/95 backdrop-blur-2xl flex items-center justify-center "
     >
-      {/* --- Main Image Area --- */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-10" onClick={onClose}>
-        <motion.img
-          key={item._id}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          src={item.src}
-          alt={item.title}
-          onClick={(e) => e.stopPropagation()}
-          className={`max-w-full h-screen object-contain shadow-2xl shadow-black ${isExpanded ? 'blur-sm grayscale opacity-50' : ''}`}
-        />
+      {/* --- Main Zoomable Area --- */}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        <TransformWrapper
+          initialScale={1}
+          centerOnInit={true}
+          minScale={1}
+          maxScale={4}
+          doubleClick={{ mode: "reset" }}
+        >
+          {({ zoomIn, zoomOut, resetTransform }) => (
+            <>
+              {/* Internal Zoom Controls (Optional Floating UI) */}
+              <div className="absolute top-6 left-6 z-50 flex gap-2 pointer-events-auto md:flex hidden">
+                <button onClick={() => zoomIn()} className="p-2 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/20"><ZoomIn size={20} /></button>
+                <button onClick={() => resetTransform()} className="p-2 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/20"><Layers size={20} /></button>
+              </div>
+
+              <TransformComponent
+                // 1. Ensure the wrapper fills the available space
+                wrapperStyle={{
+                  width: "100vw",
+                  height: "100vh",
+                }}
+                // 2. Ensure the content container allows the image to center and expand
+                contentStyle={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <motion.img
+                  key={item._id}
+                  src={item.src}
+                  alt={item.title}
+                  // 3. CRITICAL: Use 'contain' so it starts within bounds, 
+                  // but don't force a height/width that fights the zoom engine.
+                  className={`max-w-full max-h-full object-contain shadow-2xl transition-opacity ${isExpanded ? 'blur-sm grayscale opacity-50' : 'opacity-100'
+                    }`}
+                  style={{
+                    display: 'block',
+                    userSelect: 'none'
+                  }}
+                />
+              </TransformComponent>
+            </>
+          )}
+        </TransformWrapper>
       </div>
 
-      {/* --- Controls --- */}
+      {/* --- UI Overlays (Ensure high z-index) --- */}
 
-      {/* Close */}
-      <button onClick={onClose} className="absolute top-6 right-6 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all border border-white/5">
+      {/* Close Button */}
+      <button
+        onClick={onClose}
+        className="absolute top-6 right-6 z-[60] p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all border border-white/5 backdrop-blur-md"
+      >
         <X size={24} />
       </button>
 
       {/* Navigation Arrows */}
       {currentIndex > 0 && (
         <button
-          onClick={(e) => { e.stopPropagation(); onChangeItem(items[currentIndex - 1]._id); }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-full bg-black/20 hover:bg-white/10 text-white/50 hover:text-white backdrop-blur border border-white/5 transition-all z-40 flex"
+          onClick={() => onChangeItem(items[currentIndex - 1]._id)}
+          className="absolute left-2 top-1/2 -translate-y-1/2 sm:p-4 p-2 rounded-full bg-black/40  text-white backdrop-blur border border-white/10 transition-all z-[60]"
         >
-          <ChevronLeft size={32} />
+          <ChevronLeft size={32} className='text-white/50' />
         </button>
       )}
 
       {(currentIndex < items.length - 1 || hasMore) && (
         <button
           disabled={currentIndex === items.length - 1 && loading}
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={() => {
             if (currentIndex < items.length - 1) onChangeItem(items[currentIndex + 1]._id);
           }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-4 rounded-full bg-black/20 hover:bg-white/10 text-white/50 hover:text-white backdrop-blur border border-white/5 transition-all z-40 flex"
+          className="absolute right-2 top-1/2 -translate-y-1/2 sm:p-4 p-2 rounded-full bg-black/40 text-white backdrop-blur border border-white/10 transition-all z-[60]"
         >
           {currentIndex === items.length - 1 && loading ? (
-            <Loader2 size={32} className="animate-spin text-[#51b749]" />
+            <Loader2 size={32} className="animate-spin text-white" />
           ) : (
-            <ChevronRight size={32} />
+            <ChevronRight size={32} className='text-white/50' />
           )}
         </button>
       )}
 
-      {/* --- Info Bar (Bottom) --- */}
-      <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-black/90 to-transparent pt-24 pb-8 px-6 md:px-12 pointer-events-none">
+      {/* Info Bar */}
+      <div className="absolute bottom-0 left-0 right-0 z-[60] bg-gradient-to-t from-black via-black/80 to-transparent pt-32 pb-8 px-6 pointer-events-none">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6 pointer-events-auto">
-
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-3">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-[#51b749] text-black">
-                {item.year}
-              </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-[#111111] text-white/70 border border-white/10">
-                {item.category}
-              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#51b749] text-black uppercase">{item.year}</span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-white/70 border border-white/10 uppercase">{item.category}</span>
             </div>
-
             <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">{item.title}</h2>
-
             <div className="relative max-w-2xl">
-              <p className={`text-white/70 text-sm md:text-base leading-relaxed transition-all ${isExpanded ? '' : 'line-clamp-2'}`}>
-                {item.description || "No description provided for this entry."}
+              <p className={`text-white/70 text-sm leading-relaxed transition-all ${isExpanded ? '' : 'line-clamp-1'}`}>
+                {item.description}
               </p>
-              {item.description && item.description.length > 120 && (
-                <button onClick={() => setIsExpanded(!isExpanded)} className="text-[#51b749] text-xs font-bold uppercase tracking-widest mt-2 hover:underline">
-                  {isExpanded ? "Collapse" : "Read Full Story"}
+
+              {/* Only show button if description exists and is longer than a short snippet */}
+              {item.description && item.description.length > 60 && (
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="text-[#51b749] text-xs font-bold uppercase mt-2 hover:underline pointer-events-auto"
+                >
+                  {isExpanded ? "Hide" : "Read More"}
                 </button>
               )}
             </div>
@@ -357,7 +354,7 @@ const GalleryPage = () => {
       </div>
 
       {/* --- Header / Filters --- */}
-      <header className="sticky top-0 z-[100] sm:pt-24 pt-16 px-6 mx-auto space-y-6 bg-black">
+      <header className="sticky top-0 z-30 sm:pt-24 pt-16 px-6 mx-auto space-y-6 bg-black">
         <div className="mx-auto py-2 max-w-6xl">
           <div className="flex items-center gap-4 mt-2 px-0 md:px-8 w-full">
             <FilterDropdown
