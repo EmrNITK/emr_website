@@ -19,7 +19,7 @@ function FloatingPaths({ position = 1 }) {
         <div className="absolute inset-0 pointer-events-none">
             <svg
                 className="w-full h-full text-white/40"
-                viewBox="0 100 696 720"
+                viewBox="0 0 696 720"
                 fill="none"
                 preserveAspectRatio="xMidYMid slice"
             >
