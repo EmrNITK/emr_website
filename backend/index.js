@@ -17,7 +17,10 @@ connectDB();
 // Middleware
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://your-frontend-domain.com'
+  'https://your-frontend-domain.com',
+  'https://your-frontend-domain.com',
+  "https://app.unibrik.com",
+  "https://app2.unibrik.com"
 ];
 
 app.use(cors({
