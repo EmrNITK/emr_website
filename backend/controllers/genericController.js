@@ -10,6 +10,7 @@ export const getAll = async (req, res) => {
 
 // Create Generic
 export const createItem = async (req, res) => {
+  console.log(req.params)
   const Model = modelsMap[req.params.type];
   if (!Model) return res.status(404).send("Invalid type");
   const newItem = new Model(req.body);

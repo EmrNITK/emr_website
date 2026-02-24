@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Images, Users, Cpu, DollarSign, LogOut } from 'lucide-react';
+import { LayoutDashboard, Calendar, Images, Users, Cpu, DollarSign, LogOut, SheetIcon } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -32,6 +32,7 @@ const Sidebar = ({ logout }) => {
   };
 
   const menu = [
+    { name: 'Forms', icon: SheetIcon, path: '/admin/forms' },
     { name: 'Workshops', icon: Cpu, path: '/admin/workshops' },
     { name: 'Events', icon: Calendar, path: '/admin/events' },
     { name: 'Gallery', icon: Images, path: '/admin/gallery' },
@@ -41,7 +42,7 @@ const Sidebar = ({ logout }) => {
   ];
 
   return (
-    <div className="w-64 h-screen bg-zinc-950 border-r border-zinc-800 flex flex-col fixed left-0 top-0 z-50">
+    <div className="w-64 h-screen bg-zinc-950 border-r border-zinc-800 flex flex-col left-0 top-0 z-50">
       <div className="p-6 border-b border-zinc-800">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
           EMR Admin

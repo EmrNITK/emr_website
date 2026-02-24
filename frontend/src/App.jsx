@@ -16,6 +16,8 @@ import Header from './components/Header';
 import AdminDash from './adminDashboard/page';
 import NavPage from './pages/page';
 import NotFoundPage from './components/NotFoundPage';
+import PublicForm from './forms/page';
+import ResponseTable from './sheets/ResponseTable';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -35,10 +37,10 @@ function App() {
 
   return (
     <>
-    
+
       <Routes>
         <Route path="/" element={<Navigate to="/p" />} />
-        <Route path="/p/*" element={<NavPage />}/>
+        <Route path="/p/*" element={<NavPage />} />
         <Route
           path="/admin/*"
           element={
@@ -47,7 +49,9 @@ function App() {
             </ProtectedRoute>
           }
         />
-         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/sheets/:formId" element={<ResponseTable />}/>
+        <Route path="/form/:id" element={<PublicForm />}/>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

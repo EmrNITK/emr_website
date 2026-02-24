@@ -15,6 +15,8 @@ import Gallery from './pages/Gallery';
 import Projects from './pages/Projects';
 import Team from './pages/Team';
 import Sponsors from './pages/Sponsors';
+import FormBuilder from './pages/Forms';
+import FormDashboard from './pages/FormDashboard';
 
 const AdminDash = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -61,8 +63,7 @@ const AdminDash = () => {
     <div className="flex bg-black min-h-screen text-white font-sans selection:bg-blue-500/30">
       <Sidebar logout={logout} />
       <Toaster position="bottom-right" toastOptions={{ style: { background: '#333', color: '#fff' } }} />
-      
-      <div className="flex-1">
+      <div className="w-full">
         <Routes>
           <Route path="/" element={<Navigate to="/admin/workshops" />} />
           
@@ -73,6 +74,9 @@ const AdminDash = () => {
           <Route path="/projects" element={<Projects />} />
           <Route path="/team" element={<Team />} />
           <Route path="/sponsors" element={<Sponsors />} />
+          <Route path="/forms" element={<FormDashboard />} />
+          <Route path="/form" element={<FormBuilder />}/>
+          <Route path="/form/:slug" element={<FormBuilder />}/>
         </Routes>
       </div>
     </div>
