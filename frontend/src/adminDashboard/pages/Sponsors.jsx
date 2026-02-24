@@ -166,7 +166,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
   };
 
   return (
-    <div className="p-6 md:p-8 ml-0 md:ml-64 min-h-screen bg-black text-white font-sans selection:bg-cyan-500 selection:text-black">
+    <div className="p-6 md:p-8 min-h-screen bg-black text-white font-sans selection:bg-cyan-500 selection:text-black">
       <Toaster position="bottom-right" toastOptions={{ style: { background: '#18181b', color: '#fff', border: '1px solid #27272a' } }}/>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">

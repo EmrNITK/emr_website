@@ -155,7 +155,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
   };
 
   return (
-    <div className="p-8 ml-64 min-h-screen bg-black text-white font-sans selection:bg-blue-500/30">
+    <div className="p-8 min-h-screen bg-black text-white font-sans selection:bg-blue-500/30">
       <div className="flex justify-between items-center mb-10 border-b border-zinc-800 pb-6">
         <div>
           <h2 className="text-4xl font-bold tracking-tight text-white">{title}</h2>

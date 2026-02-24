@@ -169,7 +169,7 @@ const TeamPage = () => {
   };
 
   return (
-    <div className="p-8 ml-64 min-h-screen bg-black text-white font-sans selection:bg-cyan-500 selection:text-black">
+    <div className="p-8 min-h-screen bg-black text-white font-sans selection:bg-cyan-500 selection:text-black">
       <Toaster position="bottom-right" toastOptions={{ style: { background: '#333', color: '#fff' } }} />
 
       {/* --- HEADER --- */}

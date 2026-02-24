@@ -144,7 +144,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
   };
 
   return (
-    <div className="p-8 ml-64 min-h-screen bg-black text-white font-sans">
+    <div className="p-8 min-h-screen bg-black text-white font-sans">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>

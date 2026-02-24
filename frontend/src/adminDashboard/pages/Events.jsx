@@ -95,7 +95,7 @@ const Events = () => {
   };
 
   return (
-    <div className="p-8 ml-64 min-h-screen bg-black text-white font-sans">
+    <div className="p-8 min-h-screen bg-black text-white font-sans">
       <div className="flex justify-between items-center mb-10 border-b border-zinc-800 pb-6">
         <div><h2 className="text-4xl font-bold">Events</h2><p className="text-zinc-400 mt-2">Manage competitions & hackathons</p></div>
         <button onClick={() => openModal()} className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-full font-bold hover:bg-zinc-200"><Plus size={20}/> New Event</button>
