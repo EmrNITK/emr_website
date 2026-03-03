@@ -23,7 +23,7 @@ const validatePassword = (password) => {
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    
+
     let existingUser = await User.findOne({
       $or: [{ email: email }, { collegeEmail: email }]
     });
@@ -38,34 +38,36 @@ router.post('/register', async (req, res) => {
         existingUser.name = name;
         existingUser.password = await bcrypt.hash(password, 10);
         await existingUser.save();
-        
-        console.log(otp)
+        await sendEmail(user.email, 'Email Verify', `Your OTP is ${otp}`);
+
+        // console.log(otp)
         return res.status(200).json({ message: 'Unverified account found. New OTP sent to email' });
       }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     let collegeEmailVerified = false;
     let collegeEmail = '';
-    
+
     if (isCollegeEmail(email)) {
       collegeEmail = email;
       collegeEmailVerified = true;
     }
 
-    const user = new User({ 
-      name, 
-      email, 
-      password: hashedPassword, 
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
       otp,
       collegeEmail,
       collegeEmailVerified
     });
     await user.save();
 
-    
-    console.log(otp)
+    await sendEmail(user.email, 'College Email Verify', `Your OTP is ${otp}`);
+
+    // console.log(otp)
 
     res.status(201).json({ message: 'OTP sent to email' });
   } catch (error) {
@@ -118,7 +120,7 @@ router.get('/me', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password -otp -collegeOtp');
     if (!user) return res.status(401).json({ message: 'User not found' });
-    
+
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -139,8 +141,8 @@ router.post('/send-college-otp', async (req, res) => {
 
     const otp = generateOTP();
     await User.findByIdAndUpdate(userId, { collegeEmail, collegeOtp: otp, collegeEmailVerified: false });
-    
-    console.log(otp)
+    await sendEmail(user.email, 'College Email Verify', `Your OTP is ${otp}`);
+    // console.log(otp)
     res.status(200).json({ message: 'College OTP sent' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -151,7 +153,7 @@ router.post('/verify-college-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body;
     const user = await User.findById(userId);
-    
+
     if (!user || user.collegeOtp !== otp) return res.status(400).json({ message: 'Invalid College OTP' });
 
     user.collegeEmailVerified = true;
@@ -215,11 +217,11 @@ router.post('/reset-password', async (req, res) => {
   try {
     const { userId, currentPassword, newPassword } = req.body;
     const user = await User.findById(userId);
-    
+
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid current password' });
 
-    
+
     if (!validatePassword(newPassword)) {
       return res.status(400).json({ message: 'Password does not meet security requirements.' });
     }
@@ -229,7 +231,7 @@ router.post('/reset-password', async (req, res) => {
 
     res.status(200).json({ message: 'Password updated successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message }); 
+    res.status(500).json({ message: error.message });
   }
 });
 
