@@ -389,11 +389,12 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
                         </div>
 
                         {/* 4. Logo Upload */}
+                       
                         <ImageUploader 
-                            currentImage={formData.logo}
-                            width={300}
-                            onUpload={(url) => setFormData({...formData, logo: url})}
-                        />
+                  currentMedia={formData.logo} 
+                  width={300}
+                  onUpload={(url) => setFormData({ ...formData, logo: url })} 
+                />
 
                         {/* 5. Website */}
                         <div className="space-y-1.5">

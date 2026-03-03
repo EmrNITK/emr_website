@@ -5,32 +5,27 @@ const OptionSchema = new mongoose.Schema({
   text: { type: String, default: '' },
   image: { type: String, default: '' },
   goToSection: { type: String, default: 'NEXT' },
-  // NEW: mark correct answer for quiz
   isCorrect: { type: Boolean, default: false },
   isOther: { type: Boolean, default: false }
 }, { _id: false });
 
-// Validation sub‑schema
 const ValidationSchema = new mongoose.Schema({
   regex: { type: String, default: '' },
   errorMessage: { type: String, default: '' },
   enabled: { type: Boolean, default: false }
 }, { _id: false });
 
-// File restrictions
 const FileRestrictionsSchema = new mongoose.Schema({
   allowedExtensions: { type: String, default: '' },
   maxSizeMB: { type: Number, default: 10 }
 }, { _id: false });
 
-// Condition for conditional logic
 const ConditionSchema = new mongoose.Schema({
   questionId: { type: String, default: '' },
   operator: { type: String, default: 'equals' },
   value: { type: String, default: '' }
 }, { _id: false });
 
-// Correct answer for text questions
 const CorrectAnswerSchema = new mongoose.Schema({
   type: { type: String, enum: ['exact', 'regex', 'multiple'], default: 'exact' },
   value: { type: mongoose.Schema.Types.Mixed, default: null }
@@ -47,13 +42,13 @@ const ElementSchema = new mongoose.Schema({
   required: { type: Boolean, default: false },
   logicEnabled: { type: Boolean, default: false },
   options: [OptionSchema],
-  // NEW quiz & validation fields
   points: { type: Number, default: 0 },
-  isGraded: { type: Boolean, default: true },    // if false, question is not scored
+  isGraded: { type: Boolean, default: true },
   correctAnswer: CorrectAnswerSchema,
   validation: ValidationSchema,
   conditions: [ConditionSchema],
-  fileRestrictions: FileRestrictionsSchema
+  fileRestrictions: FileRestrictionsSchema,
+  shortInputType: { type: String, enum: ['', 'name', 'email', 'rollNo', 'collegeEmail', 'collegeName'], default: '' },
 }, { _id: false });
 
 const SectionSchema = new mongoose.Schema({
@@ -68,6 +63,8 @@ const FormSchema = new mongoose.Schema({
   description: { type: String, default: '' },
   coverPhoto: { type: String, default: '' },
   settings: {
+    loginReq: {type: Boolean, default: false},
+    requireNitkkrDomain: {type: Boolean, default: false},
     isQuiz: { type: Boolean, default: false },
     releaseGrades: { type: String, default: 'IMMEDIATELY' },
     showMissedQuestions: { type: Boolean, default: true },
@@ -84,7 +81,13 @@ const FormSchema = new mongoose.Schema({
     confirmationMessage: { type: String, default: 'Your response has been recorded.' }
   },
   sections: [SectionSchema],
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  collaborators: [{
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    name: String,
+    email: String,
+    profilePhoto: String
+  }]
 }, { timestamps: true });
 
 export default mongoose.model('Form', FormSchema);

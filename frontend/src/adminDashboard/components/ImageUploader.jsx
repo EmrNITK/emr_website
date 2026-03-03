@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, FileImage, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, FileImage, FileVideo, CheckCircle, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-// --- Helper: Resize & Convert to WebP ---
+// --- Helper: Resize & Convert to WebP (IMAGES ONLY) ---
 const processImage = (file, targetWidth = 800, quality = 0.8) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -14,31 +14,23 @@ const processImage = (file, targetWidth = 800, quality = 0.8) => {
       const img = new Image();
       img.src = event.target.result;
       img.onload = () => {
-        // Calculate Dimensions
         let width = img.width;
         let height = img.height;
 
-        // LOGIC: Only resize if the image is LARGER than the target
         if (width > targetWidth) {
           height = Math.round((height * targetWidth) / width);
           width = targetWidth;
         } 
-        // Else: If width <= targetWidth, we keep the original 'width' and 'height'
-        // This prevents upscaling small images
 
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         
-        // Draw the image at the calculated (or original) size
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Force 'image/webp' and quality
         canvas.toBlob((blob) => {
           if (!blob) return reject(new Error('Conversion failed'));
-          
-          // STRICTLY RENAME EXTENSION HERE
           const fileNameWithoutExt = file.name.split('.').slice(0, -1).join('.');
           const newFileName = `${fileNameWithoutExt}.webp`;
           
@@ -55,8 +47,8 @@ const processImage = (file, targetWidth = 800, quality = 0.8) => {
   });
 };
 
-const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
-  const [status, setStatus] = useState('idle'); // idle | processing | uploading | success | error
+const MediaUploader = ({ onUpload, currentMedia, mediaType = 'image', width = 800 }) => {
+  const [status, setStatus] = useState('idle'); 
   const [progress, setProgress] = useState(0);
   const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
@@ -65,19 +57,19 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
     if (!file) return;
 
     try {
-      // 1. Processing Phase
       setStatus('processing');
       setProgress(0);
       
-      // Pass the desired width, but the function respects smaller images now
-      const processedFile = await processImage(file, width);
+      let fileToUpload = file;
 
-      // 2. Uploading Phase
+      // Only run the heavy image processing if it's actually an image
+      if (mediaType === 'image' && file.type.startsWith('image/')) {
+        fileToUpload = await processImage(file, width);
+      }
+
       setStatus('uploading');
-      
       const formData = new FormData();
-      // Explicitly passing filename ensures backend receives correct extension
-      formData.append('file', processedFile, processedFile.name);
+      formData.append('file', fileToUpload, fileToUpload.name);
 
       const token = localStorage.getItem('token');
 
@@ -87,7 +79,6 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
           Authorization: token 
         },
         withCredentials: true,
-        // AXIOS PROGRESS TRACKING
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);
@@ -98,7 +89,6 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
       setStatus('success');
       toast.success("Uploaded successfully!");
       
-      // Reset status after a delay so user sees the success state
       setTimeout(() => setStatus('idle'), 2000);
 
     } catch (err) {
@@ -106,22 +96,23 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
       setStatus('error');
       toast.error("Upload failed");
     }
-  }, [onUpload, width, API_URL]);
+  }, [onUpload, width, API_URL, mediaType]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
     onDrop, 
-    accept: { 'image/*': [] },
+    // Dynamically accept only the selected media type
+    accept: mediaType === 'video' ? { 'video/*': [] } : { 'image/*': [] },
     disabled: status === 'processing' || status === 'uploading'
   });
 
-  // --- UI COMPONENTS ---
-  
   const renderContent = () => {
     if (status === 'processing') {
       return (
         <div className="flex flex-col items-center justify-center space-y-3 animate-pulse">
-          <FileImage className="w-10 h-10 text-yellow-500" />
-          <p className="text-sm font-medium text-yellow-500">Optimizing & Converting...</p>
+          {mediaType === 'video' ? <FileVideo className="w-10 h-10 text-yellow-500" /> : <FileImage className="w-10 h-10 text-yellow-500" />}
+          <p className="text-sm font-medium text-yellow-500">
+            {mediaType === 'video' ? 'Preparing Video...' : 'Optimizing & Converting...'}
+          </p>
         </div>
       );
     }
@@ -133,9 +124,7 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
             <span>Uploading</span>
             <span>{progress}%</span>
           </div>
-          {/* Progress Bar Container */}
           <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden">
-            {/* Animated Fill */}
             <div 
               className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
@@ -164,13 +153,17 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
     }
 
     // Default Idle / Preview State
-    if (currentImage) {
+    if (currentMedia) {
       return (
         <div className="relative group w-full h-40">
-           <img src={currentImage} alt="Current" className="w-full h-full object-cover rounded-lg" />
+           {mediaType === 'video' ? (
+             <video src={currentMedia} className="w-full h-full object-cover rounded-lg bg-black" controls muted />
+           ) : (
+             <img src={currentMedia} alt="Current" className="w-full h-full object-cover rounded-lg" />
+           )}
            <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg">
              <Upload className="text-white mb-2" />
-             <span className="text-white text-xs font-bold uppercase tracking-widest">Change Image</span>
+             <span className="text-white text-xs font-bold uppercase tracking-widest">Change Media</span>
            </div>
         </div>
       );
@@ -179,15 +172,19 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
     return (
       <div className={`flex flex-col items-center transition-colors ${isDragActive ? 'text-blue-400' : 'text-zinc-400'}`}>
         <Upload className="w-8 h-8 mb-3" />
-        <p className="text-sm font-medium">Click or Drag Image</p>
-        <p className="text-xs text-zinc-600 mt-1">Auto-converted to WebP</p>
+        <p className="text-sm font-medium">Click or Drag {mediaType === 'video' ? 'Video' : 'Image'}</p>
+        <p className="text-xs text-zinc-600 mt-1">
+          {mediaType === 'video' ? 'Upload raw video file' : 'Auto-converted to WebP'}
+        </p>
       </div>
     );
   };
 
   return (
     <div className="space-y-2">
-      <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Image / Poster</label>
+      <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
+        {mediaType === 'video' ? 'Video File' : 'Image / Poster'}
+      </label>
       
       <div 
         {...getRootProps()}
@@ -204,4 +201,4 @@ const ImageUploader = ({ onUpload, currentImage, width = 800 }) => {
   );
 };
 
-export default ImageUploader;
+export default MediaUploader;

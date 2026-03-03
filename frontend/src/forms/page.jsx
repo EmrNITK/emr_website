@@ -4,10 +4,10 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { format } from "date-fns";
 import { useDropzone } from 'react-dropzone';
-import { 
-  Loader2, ChevronLeft, UploadCloud, Calendar as CalendarIcon, 
+import {
+  Loader2, ChevronLeft, UploadCloud, Calendar as CalendarIcon,
   Clock, AlertCircle, Home, FileText, ShieldCheck, Info,
-  HomeIcon
+  HomeIcon, Lock
 } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 import { cn } from "@/lib/utils";
@@ -23,7 +23,7 @@ import { Progress } from "@/components/ui/progress";
 
 // --- COMPACT FILE UPLOAD COMPONENT ---
 const FileUploadInput = ({ el, value, onChange, hasError }) => {
-  const [status, setStatus] = useState(value ? 'success' : 'idle'); 
+  const [status, setStatus] = useState(value ? 'success' : 'idle');
   const [progress, setProgress] = useState(0);
   const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api`;
 
@@ -62,7 +62,7 @@ const FileUploadInput = ({ el, value, onChange, hasError }) => {
     return (
       <div className="w-full bg-[#111] border border-zinc-800 rounded-md p-4 space-y-2">
         <div className="flex justify-between text-xs font-semibold text-[#0078d4]">
-          <span className="flex items-center gap-2"><Loader2 className="animate-spin w-3 h-3"/> Uploading</span>
+          <span className="flex items-center gap-2"><Loader2 className="animate-spin w-3 h-3" /> Uploading</span>
           <span>{progress}%</span>
         </div>
         <Progress value={progress} className="h-1 bg-zinc-800" />
@@ -103,6 +103,10 @@ export default function PublicForm() {
 
   const [form, setForm] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -110,23 +114,188 @@ export default function PublicForm() {
 
   const [currentSectionIndex, setCurrentSectionIndex] = useState(() => JSON.parse(localStorage.getItem(storageKey))?.currentSectionIndex || 0);
   const [answers, setAnswers] = useState(() => JSON.parse(localStorage.getItem(storageKey))?.answers || {});
+  const [otherValues, setOtherValues] = useState(() => JSON.parse(localStorage.getItem(storageKey))?.otherValues || {});
   const [respondentEmail, setRespondentEmail] = useState(() => JSON.parse(localStorage.getItem(storageKey))?.respondentEmail || "");
   const [sectionHistory, setSectionHistory] = useState(() => JSON.parse(localStorage.getItem(storageKey))?.sectionHistory || []);
-
-  const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/forms`;
+  const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
+  const [domainRestricted, setDomainRestricted] = useState(false);
+  const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api`;
 
   useEffect(() => {
     const timer = setInterval(() => setSystemTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+  // useEffect(() => {
+  //   // 1. Local Storage Quick Check for "Limit to one response"
+  //   const localSubmitted = localStorage.getItem(`submitted_${id}`);
+
+  //   const fetchForm = axios.get(`${API_URL}/forms/public/${id}`);
+  //   const fetchAuth = axios.get(`${API_URL}/auth/me`, {
+  //       headers: { Authorization: localStorage.getItem('token') },
+  //       withCredentials: true
+  //   });
+
+  //   Promise.allSettled([fetchForm, fetchAuth]).then(async ([formResult, authResult]) => {
+  //     let currentForm = null;
+  //     let currentUser = null;
+
+  //     if (formResult.status === 'fulfilled') {
+  //       currentForm = formResult.value.data;
+  //       setForm(currentForm);
+  //     } else {
+  //       toast.error("Failed to load form.");
+  //       setIsLoading(false);
+  //       setIsAuthLoading(false);
+  //       return;
+  //     }
+
+  //     if (authResult.status === 'fulfilled') {
+  //       setIsAuthenticated(true);
+  //       currentUser = authResult.value.data.user || authResult.value.data;
+  //       setUserProfile(currentUser); 
+  //     } else {
+  //       setIsAuthenticated(false);
+  //       setUserProfile(null);
+  //     }
+
+  //     // --- Security & Access Checks ---
+
+  //     // A. Check domain restriction
+  //     if (currentForm.settings.requireNitkkrDomain && currentUser) {
+  //         const email = currentUser.email?.toLowerCase() || '';
+  //         const cEmail = currentUser.collegeEmail?.toLowerCase() || '';
+  //         if (!email.endsWith('@nitkkr.ac.in') && !cEmail.endsWith('@nitkkr.ac.in')) {
+  //             setDomainRestricted(true);
+  //         }
+  //     }
+
+  //     // B. Check limit to one response
+  //     if (currentForm.settings.limitToOneResponse) {
+  //         if (localSubmitted) {
+  //             setHasAlreadySubmitted(true);
+  //         } else if (currentUser) {
+  //             // API check if logged in but local storage was cleared
+  //             try {
+  //                 const checkRes = await axios.get(`${API_URL}/responses/check/${id}`, {
+  //                     headers: { Authorization: localStorage.getItem('token') },
+  //                     withCredentials: true
+  //                 });
+  //                 if (checkRes.data.hasSubmitted) {
+  //                     setHasAlreadySubmitted(true);
+  //                     localStorage.setItem(`submitted_${id}`, 'true'); // Restore local flag
+  //                 }
+  //             } catch (err) {
+  //                 console.error("Error checking submission status", err);
+  //             }
+  //         }
+  //     }
+
+  //     setIsLoading(false);
+  //     setIsAuthLoading(false);
+  //   });
+  // }, [id, API_URL]);
 
   useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify({ answers, respondentEmail, currentSectionIndex, sectionHistory }));
-  }, [answers, respondentEmail, currentSectionIndex, sectionHistory, storageKey]);
+    localStorage.setItem(storageKey, JSON.stringify({ answers, otherValues, respondentEmail, currentSectionIndex, sectionHistory }));
+  }, [answers, otherValues, respondentEmail, currentSectionIndex, sectionHistory, storageKey]);
 
+  // Fetch Form and Auth Status simultaneously
   useEffect(() => {
-    axios.get(`${API_URL}/public/${id}`).then(res => setForm(res.data)).finally(() => setIsLoading(false));
+    // 1. Local Storage Quick Check for "Limit to one response"
+    const localSubmitted = localStorage.getItem(`submitted_${id}`);
+
+    const fetchForm = axios.get(`${API_URL}/forms/public/${id}`);
+    const fetchAuth = axios.get(`${API_URL}/auth/me`, {
+      headers: { Authorization: localStorage.getItem('token') },
+      withCredentials: true
+    });
+
+    Promise.allSettled([fetchForm, fetchAuth]).then(async ([formResult, authResult]) => {
+      let currentForm = null;
+      let currentUser = null;
+
+      if (formResult.status === 'fulfilled') {
+        currentForm = formResult.value.data;
+        setForm(currentForm);
+      } else {
+        toast.error("Failed to load form.");
+        setIsLoading(false);
+        setIsAuthLoading(false);
+        return;
+      }
+
+      if (authResult.status === 'fulfilled') {
+        setIsAuthenticated(true);
+        currentUser = authResult.value.data.user || authResult.value.data;
+        setUserProfile(currentUser);
+      } else {
+        setIsAuthenticated(false);
+        setUserProfile(null);
+      }
+
+      // --- Security & Access Checks ---
+
+      // A. Check domain restriction
+      if (currentForm.settings.requireNitkkrDomain && currentUser) {
+        const email = currentUser.email?.toLowerCase() || '';
+        const cEmail = currentUser.collegeEmail?.toLowerCase() || '';
+        if (!email.endsWith('@nitkkr.ac.in') && !cEmail.endsWith('@nitkkr.ac.in')) {
+          setDomainRestricted(true);
+        }
+      }
+
+      // B. Check limit to one response
+      if (currentForm.settings.limitToOneResponse) {
+        if (localSubmitted) {
+          setHasAlreadySubmitted(true);
+        } else if (currentUser) {
+          // API check if logged in but local storage was cleared
+          try {
+            const checkRes = await axios.get(`${API_URL}/responses/check/${id}`, {
+              headers: { Authorization: localStorage.getItem('token') },
+              withCredentials: true
+            });
+            if (checkRes.data.hasSubmitted) {
+              setHasAlreadySubmitted(true);
+              localStorage.setItem(`submitted_${id}`, 'true'); // Restore local flag
+            }
+          } catch (err) {
+            console.error("Error checking submission status", err);
+          }
+        }
+      }
+
+      setIsLoading(false);
+      setIsAuthLoading(false);
+    });
   }, [id, API_URL]);
+
+  // Auto-fill logic
+  useEffect(() => {
+    if (form && userProfile) {
+      setAnswers(prev => {
+        let hasChanges = false;
+        const newAnswers = { ...prev };
+
+        // Auto-fill form email if DO_NOT_COLLECT is not set
+        if (form.settings.collectEmails !== 'DO_NOT_COLLECT' && !respondentEmail && userProfile.email) {
+          setRespondentEmail(userProfile.email);
+        }
+
+        form.sections.forEach(sec => {
+          sec.elements.forEach(el => {
+            if (el.type === 'SHORT_TEXT' && el.shortInputType && userProfile[el.shortInputType]) {
+              if (!newAnswers[el.id]) {
+                newAnswers[el.id] = userProfile[el.shortInputType];
+                hasChanges = true;
+              }
+            }
+          });
+        });
+        return hasChanges ? newAnswers : prev;
+      });
+    }
+  }, [form, userProfile, respondentEmail]);
 
   const displayElements = useMemo(() => {
     if (!form?.sections?.[currentSectionIndex]) return [];
@@ -136,58 +305,105 @@ export default function PublicForm() {
   const validate = () => {
     const newErrors = {};
     if (currentSectionIndex === 0 && form.settings.collectEmails !== 'DO_NOT_COLLECT' && !respondentEmail) {
-        newErrors['email'] = "Email required.";
+      newErrors['email'] = "Email required.";
     }
     displayElements.forEach(el => {
       const ans = answers[el.id];
       if (el.required && !['TEXT_ONLY', 'IMAGE'].includes(el.type)) {
-        if (!ans || (Array.isArray(ans) && ans.length === 0)) newErrors[el.id] = "Required field.";
+        if (!ans || (Array.isArray(ans) && ans.length === 0)) {
+          newErrors[el.id] = "Required field.";
+        }
       }
     });
     setFieldErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => { if (validate()) { setSectionHistory([...sectionHistory, currentSectionIndex]); setCurrentSectionIndex(currentSectionIndex + 1); window.scrollTo(0,0); }};
-  const handleBack = () => { const hist = [...sectionHistory]; const prev = hist.pop(); setSectionHistory(hist); setCurrentSectionIndex(prev); window.scrollTo(0,0); };
+  const handleNext = () => { if (validate()) { setSectionHistory([...sectionHistory, currentSectionIndex]); setCurrentSectionIndex(currentSectionIndex + 1); window.scrollTo(0, 0); } };
+  const handleBack = () => { const hist = [...sectionHistory]; const prev = hist.pop(); setSectionHistory(hist); setCurrentSectionIndex(prev); window.scrollTo(0, 0); };
 
   const handleSubmit = async () => {
     if (!validate()) return;
     setIsSubmitting(true);
+
+    // Process answers to swap "__OTHER__" tokens with actual custom text
+    const processedAnswers = Object.entries(answers).map(([k, v]) => {
+      let finalValue = v;
+      if (typeof v === 'string' && v.startsWith('__OTHER__')) {
+        finalValue = otherValues[k] || 'Other';
+      } else if (Array.isArray(v)) {
+        finalValue = v.map(item => item.startsWith('__OTHER__') ? (otherValues[k] || 'Other') : item);
+      }
+      return { questionId: k, value: finalValue };
+    });
+
     try {
-      await axios.post(`${API_URL}/public/${id}`, { 
-        answers: Object.entries(answers).map(([k, v]) => ({ questionId: k, value: v })), 
-        respondentEmail 
+      await axios.post(`${API_URL}/forms/public/${id}`, {
+        answers: processedAnswers,
+        respondentEmail
       });
       setIsSubmitted(true);
       localStorage.removeItem(storageKey);
+      localStorage.setItem(`submitted_${id}`, 'true');
     } catch { toast.error("Submission error"); } finally { setIsSubmitting(false); }
   };
 
   const renderInput = (el) => {
     const val = answers[el.id] || '';
     const hasError = !!fieldErrors[el.id];
-    const update = (v) => { setAnswers({...answers, [el.id]: v}); setFieldErrors({...fieldErrors, [el.id]: null}); };
+    const update = (v) => { setAnswers({ ...answers, [el.id]: v }); setFieldErrors({ ...fieldErrors, [el.id]: null }); };
+
+    // Field Level Login Check
+    if (el.requireLogin && !isAuthenticated) {
+      return (
+        <div className="flex items-center space-x-2 text-sm text-zinc-400 bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
+          <Lock size={16} className="text-[#0078d4]" />
+          <span>You must be logged in to fill out this field.</span>
+        </div>
+      );
+    }
 
     switch (el.type) {
       case 'SHORT_TEXT':
-        return <Input value={val} onChange={(e) => update(e.target.value)} className={cn("bg-[#0a0a0a] border-zinc-800 text-zinc-100 h-9 text-sm focus-visible:ring-1 focus-visible:ring-[#0078d4]", hasError && "border-red-500")} placeholder="Enter response" />;
-      
+        return (
+          <div>
+            <Input value={val} onChange={(e) => update(e.target.value)} disabled={el.requireLogin && !isAuthenticated} className={cn("bg-[#0a0a0a] border-zinc-800 text-zinc-100 h-9 text-sm focus-visible:ring-1 focus-visible:ring-[#0078d4]", hasError && "border-red-500")} placeholder="Enter response" />
+            {el.shortInputType && val && userProfile && val === userProfile[el.shortInputType] && (
+              <p className="text-[10px] text-[#0078d4] mt-1.5 flex items-center"><ShieldCheck size={12} className="mr-1" /> Auto-filled from your profile</p>
+            )}
+          </div>
+        );
+
       case 'LONG_TEXT':
         return <Textarea value={val} onChange={(e) => update(e.target.value)} className={cn("bg-[#0a0a0a] border-zinc-800 text-zinc-100 min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-[#0078d4]", hasError && "border-red-500")} placeholder="Enter detailed response" />;
-      
+
       case 'MULTIPLE_CHOICE':
         return (
           <div className="grid gap-1.5">
-            {el.options.map(opt => (
-              <label key={opt.id} className={cn("flex items-start p-2 rounded border cursor-pointer transition-colors", val === opt.text ? "border-[#0078d4] bg-[#0078d4]/10" : "border-zinc-800 hover:bg-zinc-900")}>
-                <input type="radio" checked={val === opt.text} onChange={() => update(opt.text)} className="mt-0.5 w-4 h-4 accent-[#0078d4] bg-black border-zinc-700 shrink-0" />
-                <div className="ml-2.5 flex flex-col gap-2 w-full">
-                  {opt.image && <img src={opt.image} alt="Option visual" className="max-h-32 max-w-[200px] object-cover rounded border border-zinc-700 bg-[#050505]" />}
-                  <span className="text-sm font-medium text-zinc-200">{opt.text}</span>
+            {el.options.map(opt => {
+              const targetVal = opt.isOther ? `__OTHER__${opt.id}` : opt.text;
+              const isSelected = val === targetVal;
+              return (
+                <div key={opt.id} className={cn("flex flex-col p-2 rounded border transition-colors", isSelected ? "border-[#0078d4] bg-[#0078d4]/10" : "border-zinc-800 hover:bg-zinc-900")}>
+                  <label className="flex items-start cursor-pointer w-full">
+                    <input type="radio" checked={isSelected} onChange={() => update(targetVal)} className="mt-0.5 w-4 h-4 accent-[#0078d4] bg-black border-zinc-700 shrink-0" />
+                    <div className="ml-2.5 flex flex-col gap-2 w-full">
+                      {opt.image && !opt.isOther && <img src={opt.image} alt="Option visual" className="max-h-32 max-w-[200px] object-cover rounded border border-zinc-700 bg-[#050505]" />}
+                      <span className="text-sm font-medium text-zinc-200">{opt.isOther ? "Other" : opt.text}</span>
+                    </div>
+                  </label>
+                  {opt.isOther && isSelected && (
+                    <Input
+                      autoFocus
+                      className="mt-2 ml-6 w-[calc(100%-1.5rem)] bg-[#0a0a0a] border-zinc-700 h-8 text-sm focus-visible:ring-1 focus-visible:ring-[#0078d4]"
+                      placeholder="Please specify..."
+                      value={otherValues[el.id] || ''}
+                      onChange={e => setOtherValues({ ...otherValues, [el.id]: e.target.value })}
+                    />
+                  )}
                 </div>
-              </label>
-            ))}
+              )
+            })}
           </div>
         );
 
@@ -195,15 +411,31 @@ export default function PublicForm() {
         const selected = Array.isArray(val) ? val : [];
         return (
           <div className="grid gap-1.5">
-            {el.options.map(opt => (
-              <label key={opt.id} className={cn("flex items-start p-2 rounded border cursor-pointer transition-colors", selected.includes(opt.text) ? "border-[#0078d4] bg-[#0078d4]/10" : "border-zinc-800 hover:bg-zinc-900")}>
-                <input type="checkbox" checked={selected.includes(opt.text)} onChange={(e) => update(e.target.checked ? [...selected, opt.text] : selected.filter(x => x !== opt.text))} className="mt-0.5 w-4 h-4 rounded accent-[#0078d4] bg-black border-zinc-700 shrink-0" />
-                <div className="ml-2.5 flex flex-col gap-2 w-full">
-                  <span className="text-sm font-medium text-zinc-200">{opt.text}</span>
-                  {opt.image && <img src={opt.image} alt="Option visual" className="max-w-[180px] object-cover rounded border border-zinc-700 bg-[#050505]" />}
+            {el.options.map(opt => {
+              const targetVal = opt.isOther ? `__OTHER__${opt.id}` : opt.text;
+              const isSelected = selected.includes(targetVal);
+              const handleChange = (checked) => update(checked ? [...selected, targetVal] : selected.filter(x => x !== targetVal));
+              return (
+                <div key={opt.id} className={cn("flex flex-col p-2 rounded border transition-colors", isSelected ? "border-[#0078d4] bg-[#0078d4]/10" : "border-zinc-800 hover:bg-zinc-900")}>
+                  <label className="flex items-start cursor-pointer w-full">
+                    <input type="checkbox" checked={isSelected} onChange={(e) => handleChange(e.target.checked)} className="mt-0.5 w-4 h-4 rounded accent-[#0078d4] bg-black border-zinc-700 shrink-0" />
+                    <div className="ml-2.5 flex flex-col gap-2 w-full">
+                      <span className="text-sm font-medium text-zinc-200">{opt.isOther ? "Other" : opt.text}</span>
+                      {opt.image && !opt.isOther && <img src={opt.image} alt="Option visual" className="max-[180px] object-cover rounded border border-zinc-700 bg-[#050505]" />}
+                    </div>
+                  </label>
+                  {opt.isOther && isSelected && (
+                    <Input
+                      autoFocus
+                      className="mt-2 ml-6 w-[calc(100%-1.5rem)] bg-[#0a0a0a] border-zinc-700 h-8 text-sm focus-visible:ring-1 focus-visible:ring-[#0078d4]"
+                      placeholder="Please specify..."
+                      value={otherValues[el.id] || ''}
+                      onChange={e => setOtherValues({ ...otherValues, [el.id]: e.target.value })}
+                    />
+                  )}
                 </div>
-              </label>
-            ))}
+              )
+            })}
           </div>
         );
 
@@ -242,12 +474,12 @@ export default function PublicForm() {
           </div>
         );
 
-      case 'FILE_UPLOAD': 
+      case 'FILE_UPLOAD':
         return <FileUploadInput el={el} value={val} onChange={update} hasError={hasError} />;
-      
+
       case 'TEXT_ONLY':
         return <div className="text-sm text-zinc-400 prose prose-invert max-w-none"><MarkdownRenderer content={el.question} /></div>;
-      
+
       case 'IMAGE':
         return <img src={el.imageUrl} alt="Form visual" className="w-full rounded-md border border-zinc-800" />;
 
@@ -255,37 +487,73 @@ export default function PublicForm() {
     }
   };
 
-  if (isLoading) return (
+  if (isLoading || isAuthLoading) return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center">
       <Loader2 className="animate-spin text-[#0078d4]" size={24} />
     </div>
   );
 
+  if (hasAlreadySubmitted) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4">
+        <div className="bg-[#0c0c0c] border border-zinc-800 rounded-md p-8 text-center max-w-md w-full shadow-lg">
+          <Info className="text-[#0078d4] w-12 h-12 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-white mb-2">You've already responded</h1>
+          <p className="text-sm text-zinc-400 mb-6">You can fill out this form only once. Contact the form owner if you think this is a mistake.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (domainRestricted) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4">
+        <div className="bg-[#0c0c0c] border border-zinc-800 rounded-md p-8 text-center max-w-md w-full shadow-lg">
+          <ShieldCheck className="text-red-500 w-12 h-12 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-white mb-2">Access Denied</h1>
+          <p className="text-sm text-zinc-400 mb-6">This form is restricted to users within the <strong>NIT Kurukshetra</strong> organization. Please ensure your college email is linked to your profile.</p>
+          <Button onClick={() => navigate('/a/profile')} className="bg-zinc-800 hover:bg-zinc-700 text-white w-full font-semibold border border-zinc-700">Update Profile</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (form?.settings?.loginReq && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4">
+        <div className="bg-[#0c0c0c] border border-zinc-800 rounded-md p-8 text-center max-w-md w-full shadow-lg">
+          <Lock className="text-[#0078d4] w-12 h-12 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-white mb-2">Sign in required</h1>
+          <p className="text-sm text-zinc-400 mb-6">This form requires you to be logged in to view and submit responses securely.</p>
+          <Button onClick={() => navigate('/a/login?redirect=/form/'+id)} className="bg-[#0078d4] hover:bg-[#005a9e] text-white w-full font-semibold">Sign in to continue</Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#050505] text-zinc-200 font-sans pb-10">
-      {/* Compact Navbar */}
-     <nav className="sticky top-0 z-50 bg-[#0c0c0c] border-b border-zinc-800 px-4 py-2 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-[#0c0c0c] border-b border-zinc-800 px-4 py-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to={'/p'}><span className="font-bold text-md tracking-tight">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-                EM
-              </span>R<span className="text-white/30 font-normal ml-1.5">/ NITKKR</span>
+              EM
+            </span>R<span className="text-white/30 font-normal ml-1.5">/ NITKKR</span>
           </span></Link>
         </div>
-        {/* <div className="flex items-center gap-4 text-xs font-mono text-zinc-500">
-          <Link to={'/p'}><HomeIcon size={16}/></Link>
-        </div> */}
       </nav>
 
       <main className="max-w-3xl mx-auto mt-6 px-4">
-        {/* Progress Bar */}
-        <div className="mb-6 flex flex-col gap-1.5">
+        {/* Conditional Progress Bar */}
+        {form.sections.length > 1 && (
+          <div className="mb-6 flex flex-col gap-1.5">
             <div className="flex justify-between text-[10px] font-bold text-zinc-500 uppercase">
-                <span>Section {currentSectionIndex + 1} of {form.sections.length}</span>
-                <span>{Math.round(((currentSectionIndex + 1) / form.sections.length) * 100)}%</span>
+              <span>Section {currentSectionIndex + 1} of {form.sections.length}</span>
+              <span>{Math.round(((currentSectionIndex + 1) / form.sections.length) * 100)}%</span>
             </div>
             <div className="h-1 w-full bg-zinc-900 rounded-full"><div className="h-full bg-[#0078d4] transition-all" style={{ width: `${((currentSectionIndex + 1) / form.sections.length) * 100}%` }} /></div>
-        </div>
+          </div>
+        )}
 
         {isSubmitted ? (
           <div className="bg-[#0c0c0c] border border-zinc-800 rounded-md p-8 text-center">
@@ -296,66 +564,71 @@ export default function PublicForm() {
           </div>
         ) : (
           <div className="space-y-4">
-            
+
             {/* Top Header: Always displays Form Details, followed by specific Section Details */}
-            <div className="bg-[#0c0c0c] border border-zinc-800 border-t-2 border-t-[#0078d4] rounded-md p-5 shadow-sm">
-              
+            <div className="bg-[#0c0c0c] border border-zinc-800 border-t-2 border-t-[#0078d4] rounded-md shadow-sm overflow-hidden">
+              {form.coverPhoto && <img className='w-full' src={form.coverPhoto} />}
               {/* Form Level Title & Description */}
-              <h1 className="text-xl font-bold text-white tracking-tight">{form.title}</h1>
-              {form.description && (
-                <div className="mt-2 text-sm text-zinc-400 leading-snug">
-                  <MarkdownRenderer content={form.description} />
-                </div>
-              )}
+              <div className='p-5'>
+                <h1 className="text-xl font-bold text-white tracking-tight">{form.title}</h1>
+                {form.description && (
+                  <div className="mt-2 text-sm text-zinc-400 leading-snug">
+                    <MarkdownRenderer content={form.description} />
+                  </div>
+                )}
 
-              {/* Section Level Title & Description (if they exist) */}
-              {(form.sections[currentSectionIndex].title || form.sections[currentSectionIndex].description) && (
-                <div className="mt-5 pt-4 border-t border-zinc-800/50">
-                   {form.sections[currentSectionIndex].title && (
-                     <h2 className="text-lg font-semibold text-zinc-200">{form.sections[currentSectionIndex].title}</h2>
-                   )}
-                   {form.sections[currentSectionIndex].description && (
-                     <div className="mt-1.5 text-sm text-zinc-500 leading-snug">
-                       <MarkdownRenderer content={form.sections[currentSectionIndex].description} />
-                     </div>
-                   )}
-                </div>
-              )}
+                {/* Section Level Title & Description (if they exist) */}
+                {(form.sections[currentSectionIndex].title || form.sections[currentSectionIndex].description) && (
+                  <div className="mt-5 pt-4 border-t border-zinc-800/50">
+                    {form.sections[currentSectionIndex].title && (
+                      <h2 className="text-lg font-semibold text-zinc-200">{form.sections[currentSectionIndex].title}</h2>
+                    )}
+                    {form.sections[currentSectionIndex].description && (
+                      <div className="mt-1.5 text-sm text-zinc-500 leading-snug">
+                        <MarkdownRenderer content={form.sections[currentSectionIndex].description} />
+                      </div>
+                    )}
+                  </div>
+                )}
 
-              {/* Email Collection prominently at top if first section */}
-              {currentSectionIndex === 0 && form.settings.collectEmails !== 'DO_NOT_COLLECT' && (
-                <div className="mt-5 pt-4 border-t border-zinc-800/50">
-                  <label className="text-xs font-semibold text-zinc-300 mb-1.5 block flex items-center gap-1.5">
-                    <Info size={14} className="text-[#0078d4]"/> Institutional Email <span className="text-red-500">*</span>
-                  </label>
-                  <Input 
-                    value={respondentEmail} onChange={(e) => { setRespondentEmail(e.target.value); setFieldErrors({...fieldErrors, email: null}); }}
-                    className={cn("bg-[#0a0a0a] border-zinc-800 h-9 text-sm max-w-md", fieldErrors.email && "border-red-500")}
-                  />
-                  {fieldErrors.email && <p className="text-red-500 text-xs mt-1 font-medium">{fieldErrors.email}</p>}
-                </div>
-              )}
+                {/* Email Collection prominently at top if first section */}
+                {currentSectionIndex === 0 && form.settings.collectEmails !== 'DO_NOT_COLLECT' && (
+                  <div className="mt-5 pt-4 border-t border-zinc-800/50">
+                    <label className="text-xs font-semibold text-zinc-300 mb-1.5 flex items-center gap-1.5">
+                      <Info size={14} className="text-[#0078d4]" /> Institutional Email <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      value={respondentEmail} onChange={(e) => { setRespondentEmail(e.target.value); setFieldErrors({ ...fieldErrors, email: null }); }}
+                      disabled={form.settings.collectEmails === 'VERIFIED' && isAuthenticated}
+                      className={cn("bg-[#0a0a0a] border-zinc-800 h-9 text-sm max-w-md focus-visible:ring-[#0078d4]", fieldErrors.email && "border-red-500")}
+                    />
+                    {form.settings.collectEmails === 'VERIFIED' && isAuthenticated && (
+                      <p className="text-[10px] text-[#0078d4] mt-1.5 flex items-center"><ShieldCheck size={12} className="mr-1" /> Verified via login</p>
+                    )}
+                    {fieldErrors.email && <p className="text-red-500 text-xs mt-1 font-medium">{fieldErrors.email}</p>}
+                  </div>
+                )}
+              </div>
             </div>
-
             {/* Dense Questions Map */}
             {displayElements.map((el) => (
               <div key={el.id} className="bg-[#0c0c0c] border border-zinc-800 rounded-md p-5 shadow-sm">
-                
+
                 {/* Element Header */}
                 {!['IMAGE', 'TEXT_ONLY'].includes(el.type) && (
                   <div className="flex justify-between items-start mb-3 gap-4">
                     <div>
-                        <h3 className="text-sm font-semibold text-zinc-200 leading-snug">
-                            {el.question} {el.required && <span className="text-red-500">*</span>}
-                        </h3>
-                        {el.description && <p className="text-xs text-zinc-500 mt-1">{el.description}</p>}
+                      <h3 className="text-sm font-semibold text-zinc-200 leading-snug">
+                        {el.question} {el.required && <span className="text-red-500">*</span>}
+                      </h3>
+                      {el.description && <p className="text-xs text-zinc-500 mt-1">{el.description}</p>}
                     </div>
                     {el.points > 0 && form.settings.isQuiz && <span className="text-[10px] font-bold bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-400 border border-zinc-800 shrink-0">{el.points} PTS</span>}
                   </div>
                 )}
-                
+
                 {renderInput(el)}
-                
+
                 {fieldErrors[el.id] && (
                   <p className="text-xs text-red-400 mt-2 flex items-center gap-1 font-medium"><AlertCircle size={12} /> {fieldErrors[el.id]}</p>
                 )}
@@ -365,10 +638,10 @@ export default function PublicForm() {
             {/* Dense Footer Navigation */}
             <div className="flex items-center justify-between pt-4 pb-8">
               <Button variant="outline" onClick={handleBack} disabled={currentSectionIndex === 0} className="h-9 text-sm border-zinc-800 bg-transparent text-zinc-300 hover:bg-zinc-900 disabled:opacity-0">
-                <ChevronLeft size={16} className="mr-1"/> Back
+                <ChevronLeft size={16} className="mr-1" /> Back
               </Button>
               <Button onClick={currentSectionIndex === form.sections.length - 1 ? handleSubmit : handleNext} disabled={isSubmitting} className="h-9 text-sm bg-[#0078d4] hover:bg-[#005a9e] text-white font-semibold px-6 rounded">
-                {isSubmitting && <Loader2 className="animate-spin mr-2 w-4 h-4"/>}
+                {isSubmitting && <Loader2 className="animate-spin mr-2 w-4 h-4" />}
                 {currentSectionIndex === form.sections.length - 1 ? "Submit" : "Next"}
               </Button>
             </div>

@@ -54,7 +54,7 @@ const NotFoundPage = () => {
           <div className="pt-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#111111] border border-white/5 text-white/40 text-xs font-mono">
               <Search size={12} />
-              <span>https://emr.nitkkr.ac.in</span>
+              <span>https://emrnitkkr.com</span>
               <span className="text-white/20">/404</span>
             </div>
           </div>

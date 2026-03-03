@@ -6,6 +6,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import apiRoutes from './routes/apiRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 // Initialize App
 const app = express();
@@ -17,8 +18,6 @@ connectDB();
 // Middleware
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://your-frontend-domain.com',
-  'https://your-frontend-domain.com',
   "https://app.unibrik.com",
   "https://app2.unibrik.com"
 ];
@@ -38,6 +37,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 
 // Start Server

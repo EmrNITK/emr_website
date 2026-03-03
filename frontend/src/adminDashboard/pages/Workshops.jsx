@@ -236,7 +236,7 @@ const Workshops = () => {
                    {/* Cover Image */}
                    <div className="space-y-2">
                       <label className="text-xs font-bold text-zinc-500 uppercase">Cover Poster</label>
-                      <ImageUploader currentImage={formData.image} onUpload={(url) => setFormData({...formData, image: url})} />
+                      <ImageUploader currentMedia={formData.image} onUpload={(url) => setFormData({...formData, image: url})} />
                    </div>
 
                    {/* Gallery Manager */}

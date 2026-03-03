@@ -455,7 +455,7 @@ const EMRHomePage = () => {
                           <img
                             src={sp.logo}
                             alt={sp.name}
-                            className="h-20 object-contain mix-blend-multiply"
+                            className="h-20 object-contain "
                           />
                           <span className="flex justify-center items-center gap-1 text-xs font-bold text-white group-hover:translate-x-1 transition-transform pt-2">
                             {sp.name} <ArrowUpRight size={12} />

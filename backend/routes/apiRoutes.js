@@ -2,7 +2,7 @@ import express from 'express';
 import auth from '../middleware/auth.js';
 import * as publicCtrl from '../controllers/publicController.js';
 import * as genericCtrl from '../controllers/genericController.js';
-import { uploadImage } from '../controllers/uploadController.js';
+import { uploadFile } from '../controllers/uploadController.js';
 import uploadMiddleware from '../middleware/upload.js';
 import {
   createForm,
@@ -12,33 +12,34 @@ import {
   updateForm,
   deleteForm,
   submitFormResponse,
-  getFormResponses2
+  getFormResponses2,
+  searchUsersForAccess,
+  checkExistingSubmission
 } from '../controllers/formController.js';
-
+import * as teamCtrl from '../controllers/teamController.js';
 import * as responseController from '../controllers/responseController.js';
+import authRoutes from './authRoutes.js';
 
 const router = express.Router();
 
-// --- Auth Routes ---
-import authRoutes from './authRoutes.js';
 router.use('/', authRoutes);
 
-// --- Upload Route ---
-router.post('/upload', uploadMiddleware.single('file'), uploadImage);
+router.post('/upload', uploadMiddleware.single('file'), uploadFile);
 
-// --- Public Specific Routes ---
 router.get('/home-content', publicCtrl.getHomeContent);
 router.get('/gallery', publicCtrl.getGallery);
 router.get('/options', publicCtrl.getOptions);
-router.get('/team/years', publicCtrl.getTeamYears);
-router.get('/team', publicCtrl.getTeam);
 router.post('/options', auth, genericCtrl.createOption);
 
+router.get('/team/years', publicCtrl.getTeamYears);
+router.get('/team', teamCtrl.getTeam);
+router.get('/team/search-users', auth, teamCtrl.searchUsers);
+router.post('/team', auth, teamCtrl.createTeamMember);
+router.put('/team/:id', auth, teamCtrl.updateTeamMember);
 
-// -- Form--
+router.get('/responses/check/:id', checkExistingSubmission); 
 router.get('/forms/public/:id', getPublicForm); 
 router.post('/forms/public/:id', submitFormResponse); 
-
 router.route('/forms')
   .post(auth, createForm)
   .get(auth, getForms);
@@ -48,28 +49,17 @@ router.route('/forms/:id')
   .put(auth, updateForm)
   .delete(auth, deleteForm);
 
-// --- Generic CRUD Routes (Must be last to avoid collisions) ---
-router.get('/:type', publicCtrl.getAll ? publicCtrl.getAll : genericCtrl.getAll); // Re-use generic getter
+router.get('/responses/form/:id', auth, getFormResponses2);
+router.get('/forms/users/search', auth, searchUsersForAccess);
+router.get('/forms/:formId/responses', auth, responseController.getFormResponses);
+router.post('/forms/:formId/responses', auth, responseController.createBlankResponse);
+router.put('/responses/:responseId/answer', auth, responseController.updateAnswer);
+router.put('/responses/:responseId/core', auth, responseController.updateCoreField);
+router.delete('/responses/:responseId', auth, responseController.deleteResponse);
+
+router.get('/:type', publicCtrl.getAll ? publicCtrl.getAll : genericCtrl.getAll);
 router.post('/:type', auth, genericCtrl.createItem);
 router.put('/:type/:id', auth, genericCtrl.updateItem);
 router.delete('/:type/:id', auth, genericCtrl.deleteItem);
-
-router.get('/responses/form/:id', auth, getFormResponses2);
-
-// router.get('/forms/:id', auth, responseController.getFormById);
-
-// // Responses
-router.get('/forms/:formId/responses', auth, responseController.getFormResponses);
-// router.post('/forms/:formId/responses', auth, responseController.createBlankResponse);
-// router.put('/responses/:responseId/answer', auth, responseController.updateAnswer);
-// router.put('/responses/:responseId/custom', auth, responseController.updateCustomField);
-// router.delete('/responses/:responseId', auth, responseController.deleteResponse);
-
-// // Custom Columns
-// router.get('/forms/:formId/custom-columns', auth, responseController.getCustomColumns);
-// router.post('/forms/:formId/custom-columns', auth, responseController.addCustomColumn);
-// router.delete('/forms/:formId/custom-columns/:columnName', auth, responseController.deleteCustomColumn);
-
-
 
 export default router;

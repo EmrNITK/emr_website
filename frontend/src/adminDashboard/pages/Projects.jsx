@@ -283,7 +283,11 @@ const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
 
                 <div className="space-y-2">
                    <label className="text-xs font-bold text-zinc-500 uppercase">Cover Image</label>
-                   <ImageUploader currentImage={formData.image} onUpload={(url) => setFormData({...formData, image: url})} />
+                    <ImageUploader 
+                  currentMedia={formData.image} 
+                  mediaType={'image'} 
+                  onUpload={(url) => setFormData({ ...formData, image: url })} 
+                />
                 </div>
 
                 {/* Markdown Editor */}

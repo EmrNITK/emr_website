@@ -10,7 +10,7 @@ import {
     SlidersHorizontal, LayoutList, X, MoreVertical, GitBranch,
     ArrowRight, Copy, TextQuote, Shuffle, Save, Loader2, Users,
     Settings as SettingsIcon, ImagePlus, Shield, FileText, Eye, EyeOff,
-    Download, BarChart, PieChart, CheckCircle, XCircle,Check,
+    Download, BarChart, PieChart, CheckCircle, XCircle, Check,
     Sheet
 } from 'lucide-react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -41,7 +41,9 @@ export default function FormBuilder({ initialFormId = null }) {
     const [activeTab, setActiveTab] = useState('questions');
     const [isDarkMode, setIsDarkMode] = useState(true);
     const [activeDropdown, setActiveDropdown] = useState(null);
-
+    const [userSearchQuery, setUserSearchQuery] = useState('');
+    const [userSearchResults, setUserSearchResults] = useState([]);
+    const [isSearchingUsers, setIsSearchingUsers] = useState(false);
     const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
     const [tempSections, setTempSections] = useState([]);
 
@@ -76,12 +78,14 @@ export default function FormBuilder({ initialFormId = null }) {
                         correctAnswer: null,
                         validation: { regex: '', errorMessage: '', enabled: false },
                         conditions: [],
-                        fileRestrictions: { allowedExtensions: '', maxSizeMB: 10 }
+                        fileRestrictions: { allowedExtensions: '', maxSizeMB: 10 },
+                        shortInputType: "",
                     }
                 ]
             }
         ],
         settings: {
+            loginReq: false,
             isQuiz: false,
             releaseGrades: 'IMMEDIATELY',
             showMissedQuestions: true,
@@ -122,41 +126,64 @@ export default function FormBuilder({ initialFormId = null }) {
         fetchForm();
     }, [formId, API_URL]);
 
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(async () => {
+            if (userSearchQuery.length > 2) {
+                setIsSearchingUsers(true);
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/forms/users/search?q=${userSearchQuery}`, {
+                        headers: { Authorization: token },
+                        withCredentials: true
+                    });
+                    setUserSearchResults(res.data);
+                } catch (error) {
+                    toast.error("Failed to search users");
+                } finally {
+                    setIsSearchingUsers(false);
+                }
+            } else {
+                setUserSearchResults([]);
+            }
+        }, 500);
+        return () => clearTimeout(delayDebounceFn);
+    }, [userSearchQuery]);
+
     // --- Fetch responses with polling when responses tab is active ---
-  useEffect(() => {
-    let interval;
-    if (activeTab === 'responses' && formId) {
-        fetchResponses(true); // immediate fetch, silent
-        interval = setInterval(() => fetchResponses(true), 5000);
-    }
-    return () => clearInterval(interval);
-}, [activeTab, formId]);
+    useEffect(() => {
+        let interval;
+        if (activeTab === 'responses' && formId) {
+            fetchResponses(true); // immediate fetch, silent
+            interval = setInterval(() => fetchResponses(true), 5000);
+        }
+        return () => clearInterval(interval);
+    }, [activeTab, formId]);
 
     const fetchResponses = async (silent = false) => {
-    if (!silent) setLoadingResponses(true);
-    try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`${RESPONSES_API_URL}/form/${formId}`, {
-            headers: { Authorization: token }, withCredentials: true
-        });
-        let newResponses = res.data;
-        // Ensure newest first (if API doesn't guarantee order)
-        newResponses.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+        if (!silent) setLoadingResponses(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`${RESPONSES_API_URL}/form/${formId}`, {
+                headers: { Authorization: token }, withCredentials: true
+            });
+            let newResponses = res.data;
+            // Ensure newest first (if API doesn't guarantee order)
+            newResponses.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
 
-        const currentIds = new Set(responsesRef.current.map(r => r._id));
-        const freshResponses = newResponses.filter(r => !currentIds.has(r._id));
+            const currentIds = new Set(responsesRef.current.map(r => r._id));
+            const freshResponses = newResponses.filter(r => !currentIds.has(r._id));
 
-        if (freshResponses.length > 0) {
-            setResponses(prev => [...freshResponses, ...prev]);
-            setNewResponseCount(prev => prev + freshResponses.length);
-            toast.success(`${freshResponses.length} new response(s) received`, { icon: '📬' });
+            if (freshResponses.length > 0) {
+                setResponses(prev => [...freshResponses, ...prev]);
+                setNewResponseCount(prev => prev + freshResponses.length);
+                toast.success(`${freshResponses.length} new response(s) received`, { icon: '📬' });
+            }
+        } catch (err) {
+            toast.error("Failed to load responses");
+        } finally {
+            if (!silent) setLoadingResponses(false);
         }
-    } catch (err) {
-        toast.error("Failed to load responses");
-    } finally {
-        if (!silent) setLoadingResponses(false);
-    }
-};
+    };
 
     useEffect(() => {
         if (activeTab === 'responses') {
@@ -267,7 +294,8 @@ export default function FormBuilder({ initialFormId = null }) {
             correctAnswer: null,
             validation: { regex: '', errorMessage: '', enabled: false },
             conditions: [],
-            fileRestrictions: { allowedExtensions: '', maxSizeMB: 10 }
+            fileRestrictions: { allowedExtensions: '', maxSizeMB: 10 },
+            shortInputType: ""
         };
         setForm(prev => ({ ...prev, sections: prev.sections.map(s => s.id === sectionId ? { ...s, elements: [...s.elements, newElement] } : s) }));
     };
@@ -358,27 +386,27 @@ export default function FormBuilder({ initialFormId = null }) {
         link.download = `responses_${form.title.replace(/\s+/g, '_')}.csv`;
         link.click();
     };
-   const textiRef = useRef(null);
+    const textiRef = useRef(null);
 
-  const handleCopy = async () => {
-    const baseUrl = window.location.origin;
+    const handleCopy = async () => {
+        const baseUrl = window.location.origin;
 
-    try {
-      await navigator.clipboard.writeText(baseUrl+/form/+formId);
-      toast.success("Base URL copied!");
+        try {
+            await navigator.clipboard.writeText(baseUrl + /form/ + formId);
+            toast.success("Base URL copied!");
 
-      // Change text
-      textiRef.current.textContent = "Copied";
+            // Change text
+            textiRef.current.textContent = "Copied";
 
-      // Reset after 2 seconds
-      setTimeout(() => {
-        textiRef.current.textContent = "Copy Link";
-      }, 2000);
+            // Reset after 2 seconds
+            setTimeout(() => {
+                textiRef.current.textContent = "Copy Link";
+            }, 2000);
 
-    } catch {
-      toast.error("Failed to copy!");
-    }
-  };
+        } catch {
+            toast.error("Failed to copy!");
+        }
+    };
 
 
 
@@ -406,28 +434,29 @@ export default function FormBuilder({ initialFormId = null }) {
                                     {newResponseCount}
                                 </span>
                             )}
-                        </button>                        <button className={`font-semibold pb-1 flex items-center whitespace-nowrap ${activeTab === 'settings' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-white'}`} onClick={() => setActiveTab('settings')}><SettingsIcon size={18} className="mr-2" /> Settings</button>
+                        </button> <button className={`font-semibold pb-1 flex items-center whitespace-nowrap ${activeTab === 'settings' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-white'}`} onClick={() => setActiveTab('settings')}><SettingsIcon size={18} className="mr-2" /> Settings</button>
+                        <button className={`font-semibold pb-1 flex items-center whitespace-nowrap ${activeTab === 'access' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-white'}`} onClick={() => setActiveTab('access')}><Shield size={18} className="mr-2" /> Access</button>
                     </div>
                     <div className="flex items-center space-x-3">
                         {/* <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hidden sm:block">
                             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                         </button> */}
-                        
+
                         <button
                             onClick={saveForm} disabled={isSaving}
                             className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition-colors disabled:opacity-50"
                         >
                             {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                             <span className="hidden sm:inline">{formId ? 'Update Form' : 'Save Form'}</span>
-                            
-                        </button>{formId && <button
-      onClick={handleCopy}
-                                  className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition-colors disabled:opacity-50"
 
-    >
-      <Copy size={18} />
-      <span ref={textiRef}>Copy Link</span>
-    </button>}
+                        </button>{formId && <button
+                            onClick={handleCopy}
+                            className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition-colors disabled:opacity-50"
+
+                        >
+                            <Copy size={18} />
+                            <span ref={textiRef}>Copy Link</span>
+                        </button>}
                     </div>
                 </div>
 
@@ -452,7 +481,7 @@ export default function FormBuilder({ initialFormId = null }) {
                                 ) : (
                                     <div className="p-4 sm:p-8">
                                         <ImageUploader
-                                            currentImage={form.coverPhoto}
+                                            currentMedia={form.coverPhoto}
                                             onUpload={(url) => updateFormHeader('coverPhoto', url)}
                                         />
                                     </div>
@@ -524,7 +553,28 @@ export default function FormBuilder({ initialFormId = null }) {
                                                                 </>
                                                             )}
                                                             {el.type === 'IMAGE' && (
-                                                                <ImageUploader currentImage={el.imageUrl} onUpload={(url) => updateElement(section.id, el.id, 'imageUrl', url)} />
+                                                                <ImageUploader currentMedia={el.imageUrl} onUpload={(url) => updateElement(section.id, el.id, 'imageUrl', url)} />
+                                                            )}
+                                                            {(el.type === 'SHORT_TEXT') && (
+                                                                <div className="mt-4 p-4 bg-gray-50 dark:bg-zinc-800/50 rounded-lg space-y-4 border border-gray-200 dark:border-zinc-700">
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium mb-2 text-blue-600 dark:text-blue-400 flex items-center">
+                                                                            <Shield size={16} className="mr-2" /> Auto-Fill User Data Profile
+                                                                        </label>
+                                                                        <select
+                                                                            value={el.shortInputType || ''}
+                                                                            onChange={(e) => updateElement(section.id, el.id, 'shortInputType', e.target.value)}
+                                                                            className="w-full text-sm bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                                                                        >
+                                                                            <option value="">None (Standard Input)</option>
+                                                                            <option value="name">Full Name</option>
+                                                                            <option value="email">Account Email</option>
+                                                                            <option value="rollNo">Roll Number</option>
+                                                                            <option value="collegeEmail">College Email</option>
+                                                                            <option value="collegeName">College Name</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
                                                             )}
 
                                                             {/* Validation UI */}
@@ -718,7 +768,7 @@ export default function FormBuilder({ initialFormId = null }) {
                                                                                 {activeImageOptionId === opt.id && (
                                                                                     <div className="mt-2">
                                                                                         <ImageUploader
-                                                                                            currentImage={opt.image}
+                                                                                            currentMedia={opt.image}
                                                                                             onUpload={(url) => {
                                                                                                 updateOption(section.id, el.id, opt.id, 'image', url);
                                                                                                 setActiveImageOptionId(null);
@@ -873,10 +923,10 @@ export default function FormBuilder({ initialFormId = null }) {
                                 >
                                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.settings.acceptingResponses ? 'translate-x-6' : 'translate-x-1'}`} />
                                 </button>
-                                <Link to={'/sheets/'+formId} className="p-2 mr-2 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors">
-                                                                            <Sheet size={18} />
-                                                                        </Link>
-                                                                        
+                                <Link to={'/sheets/' + formId} className="p-2 mr-2 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors">
+                                    <Sheet size={18} />
+                                </Link>
+
 
 
                             </div>
@@ -1116,6 +1166,97 @@ export default function FormBuilder({ initialFormId = null }) {
                                     <label className="block text-sm font-medium mb-1">Confirmation message</label>
                                     <RichMarkdownEditor initialValue={form.settings.confirmationMessage} onChange={(val) => updateSettings('confirmationMessage', val)} />
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'access' && (
+                    <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-zinc-800 space-y-8">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Access Management</h2>
+
+                        <div className="flex items-center justify-between p-6 border rounded-xl dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800/50">
+                            <div>
+                                <h3 className="font-semibold text-gray-900 dark:text-white">Form Login Required</h3>
+                                <p className="text-sm text-gray-500 dark:text-zinc-400">Require users to log in before they can view or submit this form.</p>
+                            </div>
+                            <button
+                                onClick={() => updateSettings('loginReq', !form.settings.loginReq)}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.settings.loginReq ? 'bg-blue-600' : 'bg-gray-300 dark:bg-zinc-700'}`}
+                            >
+                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.settings.loginReq ? 'translate-x-6' : 'translate-x-1'}`} />
+                            </button>
+                        </div>
+                        {form.settings.loginReq && (
+                            <div className="flex items-center justify-between p-6 border rounded-xl dark:border-zinc-700 bg-[#0078d4]/5 border-[#0078d4]/30 mt-4">
+                                <div>
+                                    <h3 className="font-semibold text-[#0078d4] dark:text-[#4cc2ff]">Restrict to NIT Kurukshetra</h3>
+                                    <p className="text-sm text-gray-600 dark:text-zinc-400">Only allow users with an @nitkkr.ac.in email address to access this form.</p>
+                                </div>
+                                <button
+                                    onClick={() => updateSettings('requireNitkkrDomain', !form.settings.requireNitkkrDomain)}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.settings.requireNitkkrDomain ? 'bg-[#0078d4]' : 'bg-gray-300 dark:bg-zinc-700'}`}
+                                >
+                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.settings.requireNitkkrDomain ? 'translate-x-6' : 'translate-x-1'}`} />
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="space-y-4">
+                            <h3 className="font-semibold text-gray-900 dark:text-white">Share Response Sheet Access</h3>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search users by name, email, or roll no..."
+                                    value={userSearchQuery}
+                                    onChange={(e) => setUserSearchQuery(e.target.value)}
+                                    className="w-full p-3 border rounded-xl dark:bg-zinc-900 dark:border-zinc-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                                />
+
+                                {isSearchingUsers && (
+                                    <div className="absolute right-4 top-3 text-gray-400">
+                                        <Loader2 size={20} className="animate-spin" />
+                                    </div>
+                                )}
+
+                                {userSearchResults.length > 0 && (
+                                    <div className="absolute w-full mt-2 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
+                                        {userSearchResults.map(u => (
+                                            <div key={u._id} className="p-3 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer flex justify-between items-center"
+                                                onClick={() => {
+                                                    if (!(form.collaborators || []).find(c => c.user === u._id)) {
+                                                        updateFormHeader('collaborators', [...(form.collaborators || []), { user: u._id, name: u.name, email: u.email, profilePhoto: u.profilePhoto }]);
+                                                    }
+                                                    setUserSearchQuery('');
+                                                    setUserSearchResults([]);
+                                                }}>
+                                                <div className="flex items-center space-x-3">
+                                                    {u.profilePhoto ? <img src={u.profilePhoto} className="w-8 h-8 rounded-full object-cover" /> : <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">{u.name.charAt(0)}</div>}
+                                                    <div>
+                                                        <p className="font-medium text-sm text-gray-900 dark:text-white">{u.name}</p>
+                                                        <p className="text-xs text-gray-500">{u.email} {u.rollNo ? `• ${u.rollNo}` : ''}</p>
+                                                    </div>
+                                                </div>
+                                                <PlusCircle size={18} className="text-blue-500" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="mt-6 space-y-2">
+                                {(form.collaborators || []).map((collab, idx) => (
+                                    <div key={idx} className="flex justify-between items-center p-3 border border-gray-200 rounded-xl dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                                        <div className="flex items-center space-x-3">
+                                            {collab.profilePhoto ? <img src={collab.profilePhoto} className="w-8 h-8 rounded-full object-cover" /> : <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">{collab.name?.charAt(0)}</div>}
+                                            <div>
+                                                <p className="font-medium text-sm text-gray-900 dark:text-white">{collab.name}</p>
+                                                <p className="text-xs text-gray-500">{collab.email}</p>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => updateFormHeader('collaborators', form.collaborators.filter(c => c.user !== collab.user))} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg transition-colors"><X size={18} /></button>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>

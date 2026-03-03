@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/local-auth": "^3.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cloudinary": "^2.9.0",
@@ -20,6 +21,7 @@
     "dotenv": "^16.6.1",
     "express": "^4.22.1",
     "express-validator": "^7.2.0",
+    "googleapis": "^171.4.0",
     "jsonwebtoken": "^9.0.3",
     "method-override": "^3.0.0",
     "mongoose": "^8.21.1",

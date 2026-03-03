@@ -1,8 +1,9 @@
 // pages/AdminDash.jsx
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import { ShieldAlert } from "lucide-react";
 
 // Import Shared Components
 import Sidebar from './components/Sidebar'; // Check your relative paths
@@ -20,16 +21,23 @@ import FormDashboard from './pages/FormDashboard';
 
 const AdminDash = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
   // 1. Check if Cookie is valid on page load
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await axios.get(`${API_URL}/check-auth`, { withCredentials: true });
-        setIsAuthenticated(true);
+        const res = await axios.get(API_URL+'/auth/me');
+        // await axios.get(`${API_URL}/check-auth`, { withCredentials: true });
+        if (res.data) {
+          setIsAuthenticated(true);
+          if (res.data.userType === 'admin' || res.data.userType === 'super-admin') {
+            setIsAdmin(true)
+          }
+        }
       } catch (err) {
         setIsAuthenticated(false);
       } finally {
@@ -38,7 +46,6 @@ const AdminDash = () => {
     };
     checkAuth();
   }, [API_URL]);
-
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
   };
@@ -56,7 +63,29 @@ const AdminDash = () => {
 
   // If not authenticated, show Login
   if (!isAuthenticated) {
-    return <Login setToken={handleLoginSuccess} />;
+    navigate('/a/login?redirect=/admin');
+  }
+   if (!isAdmin) {
+    return (<div className="flex items-center justify-center min-h-screen bg-gray-900/50 px-4">
+      <div className="bg-gray-900 shadow-xl rounded-2xl p-8 max-w-md w-full text-center text-white">
+        
+        <div className="flex justify-center mb-4">
+          <div className="bg-red-400 p-4 rounded-full">
+            <ShieldAlert className="w-12 h-12 text-red-100" />
+          </div>
+        </div>
+
+        <h1 className="text-2xl font-semibold text-gray-200 mb-2">
+          Access Denied
+        </h1>
+
+        <p className="text-gray-400">
+          You don't have access to the administration panel.
+          Please contact the administrator if you believe this is a mistake.
+        </p>
+
+      </div>
+    </div>)
   }
 
   return (
@@ -65,7 +94,7 @@ const AdminDash = () => {
       <Toaster position="bottom-right" toastOptions={{ style: { background: '#333', color: '#fff' } }} />
       <div className="w-full">
         <Routes>
-          <Route path="/" element={<Navigate to="/admin/workshops" />} />
+          <Route path="/" element={<Navigate to="/admin/forms" />} />
           
           {/* Admin Routes */}
           <Route path="/workshops" element={<Workshops />} />

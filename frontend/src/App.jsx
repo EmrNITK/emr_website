@@ -18,6 +18,7 @@ import NavPage from './pages/page';
 import NotFoundPage from './components/NotFoundPage';
 import PublicForm from './forms/page';
 import ResponseTable from './sheets/ResponseTable';
+import AccountRouter from './auth/page';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,10 @@ function App() {
               <AdminDash />
             </ProtectedRoute>
           }
+        />
+        <Route
+          path="/a/*"
+          element={<AccountRouter />}
         />
         <Route path="/sheets/:formId" element={<ResponseTable />}/>
         <Route path="/form/:id" element={<PublicForm />}/>

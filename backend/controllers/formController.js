@@ -1,6 +1,6 @@
 import Form from '../models/Form.js'; // Adjust path to your model
 import Response from '../models/Response.js';
-
+import User from '../models/User.js';
 
 
 export const submitFormResponse = async (req, res) => {
@@ -16,8 +16,6 @@ export const submitFormResponse = async (req, res) => {
     if (!form.settings.acceptingResponses) {
       return res.status(403).json({ message: "This form is no longer accepting responses." });
     }
-
-    // Optional: limit to one response per user
     if (form.settings.limitToOneResponse && req.user) {
       const existing = await Response.findOne({ formId, respondentEmail: req.user.email });
       if (existing) {
@@ -96,13 +94,14 @@ export const submitFormResponse = async (req, res) => {
 // @access  Private
 export const createForm = async (req, res) => {
   try {
-    const { title, description, settings, sections } = req.body;
+    const { title, description, settings, sections, collaborators } = req.body;
 
     const newForm = new Form({
       title,
       description,
       settings,
       sections,
+      collaborators,
       userId: req.user.id // Assuming your auth middleware sets req.user
     });
 
@@ -253,4 +252,33 @@ export const deleteResponse = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
+};
+
+export const searchUsersForAccess = async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) return res.status(200).json([]);
+    
+    const regex = new RegExp(q, 'i');
+    const users = await User.find({
+      $or: [{ name: regex }, { rollNo: regex }, { email: regex }]
+    })
+      .limit(20)
+      .select('name email rollNo profilePhoto');
+      
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error searching users" });
+  }
+};
+export const checkExistingSubmission = async (req, res) => {
+    try {
+        const { formId } = req.params;
+        // Check if the current authenticated user has a response for this form
+        const existingResponse = await Response.findOne({ formId, userId: req.user.id });
+        
+        res.status(200).json({ hasSubmitted: !!existingResponse });
+    } catch (error) {
+        res.status(500).json({ message: "Error checking submission status" });
+    }
 };

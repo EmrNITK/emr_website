@@ -8,11 +8,14 @@ const AnswerSchema = new mongoose.Schema({
 
 const ResponseSchema = new mongoose.Schema({
   formId: { type: mongoose.Schema.Types.ObjectId, ref: 'Form', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // NEW: Track logged-in user
   submittedAt: { type: Date, default: Date.now },
   respondentEmail: { type: String, default: null },
   answers: [AnswerSchema],
   totalScore: { type: Number, default: 0 },
-  maxScore: { type: Number, default: 0 }
+  maxScore: { type: Number, default: 0 },
+  remark: {type: String, default: ''},
+  color: {type: String, default: 'no-color'},
 }, { timestamps: true });
 
 export default mongoose.model('Response', ResponseSchema);

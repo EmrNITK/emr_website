@@ -1,5 +1,7 @@
 // In your backend controller file
-import { Workshop, Event, Project, Gallery, Sponsor, GalleryOption, Team } from '../models/index.js';
+import { Workshop, Event, Project, Gallery, Sponsor, GalleryOption } from '../models/index.js';
+import Team from '../models/Team.js';
+
 
 export const getHomeContent = async (req, res) => {
   try {
@@ -64,12 +66,12 @@ export const getTeamYears = async (req, res) => {
   } catch (err) { res.status(500).json({ error: "Failed to fetch years" }); }
 };
 
-export const getTeam = async (req, res) => {
-  const { year } = req.query;
-  let query = {};
-  if (year) query.year = parseInt(year);
-  try {
-    const items = await Team.find(query).sort({ rank: 1, createdAt: -1 });
-    res.json(items);
-  } catch (err) { res.status(500).send("Server Error"); }
-};
+// export const getTeam = async (req, res) => {
+//   const { year } = req.query;
+//   let query = {};
+//   if (year) query.year = parseInt(year);
+//   try {
+//     const items = await Team.find(query).sort({ rank: 1, createdAt: -1 });
+//     res.json(items);
+//   } catch (err) { res.status(500).send("Server Error"); }
+// };

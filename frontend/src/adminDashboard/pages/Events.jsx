@@ -196,7 +196,7 @@ const Events = () => {
                     </div>
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-zinc-500 uppercase">Cover Poster</label>
-                        <ImageUploader currentImage={formData.image || formData.posterUrl} onUpload={(url) => setFormData({...formData, image: url, posterUrl: url})} />
+                        <ImageUploader currentMedia={formData.image || formData.posterUrl} onUpload={(url) => setFormData({...formData, image: url, posterUrl: url})} />
                     </div>
                 </div>
 
