@@ -20,7 +20,7 @@ const Sidebar = ({ logout }) => {
       });
       
       logout(); 
-      navigate('/login');
+      navigate('/a/login');
       
     } catch (err) {
       console.error("Logout Error:", err);
