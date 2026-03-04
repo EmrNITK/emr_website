@@ -1,7 +1,7 @@
 import Form from '../models/Form.js'; // Adjust path to your model
 import Response from '../models/Response.js';
 import User from '../models/User.js';
-
+import AccessRequest from '../models/AccessRequest.js';
 
 export const submitFormResponse = async (req, res) => {
   try {
@@ -80,8 +80,8 @@ export const submitFormResponse = async (req, res) => {
 
     await newResponse.save();
 
-    res.status(201).json({ 
-      message: form.settings.confirmationMessage || "Your response has been recorded." 
+    res.status(201).json({
+      message: form.settings.confirmationMessage || "Your response has been recorded."
     });
   } catch (error) {
     console.error("Error submitting response:", error);
@@ -116,46 +116,16 @@ export const createForm = async (req, res) => {
 // @desc    Get all forms for the logged-in user (For the Dashboard)
 // @route   GET /api/forms
 // @access  Private
-export const getForms = async (req, res) => {
-  try {
-    // We use .select() to only grab the fields needed for a list view to save bandwidth
-    const forms = await Form.find({ userId: req.user.id })
-                            .select('title description createdAt updatedAt settings.acceptingResponses')
-                            .sort({ updatedAt: -1 });
-    
-    res.status(200).json(forms);
-  } catch (error) {
-    res.status(500).json({ message: "Server error fetching forms" });
-  }
-};
-
 // @desc    Get a single form by ID (For the Builder)
 // @route   GET /api/forms/:id
 // @access  Private
-export const getFormById = async (req, res) => {
-  try {
-    const form = await Form.findOne({ _id: req.params.id, userId: req.user.id });
-    
-    if (!form) {
-      return res.status(404).json({ message: "Form not found or unauthorized" });
-    }
-
-    res.status(200).json(form);
-  } catch (error) {
-    if (error.kind === 'ObjectId') {
-      return res.status(404).json({ message: "Form not found" });
-    }
-    res.status(500).json({ message: "Server error fetching form" });
-  }
-};
-
 // @desc    Get a public form for responding (No Auth Required)
 // @route   GET /api/forms/public/:id
 // @access  Public
 export const getPublicForm = async (req, res) => {
   try {
     const form = await Form.findById(req.params.id);
-    
+
     if (!form) {
       return res.status(404).json({ message: "Form not found" });
     }
@@ -183,9 +153,9 @@ export const updateForm = async (req, res) => {
     // By passing req.body, Mongoose will completely overwrite the 'sections' array,
     // which handles all the drag-and-drop reordering natively.
     const updatedForm = await Form.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.id }, 
-      req.body, 
-      { new: true, runValidators: true } 
+      { _id: req.params.id, userId: req.user.id },
+      req.body,
+      { new: true, runValidators: true }
     );
 
     if (!updatedForm) {
@@ -216,25 +186,6 @@ export const deleteForm = async (req, res) => {
   }
 };
 
-export const getFormResponses2 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Optional: check if the user owns the form
-    const form = await Form.findOne({ _id: id });
-    // console.log(form)
-    if (!form) {
-      return res.status(404).json({ message: "Form not found or unauthorized" });
-    }
-
-    const responses = await Response.find({formId: id }).sort({ submittedAt: -1 });
-    res.status(200).json(responses);
-  } catch (error) {
-    console.error("Error fetching responses:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 export const deleteResponse = async (req, res) => {
   try {
     const { id } = req.params;
@@ -254,31 +205,127 @@ export const deleteResponse = async (req, res) => {
   }
 };
 
+
+// @desc    Get all forms for the logged-in user (with collaboration)
+export const getForms = async (req, res) => {
+  try {
+    const forms = await Form.find({
+      $or: [
+        { userId: req.user.id },
+        { 'collaborators.user': req.user.id }
+      ]
+    })
+      .select('title description createdAt updatedAt settings.acceptingResponses')
+      .sort({ updatedAt: -1 });
+    res.status(200).json(forms);
+  } catch (error) {
+    res.status(500).json({ message: "Server error fetching forms" });
+  }
+};
+
+// @desc    Get a single form by ID (check ownership/collaboration)
+export const getFormById = async (req, res) => {
+  try {
+    const form = await Form.findOne({
+      _id: req.params.id,
+      $or: [
+        { userId: req.user.id },
+        { 'collaborators.user': req.user.id }
+      ]
+    });
+    if (!form) return res.status(404).json({ message: "Form not found" });
+    res.status(200).json(form);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc    Check if user already submitted (fixed param)
+export const checkExistingSubmission = async (req, res) => {
+  try {
+    const { formId } = req.params; // now matches route
+    const existing = await Response.findOne({ formId, respondentEmail: req.user.email });
+    res.status(200).json({ hasSubmitted: !!existing });
+  } catch (error) {
+    res.status(500).json({ message: "Error checking submission" });
+  }
+};
+
+// @desc    Get responses for a form (with ownership check)
+export const getFormResponses2 = async (req, res) => {
+  try {
+    const form = await Form.findOne({
+      _id: req.params.id,
+      $or: [
+        { userId: req.user.id },
+        { 'collaborators.user': req.user.id }
+      ]
+    });
+    if (!form) return res.status(404).json({ message: "Form not found" });
+
+    const responses = await Response.find({ formId: req.params.id }).sort({ submittedAt: -1 });
+    res.status(200).json(responses);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc    Get pending access requests (only for owner/collaborators)
+export const getAccessRequests = async (req, res) => {
+  try {
+    const form = await Form.findOne({
+      _id: req.params.id,
+      $or: [
+        { userId: req.user.id },
+        { 'collaborators.user': req.user.id }
+      ]
+    });
+    if (!form) return res.status(404).json({ message: "Form not found" });
+
+    const requests = await AccessRequest.find({ formId: req.params.id })
+      .populate('userId', 'name email profilePhoto');
+    res.status(200).json(requests);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc    Delete access request (only for owner/collaborators)
+export const deleteAccessRequest = async (req, res) => {
+  try {
+    const request = await AccessRequest.findById(req.params.requestId);
+    if (!request) return res.status(404).json({ message: "Request not found" });
+
+    const form = await Form.findOne({
+      _id: request.formId,
+      $or: [
+        { userId: req.user.id },
+        { 'collaborators.user': req.user.id }
+      ]
+    });
+    if (!form) return res.status(403).json({ message: "Unauthorized" });
+
+    await request.deleteOne();
+    res.status(200).json({ message: "Request deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc    Search users (now protected)
 export const searchUsersForAccess = async (req, res) => {
   try {
     const { q } = req.query;
-    if (!q) return res.status(200).json([]);
-    
-    const regex = new RegExp(q, 'i');
+    if (!q) return res.json([]);
     const users = await User.find({
-      $or: [{ name: regex }, { rollNo: regex }, { email: regex }]
-    })
-      .limit(20)
-      .select('name email rollNo profilePhoto');
-      
-    res.status(200).json(users);
+      $or: [
+        { name: new RegExp(q, 'i') },
+        { email: new RegExp(q, 'i') },
+        { rollNo: new RegExp(q, 'i') }
+      ]
+    }).limit(20).select('name email rollNo profilePhoto');
+    res.json(users);
   } catch (error) {
-    res.status(500).json({ message: "Server error searching users" });
+    res.status(500).json({ message: "Server error" });
   }
-};
-export const checkExistingSubmission = async (req, res) => {
-    try {
-        const { formId } = req.params;
-        // Check if the current authenticated user has a response for this form
-        const existingResponse = await Response.findOne({ formId, userId: req.user.id });
-        
-        res.status(200).json({ hasSubmitted: !!existingResponse });
-    } catch (error) {
-        res.status(500).json({ message: "Error checking submission status" });
-    }
 };

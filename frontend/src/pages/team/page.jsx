@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Linkedin, Github, Instagram, User, Terminal, Zap, ChevronDown, Calendar, Check } from 'lucide-react';
+import { Linkedin, Github, Instagram, User, Terminal, Zap, ChevronDown, Calendar, Check, Edit } from 'lucide-react';
 import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
+import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 // Color Constants
 const COLORS = {
@@ -125,6 +127,7 @@ const TeamPage = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const { user, isLoading } = useAuth();
   
   const membersCache = useRef({});
   const dropdownRef = useRef(null);
@@ -296,6 +299,11 @@ const TeamPage = () => {
           )}
         </div>
       </div>
+      {!isLoading && user && (user.userType === "admin" || user.userType === "super-admin") && (
+              <Link to={'/admin/team'} className="fixed bottom-6 right-6 h-12 w-12 bg-blue-800 text-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition z-[100]">
+                <Edit size={18} />
+              </Link>
+            )}
     </div>
   );
 };

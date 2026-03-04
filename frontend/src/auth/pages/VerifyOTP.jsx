@@ -56,54 +56,73 @@ export default function VerifyOTP() {
   if (!email) return null;
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-black bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px]">
-      <Card className="w-full max-w-md bg-zinc-950 border-zinc-800 shadow-2xl">
-        <CardHeader className="space-y-2 text-center pb-6">
-          <CardTitle className="text-3xl font-bold tracking-tight text-zinc-100">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] relative overflow-hidden">
+      
+      <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
+        <div 
+          className="absolute inset-0 bg-[linear-gradient(to_right,#51b74915_1px,transparent_1px),linear-gradient(to_bottom,#51b74915_1px,transparent_1px)] bg-[size:40px_40px]"
+          style={{
+            maskImage: "radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%)"
+          }}
+        />
+      </div>
+
+      <Card className="w-full max-w-md bg-[#111111] border-white/5 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative z-10 rounded-xl">
+        <CardHeader className="space-y-3 text-center pb-6 pt-8">
+          <div className="flex justify-center mb-2">
+            <span className="font-bold text-lg tracking-tight flex text-white">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
+                  EM
+                </span>
+                R
+              </span>
+          </div>
+          <CardTitle className="text-3xl font-bold tracking-tight text-white">
             Verify your email
           </CardTitle>
-          <CardDescription className="text-zinc-400 text-base">
-            We've sent a code to <span className="font-semibold text-zinc-300">{email}</span>
+          <CardDescription className="text-white/60 text-base">
+            We've sent a code to <span className="font-semibold text-white/90">{email}</span>
           </CardDescription>
         </CardHeader>
         
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-5">
+        <form onSubmit={handleSubmit} className="px-6 pb-6">
+          <CardContent className="space-y-5 p-0 mb-6">
             {error && (
-              <Alert variant="destructive" className="bg-red-950/50 border-red-900/50 text-red-400">
-                <AlertCircle className="h-4 w-4" />
+              <Alert className="bg-red-500/10 border-red-500/30 text-red-400">
+                <AlertCircle className="h-4 w-4 stroke-red-400" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="otp" className="text-zinc-300">One-Time Password</Label>
+              <Label htmlFor="otp" className="text-white/90 font-semibold">One-Time Password</Label>
               <Input 
                 id="otp"
                 type="text" 
                 required 
                 maxLength={6}
                 placeholder="000000"
-                className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-14 text-center text-xl tracking-[0.5em] font-mono"
+                className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-14 text-center text-xl tracking-[0.5em] font-mono rounded-lg transition-all"
                 onChange={e => setOtp(e.target.value)}
               />
             </div>
           </CardContent>
           
-          <CardFooter className="flex flex-col space-y-5 pt-2">
+          <CardFooter className="flex flex-col space-y-5 p-0 pt-2">
             <Button 
               type="submit" 
               disabled={isLoading || otp.length < 6}
-              className="w-full bg-[#51b749] hover:bg-[#13703a] text-white transition-colors h-12 text-lg font-medium disabled:opacity-50 disabled:bg-[#51b749]"
+              className="w-full bg-[#51b749]/80 hover:bg-[#38984c] disabled:opacity-50 disabled:shadow-none text-white shadow-[0_0_20px_-5px_rgba(19,112,58,0.5)] transition-all active:scale-95 border-none h-12 text-lg font-medium rounded-lg"
             >
               {isLoading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
               {isLoading ? 'Verifying...' : 'Verify OTP'}
             </Button>
             
-            <div className="text-center text-sm text-zinc-400">
+            <div className="text-center text-sm text-white/60">
               <Link 
                 to={"/a/register" + redirectQuery} 
-                className="inline-flex items-center font-semibold text-[#51b749] hover:text-[#13703a] hover:underline transition-colors"
+                className="inline-flex items-center font-semibold text-[#51b749] hover:text-[#38984c] hover:underline transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to registration

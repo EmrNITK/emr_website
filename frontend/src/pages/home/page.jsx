@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   Zap, Calendar, Image as ImageIcon, ChevronRight, Terminal,
-  CircuitBoard, School, ExternalLink, ArrowRight, ArrowUpRight
+  CircuitBoard, School, ExternalLink, ArrowRight, ArrowUpRight, Edit
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { BackgroundPaths } from "@/components/ui/background-paths"
 import { Badge } from '@/components/ui/badge';
-
+import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
 // --- Configuration ---
 const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
@@ -66,9 +67,9 @@ const SmartImage = ({ src, alt, className = "" }) => (
 
 const SectionHeader = ({ title, subtitle }) => (
   <div className="flex flex-col items-center justify-center mb-12 text-center space-y-1 overflow-hidden">
-    
+
     {/* Subtitle: Fades and slides down slightly */}
-    <motion.span 
+    <motion.span
       initial={{ opacity: 0, y: -10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -79,7 +80,7 @@ const SectionHeader = ({ title, subtitle }) => (
     </motion.span>
 
     {/* Title: Fades and slides up */}
-    <motion.h2 
+    <motion.h2
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -90,14 +91,14 @@ const SectionHeader = ({ title, subtitle }) => (
     </motion.h2>
 
     {/* Decorative Line: Expands outward from the center */}
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.7, delay: 0.3, ease: "anticipate" }}
       className="w-24 h-1 bg-gradient-to-r from-transparent via-[#51b749]/80 to-transparent rounded-full mt-6"
     />
-    
+
   </div>
 );
 
@@ -107,11 +108,11 @@ const SeeMore = ({ sectionName }) => {
 
   return (
     <div className="mt-12 flex justify-center">
-      <a href={link.path}>
+      <Link to={link.path}>
         <Button variant="bordered">
           View All {sectionName} <ArrowRight size={16} />
         </Button>
-      </a>
+      </Link>
     </div>
   );
 };
@@ -189,16 +190,16 @@ const PageSkeleton = () => (
 
 // --- Main Page ---
 
+// --- Main Page ---
+
 const EMRHomePage = () => {
   const [data, setData] = useState({ workshops: [], events: [], projects: [], gallery: [], team: [] });
   const [loading, setLoading] = useState(true);
-
+  const { user, isLoading } = useAuth();
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Simulated delay for testing skeleton (Remove setTimeout in production)
-        // await new Promise(resolve => setTimeout(resolve, 2000));
-
         const res = await axios.get(`${API_URL}/home-content`);
         setData(res.data);
       } catch (err) {
@@ -213,25 +214,23 @@ const EMRHomePage = () => {
   if (loading) return <PageSkeleton />;
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] overflow-x-hidden">
-      {/*  Diagonal Cross Grid Top Background */}
+    <div className="relative min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] overflow-x-hidden">
+      
+      {/* BackgroundPaths Component */}
       <BackgroundPaths title="Background Paths" />
-      {/* <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-        linear-gradient(45deg, transparent 47%, #1a1a1a 47%, #1a1a1a 53%, transparent 53%),
-        linear-gradient(-45deg, transparent 47%, #1a1a1a 47%, #1a1a1a 53%, transparent 53%)
-      `,
-          backgroundSize: "200px 200px",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
-          maskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
-        }}
-      /> */}
-      {/* Your Content/Components */}
+      
+      {/* Sleek Grid Background */}
+      {/* <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
+        <div 
+          className="absolute inset-0 bg-[linear-gradient(to_right,#51b74915_1px,transparent_1px),linear-gradient(to_bottom,#51b74915_1px,transparent_1px)] bg-[size:40px_40px]"
+          style={{
+            maskImage: "radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%)"
+          }}
+        />
+      </div> */}
 
+      {/* Main Content */}
       <main className="relative z-10 pt-24 pb-12 space-y-16 md:space-y-20">
 
         {/* --- HERO SECTION (Centered) --- */}
@@ -240,17 +239,13 @@ const EMRHomePage = () => {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             className="space-y-8 flex flex-col items-center"
           >
-            {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#51b749]/20 bg-[#13703a]/20 text-[#51b749] text-xs font-mono uppercase tracking-widest">
-              <span className="w-2 h-2 rounded-full bg-[#51b749] animate-pulse shadow-[0_0_10px_rgba(81,183,73,0.8)]" />
-              System Online
-            </div> */}
             <Badge
-  variant="outline"
-  className="group flex w-fit cursor-default items-center gap-1.5 rounded-full border-white/30 bg-white/5 px-3 py-1 text-white/70 backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:border-white/70 hover:bg-white/10 hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]"
->
-  <School className="size-3.5 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:scale-110" />
-  NIT Kurukshetra
-</Badge>
+              variant="outline"
+              className="group flex w-fit cursor-default items-center gap-1.5 rounded-full border-white/30 bg-white/5 px-3 py-1 text-white/70 backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:border-white/70 hover:bg-white/10 hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]"
+            >
+              <School className="size-3.5 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:scale-110" />
+              NIT Kurukshetra
+            </Badge>
 
             <h1 className="text-5xl md:text-8xl font-bold text-white tracking-tighter">
               Forging the <br />
@@ -270,8 +265,6 @@ const EMRHomePage = () => {
             </div>
           </motion.div>
         </section>
-
-
 
         {/* --- WORKSHOPS (Centered Grid) --- */}
         {data.workshops.length > 0 && (
@@ -297,10 +290,10 @@ const EMRHomePage = () => {
                       {ws.description}
                     </p>
                     {(ws.regLink && ws.section === 'upcoming') && (
-                      <a href={ws.regLink} target="_blank" rel="noreferrer" className="mt-auto w-full">                        <Button>Register Now <ArrowRight size={16} /></Button>
+                      <a href={ws.regLink} target="_blank" rel="noreferrer" className="mt-auto w-full">                        
+                        <Button>Register Now <ArrowRight size={16} /></Button>
                       </a>
                     )}
-
                   </div>
                 </Card>
               ))}
@@ -421,9 +414,10 @@ const EMRHomePage = () => {
             <SeeMore sectionName="Gallery" />
           </section>
         )}
+        
+        {/* --- SPONSORS --- */}
         {data.sponsor && (
           <section className="max-w-7xl mx-auto px-6 py-12 relative">
-            {/* Background decoration */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#13703a]/10 to-transparent blur-3xl -z-10" />
 
             <div className="text-center mb-6">
@@ -436,9 +430,6 @@ const EMRHomePage = () => {
               <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#51b749]/50 to-transparent rounded-full mt-2 mx-auto" />
             </div>
 
-
-
-            {/* Sponsor Grid - If you want to show multiple recent sponsors */}
             {data.sponsor && data.sponsor.length > 0 && (
               <div className="mt-4">
                 <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
@@ -471,6 +462,13 @@ const EMRHomePage = () => {
         )}
 
       </main>
+      
+      {/* Admin Button */}
+      {!isLoading && user && (user.userType === "admin" || user.userType === "super-admin") && (
+        <Link to={'/admin/'} className="fixed bottom-6 right-6 h-12 w-12 bg-blue-800 text-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition z-[100]">
+          <Edit size={18} />
+        </Link>
+      )}
     </div>
   );
 };

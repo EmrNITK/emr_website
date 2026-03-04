@@ -120,28 +120,47 @@ export default function DetailsForm() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-black bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px]">
-      <Card className="w-full max-w-md bg-zinc-950 border-zinc-800 shadow-2xl">
-        <CardHeader className="space-y-2 text-center pb-6">
-          <CardTitle className="text-3xl font-bold tracking-tight text-zinc-100">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] relative overflow-hidden">
+      
+      <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
+        <div 
+          className="absolute inset-0 bg-[linear-gradient(to_right,#51b74915_1px,transparent_1px),linear-gradient(to_bottom,#51b74915_1px,transparent_1px)] bg-[size:40px_40px]"
+          style={{
+            maskImage: "radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%)"
+          }}
+        />
+      </div>
+
+      <Card className="w-full max-w-md bg-[#111111] border-white/5 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative z-10 rounded-xl my-8">
+        <CardHeader className="space-y-3 text-center pb-6 pt-8">
+          <div className="flex justify-center mb-2">
+            <span className="font-bold text-lg tracking-tight flex text-white">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
+                  EM
+                </span>
+                R
+              </span>
+          </div>
+          <CardTitle className="text-3xl font-bold tracking-tight text-white">
             {role} Details
           </CardTitle>
-          <CardDescription className="text-zinc-400 text-base">
+          <CardDescription className="text-white/60 text-base">
             Complete your profile information
           </CardDescription>
         </CardHeader>
         
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-5">
+        <form onSubmit={handleSubmit} className="px-6 pb-6">
+          <CardContent className="space-y-5 p-0 mb-6">
             {error && (
-              <Alert variant="destructive" className="bg-red-950/50 border-red-900/50 text-red-400">
-                <AlertCircle className="h-4 w-4" />
+              <Alert className="bg-red-500/10 border-red-500/30 text-red-400">
+                <AlertCircle className="h-4 w-4 stroke-red-400" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
             
             {success && (
-              <Alert className="bg-[#13703a]/20 border-[#51b749]/50 text-[#51b749]">
+              <Alert className="bg-[#51b749]/10 border-[#51b749]/30 text-[#51b749]">
                 <Check className="h-4 w-4 stroke-[#51b749]" />
                 <AlertDescription>{success}</AlertDescription>
               </Alert>
@@ -149,7 +168,7 @@ export default function DetailsForm() {
 
             {(role === 'Student' || role === 'Alumni') && (
               <div className="space-y-3">
-                <Label className="text-zinc-300">Select Institution</Label>
+                <Label className="text-white/90 font-semibold">Select Institution</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -158,7 +177,7 @@ export default function DetailsForm() {
                       setFormData({...formData, collegeName: 'NIT Kurukshetra'});
                       setError('');
                     }}
-                    className={`h-12 border rounded-md font-medium transition-colors ${collegeChoice === 'nitkkr' ? 'bg-[#51b749]/20 border-[#51b749] text-[#51b749]' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700'}`}
+                    className={`h-12 border rounded-lg font-medium transition-all duration-300 ${collegeChoice === 'nitkkr' ? 'bg-[#51b749]/20 border-[#51b749]/50 text-[#51b749] shadow-[0_0_15px_-3px_rgba(81,183,73,0.2)]' : 'bg-black border-white/10 text-white/50 hover:border-white/30 hover:text-white hover:bg-white/5'}`}
                   >
                     NIT Kurukshetra
                   </button>
@@ -169,7 +188,7 @@ export default function DetailsForm() {
                       setFormData({...formData, collegeName: ''});
                       setError('');
                     }}
-                    className={`h-12 border rounded-md font-medium transition-colors ${collegeChoice === 'other' ? 'bg-[#51b749]/20 border-[#51b749] text-[#51b749]' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700'}`}
+                    className={`h-12 border rounded-lg font-medium transition-all duration-300 ${collegeChoice === 'other' ? 'bg-[#51b749]/20 border-[#51b749]/50 text-[#51b749] shadow-[0_0_15px_-3px_rgba(81,183,73,0.2)]' : 'bg-black border-white/10 text-white/50 hover:border-white/30 hover:text-white hover:bg-white/5'}`}
                   >
                     Other
                   </button>
@@ -180,7 +199,7 @@ export default function DetailsForm() {
                     type="text" 
                     placeholder="Enter College Name" 
                     value={formData.collegeName}
-                    className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12 mt-3"
+                    className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 mt-3 rounded-lg transition-all"
                     onChange={e => setFormData({...formData, collegeName: e.target.value})} 
                     required 
                   />
@@ -191,26 +210,26 @@ export default function DetailsForm() {
             {role === 'Student' && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="rollNo" className="text-zinc-300">Roll Number</Label>
+                  <Label htmlFor="rollNo" className="text-white/90 font-semibold">Roll Number</Label>
                   <Input 
                     id="rollNo"
                     type="text" 
                     placeholder="e.g. 12015000" 
-                    className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12"
+                    className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 rounded-lg transition-all"
                     onChange={e => setFormData({...formData, rollNo: e.target.value})} 
                     required 
                   />
                 </div>
                 
-                <div className="space-y-4 pt-2 border-t border-zinc-800/50">
+                <div className="space-y-4 pt-4 border-t border-white/5 mt-4">
                   {!user?.collegeEmailVerified ? (
                     <div className="space-y-3">
-                      <Label htmlFor="collegeEmail" className="text-zinc-300">College Email Verification</Label>
+                      <Label htmlFor="collegeEmail" className="text-white/90 font-semibold">College Email Verification</Label>
                       <Input 
                         id="collegeEmail"
                         type="email" 
                         placeholder={collegeChoice === 'nitkkr' ? "rollno@nitkkr.ac.in" : "name@college.ac.in or .edu.in"} 
-                        className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12"
+                        className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 rounded-lg transition-all"
                         onChange={e => {
                           setFormData({...formData, collegeEmail: e.target.value});
                           setError('');
@@ -224,7 +243,7 @@ export default function DetailsForm() {
                           type="button" 
                           onClick={handleSendCollegeOtp}
                           disabled={isLoading || !formData.collegeEmail || !collegeChoice}
-                          className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-100 transition-colors h-12"
+                          className="w-full bg-white/5 hover:bg-white/10 text-white transition-all border border-white/10 h-12 rounded-lg disabled:opacity-50"
                         >
                           {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                           Send Verification OTP
@@ -235,14 +254,14 @@ export default function DetailsForm() {
                             type="text" 
                             placeholder="6-digit OTP" 
                             maxLength={6}
-                            className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12 text-center tracking-widest font-mono"
+                            className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 text-center tracking-[0.3em] font-mono rounded-lg flex-1"
                             onChange={e => setCollegeOtp(e.target.value)} 
                           />
                           <Button 
                             type="button" 
                             onClick={handleVerifyCollegeOtp}
                             disabled={isLoading || collegeOtp.length < 6}
-                            className="bg-[#51b749] hover:bg-[#13703a] text-white transition-colors h-12 px-6"
+                            className="bg-[#51b749]/80 hover:bg-[#38984c] text-white transition-all active:scale-95 border-none h-12 px-6 rounded-lg disabled:opacity-50"
                           >
                             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify'}
                           </Button>
@@ -250,11 +269,13 @@ export default function DetailsForm() {
                       )}
                     </div>
                   ) : (
-                    <div className="flex items-center space-x-2 p-3 bg-[#13703a]/10 border border-[#51b749]/30 rounded-md">
-                      <Check className="w-5 h-5 text-[#51b749]" />
+                    <div className="flex items-center space-x-3 p-4 bg-[#13703a]/10 border border-[#51b749]/30 rounded-lg">
+                      <div className="bg-[#51b749]/20 p-2 rounded-full">
+                        <Check className="w-4 h-4 text-[#51b749]" />
+                      </div>
                       <div className="text-sm">
-                        <span className="text-zinc-400 block">Verified College Email</span>
-                        <span className="text-zinc-200 font-medium">{user.collegeEmail}</span>
+                        <span className="text-white/50 block font-medium">Verified College Email</span>
+                        <span className="text-white/90 font-medium tracking-wide">{user.collegeEmail}</span>
                       </div>
                     </div>
                   )}
@@ -265,23 +286,23 @@ export default function DetailsForm() {
             {role === 'Alumni' && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="graduationYear" className="text-zinc-300">Graduation Year</Label>
+                  <Label htmlFor="graduationYear" className="text-white/90 font-semibold">Graduation Year</Label>
                   <Input 
                     id="graduationYear"
                     type="text" 
                     placeholder="e.g. 2024" 
-                    className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12"
+                    className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 rounded-lg transition-all"
                     onChange={e => setFormData({...formData, graduationYear: e.target.value})} 
                     required 
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="currentCompany" className="text-zinc-300">Current Company</Label>
+                  <Label htmlFor="currentCompany" className="text-white/90 font-semibold">Current Company</Label>
                   <Input 
                     id="currentCompany"
                     type="text" 
                     placeholder="Where do you work?" 
-                    className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12"
+                    className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 rounded-lg transition-all"
                     onChange={e => setFormData({...formData, currentCompany: e.target.value})} 
                     required 
                   />
@@ -292,23 +313,23 @@ export default function DetailsForm() {
             {role === 'Other' && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="organization" className="text-zinc-300">Organization / Company</Label>
+                  <Label htmlFor="organization" className="text-white/90 font-semibold">Organization / Company</Label>
                   <Input 
                     id="organization"
                     type="text" 
                     placeholder="Enter organization name" 
-                    className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12"
+                    className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 rounded-lg transition-all"
                     onChange={e => setFormData({...formData, organization: e.target.value})} 
                     required 
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="profession" className="text-zinc-300">Profession</Label>
+                  <Label htmlFor="profession" className="text-white/90 font-semibold">Profession</Label>
                   <Input 
                     id="profession"
                     type="text" 
                     placeholder="e.g. Software Engineer, Researcher" 
-                    className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#51b749] h-12"
+                    className="bg-black border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] h-12 rounded-lg transition-all"
                     onChange={e => setFormData({...formData, profession: e.target.value})} 
                     required 
                   />
@@ -317,11 +338,11 @@ export default function DetailsForm() {
             )}
           </CardContent>
           
-          <CardFooter className="pt-2">
+          <CardFooter className="p-0 pt-2">
             <Button 
               type="submit" 
               disabled={isLoading || (role === 'Student' && !user?.collegeEmailVerified) || ((role === 'Student' || role === 'Alumni') && !collegeChoice)}
-              className="w-full bg-[#51b749] hover:bg-[#13703a] text-white transition-colors h-12 text-lg font-medium disabled:opacity-50 disabled:bg-[#51b749]"
+              className="w-full bg-[#51b749]/80 hover:bg-[#38984c] text-white shadow-[0_0_20px_-5px_rgba(19,112,58,0.5)] transition-all active:scale-95 border-none h-12 text-lg font-medium disabled:opacity-50 disabled:shadow-none rounded-lg"
             >
               {isLoading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
               {isLoading ? 'Saving...' : 'Save Details'}

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Zap, Trophy, Award, Hexagon, Globe } from 'lucide-react';
+import { ExternalLink, Zap, Trophy, Award, Hexagon, Globe, Edit } from 'lucide-react';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 // --- CONFIGURATION ---
 const API_URL = import.meta.env.VITE_API_BASE_URL+'/api/sponsors';
@@ -81,6 +83,7 @@ const SponsorSkeleton = () => {
 const SponsorPublic = () => {
   const [sponsors, setSponsors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user, isLoading } = useAuth();
 
   // --- FETCH DATA ---
   useEffect(() => {
@@ -290,6 +293,11 @@ const SponsorPublic = () => {
         </div>
 
       </div>
+      {!isLoading && user && (user.userType === "admin" || user.userType === "super-admin") && (
+              <Link to={'/admin/sponsors'} className="fixed bottom-6 right-6 h-12 w-12 bg-blue-800 text-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition z-[100]">
+                <Edit size={18} />
+              </Link>
+            )}
     </section>
   );
 };

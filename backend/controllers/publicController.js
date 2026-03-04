@@ -2,28 +2,45 @@
 import { Workshop, Event, Project, Gallery, Sponsor, GalleryOption } from '../models/index.js';
 import Team from '../models/Team.js';
 
-
+const isVideoMedia = (item) => {
+  if (item?.mediaType === 'video') return true;
+  if (item?.src && typeof item.src === 'string') {
+    const lowerSrc = item.src.toLowerCase();
+    return (
+      lowerSrc.endsWith('.mp4') || 
+      lowerSrc.endsWith('.mov') || 
+      lowerSrc.endsWith('.webm') || 
+      lowerSrc.includes('/video/upload/')
+    );
+  }
+  return false;
+};
 export const getHomeContent = async (req, res) => {
   try {
-    const [workshops, events, projects, gallery] = await Promise.all([
+    // We fetch a larger limit (e.g., 10 or 20) to ensure that after filtering 
+    // out videos, we still have enough images to meet your UI needs (e.g., 4).
+    const [workshops, events, projects, rawGallery] = await Promise.all([
       Workshop.find().sort({ createdAt: -1 }).limit(3),
       Event.find({ status: { $in: ['upcoming', 'LIVE'] } }).sort({ targetDate: 1 }).limit(3),
       Project.find().sort({ createdAt: -1 }).limit(3),
-      Gallery.find().sort({ createdAt: -1 }).limit(4),
-      // Get the most recent sponsor based on year (assuming year is stored as string like "2024")
-      // Sponsor.findOne().sort({ year: -1, createdAt: -1 })
+      Gallery.find().sort({ createdAt: -1 }).limit(15), 
     ]);
 
-    // Optional: If you want to feature multiple sponsors
-const sponsor = await Sponsor.find({ tier: 'platinum' })
+    // Filter the gallery to exclude videos using your helper function
+    const gallery = rawGallery
+      .filter(item => !isVideoMedia(item))
+      .slice(0, 4);
+
+    const sponsor = await Sponsor.find({ tier: 'platinum' })
       .sort({ year: -1, createdAt: -1 })
       .lean();    
+
     res.json({ 
       workshops, 
       events, 
       projects, 
       gallery, 
-      sponsor   // Multiple sponsors for display
+      sponsor 
     });
   } catch (err) {
     console.error("Home content fetch error:", err);

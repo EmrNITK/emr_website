@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import {
   Search, Filter, X, ChevronLeft, ChevronRight,
   Loader2, Check, ChevronDown, Layers, Calendar, ZoomIn, Download, Share2,
-  Play, Pause, Maximize, Minimize, Volume2, VolumeX // <-- Added Video Icons
+  Play, Pause, Maximize, Minimize, Volume2, VolumeX, // <-- Added Video Icons
+  Edit
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { Link } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
@@ -463,6 +466,7 @@ const GalleryPage = () => {
   const [options, setOptions] = useState({ categories: [], years: [] });
   const [filters, setFilters] = useState({ category: '', year: '', search: '' });
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const { user, isLoading } = useAuth();
 
   const observer = useRef();
   const lastItemRef = useCallback(node => {
@@ -609,7 +613,13 @@ const GalleryPage = () => {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+      {!isLoading && user && (user.userType === "admin" || user.userType === "super-admin") && (
+        <Link to={'/admin/gallery'} className="fixed bottom-6 right-6 h-12 w-12 bg-blue-800 text-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition z-[100]">
+          <Edit size={18} />
+        </Link>
+      )}
     </div>
+
   );
 };
 
