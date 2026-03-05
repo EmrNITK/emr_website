@@ -21,6 +21,8 @@ import {
 import * as teamCtrl from '../controllers/teamController.js';
 import * as responseController from '../controllers/responseController.js';
 import authRoutes from './authRoutes.js';
+import { getAdmins, searchUsersForAdmin, updateAdminRole, removeAdminRole } from '../controllers/adminController.js';
+import superAuth from '../middleware/superAuth.js';
 
 const router = express.Router();
 
@@ -50,6 +52,11 @@ router.route('/forms/:id')
   .get(getPublicForm)
   .put(auth, updateForm)
   .delete(auth, deleteForm);
+
+router.get('/admin',superAuth, getAdmins);
+router.get('/admin/search', searchUsersForAdmin);
+router.put('/admin/:id',superAuth, updateAdminRole);
+router.put('/admin/remove/:id',superAuth, removeAdminRole);
 
 // Access requests
 router.get('/forms/:id/access-requests',auth, getAccessRequests);

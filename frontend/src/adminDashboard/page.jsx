@@ -16,6 +16,7 @@ import Team from './pages/Team';
 import Sponsors from './pages/Sponsors';
 import FormBuilder from './pages/Forms';
 import FormDashboard from './pages/FormDashboard';
+import AdminPage from './pages/AdminUsers';
 
 const AdminDash = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -148,6 +149,7 @@ const AdminDash = () => {
           <Route path="/forms" element={<FormDashboard />} />
           <Route path="/form" element={<FormBuilder />}/>
           <Route path="/form/:slug" element={<FormBuilder />}/>
+          <Route path="/makeadmin" element={<AdminPage />}/>
         </Routes>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-const auth = async (req, res, next) => {
+const superAuth = async (req, res, next) => {
   try {
     const token = req.cookies.token;
 
@@ -29,7 +29,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    if (user.userType !== 'admin' && user.userType !== 'super-admin') {
+    if (user.userType !== 'super-admin') {
       return res.status(403).json({
         message: 'Forbidden: Admin access required'
       });
@@ -54,4 +54,4 @@ const auth = async (req, res, next) => {
   }
 };
 
-export default auth;
+export default superAuth;
