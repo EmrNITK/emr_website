@@ -21,7 +21,7 @@ export default function Login() {
         const res = await axios.get(API_URL + '/auth/me', { withCredentials: true });
         if (res.data) {
           if (redirectUrl) {
-            window.location.href = redirectUrl;
+            window.location.href = ('/a/profile');
           } else if (!res.data.role) {
             window.location.href = ('/role-selection');
           } else {

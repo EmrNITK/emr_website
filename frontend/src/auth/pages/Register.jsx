@@ -58,7 +58,7 @@ export default function Register() {
         if (res.data) {
           // Changed window.location.href to navigate() for SPA behavior
           if (redirectParam) {
-            navigate(redirectParam);
+            navigate('/a/profile');
           } else if (!res.data.role) {
             navigate('/role-selection');
           } else {
