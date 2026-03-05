@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Added useEffect
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { AlertCircle, Loader2, Check, X, Eye, EyeOff } from 'lucide-react';
@@ -8,6 +8,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+
+// Moved RequirementItem outside to prevent re-creation on every render
+const RequirementItem = ({ met, text }) => (
+  <div className="flex items-center space-x-2 text-sm">
+    {met ? (
+      <Check className="w-4 h-4 text-[#51b749]" />
+    ) : (
+      <X className="w-4 h-4 text-white/40" />
+    )}
+    <span className={met ? "text-white/90" : "text-white/40"}>
+      {text}
+    </span>
+  </div>
+);
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -27,7 +41,7 @@ export default function Register() {
   const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
   const redirectParam = searchParams.get('redirect');
-  const redirectQuery = redirectParam ? '?redirect=' + redirectParam : '';
+  const redirectQuery = redirectParam ? '?redirect=' + encodeURIComponent(redirectParam) : '';
 
   const pwdReqs = {
     length: formData.password.length >= 8,
@@ -36,24 +50,28 @@ export default function Register() {
     number: /[0-9]/.test(formData.password),
     special: /[^A-Za-z0-9]/.test(formData.password)
   };
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const res = await axios.get(API_URL + '/auth/me', { withCredentials: true });
         if (res.data) {
-          if (redirectQuery) {
-            window.location.href = redirectQuery;
+          // Changed window.location.href to navigate() for SPA behavior
+          if (redirectParam) {
+            navigate(redirectParam);
           } else if (!res.data.role) {
-            window.location.href = ('/role-selection');
+            navigate('/role-selection');
           } else {
-            window.location.href = ('/a/profile');
+            navigate('/a/profile');
           }
         }
       } catch (error) {
+        // Silently fail if not authenticated, as this is a register page
       }
     };
     checkAuth();
-  }, [navigate, searchParams, API_URL, redirectUrl]);
+    // Fixed dependency array (removed redirectUrl, added redirectParam)
+  }, [navigate, API_URL, redirectParam]);
 
   const isPasswordValid = Object.values(pwdReqs).every(Boolean);
 
@@ -106,22 +124,10 @@ export default function Register() {
     }
   };
 
-  const RequirementItem = ({ met, text }) => (
-    <div className="flex items-center space-x-2 text-sm">
-      {met ? (
-        <Check className="w-4 h-4 text-[#51b749]" />
-      ) : (
-        <X className="w-4 h-4 text-white/40" />
-      )}
-      <span className={met ? "text-white/90" : "text-white/40"}>
-        {text}
-      </span>
-    </div>
-  );
-
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] relative overflow-hidden">
-
+      
+      {/* Background Pattern */}
       <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
         <div
           className="absolute inset-0 bg-[linear-gradient(to_right,#51b74915_1px,transparent_1px),linear-gradient(to_bottom,#51b74915_1px,transparent_1px)] bg-[size:40px_40px]"
@@ -133,7 +139,6 @@ export default function Register() {
       </div>
 
       <Card className="w-full max-w-md bg-[#111111] border-white/5 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative z-10 rounded-xl mt-8 mb-8">
-
         <CardHeader className="space-y-3 text-center pb-6 pt-8">
           <div className="flex justify-center mb-2">
             <span className="font-bold text-lg tracking-tight flex text-white">
@@ -153,7 +158,6 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="px-6 pb-6">
           <CardContent className="space-y-5 p-0 mb-6">
-
             {error && (
               <Alert className="bg-red-500/10 border-red-500/30 text-red-400">
                 <AlertCircle className="h-4 w-4 stroke-red-400" />
@@ -200,7 +204,7 @@ export default function Register() {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    email: e.target.value.trim().toLowerCase()
+                    email: e.target.value
                   });
                   setError('');
                 }}
@@ -212,7 +216,6 @@ export default function Register() {
                 <Label htmlFor="password" className="text-white/90 font-semibold">
                   Password
                 </Label>
-
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -228,7 +231,6 @@ export default function Register() {
                     setError('');
                   }}
                 />
-
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -246,7 +248,6 @@ export default function Register() {
                 <RequirementItem met={pwdReqs.special} text="One special character" />
               </div>
             </div>
-
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-5 p-0 pt-2">

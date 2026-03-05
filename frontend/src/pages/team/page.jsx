@@ -206,8 +206,8 @@ const TeamPage = () => {
       </section>
 
       {/* --- STICKY NAVIGATION --- */}
-      <div className="sticky top-0 z-50 bg-black/60 backdrop-blur-xl border-y border-white/5 py-4 mb-10">
-        <div className="max-w-7xl mx-auto px-6 flex justify-center">
+      <div className="sticky top-0 z-50 py-4 mb-10">
+        <div className="mx-auto px-6 flex justify-center">
           
           {/* DESKTOP VIEW: Premium Pills */}
           {/* <div className="hidden md:flex flex-wrap gap-3">
@@ -230,7 +230,7 @@ const TeamPage = () => {
           </div> */}
 
           {/* MOBILE VIEW: Modern Dropdown */}
-          <div className=" w-full max-w-[280px]" ref={dropdownRef}>
+          <div className="w-[280px]" ref={dropdownRef}>
             <div className="relative">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
