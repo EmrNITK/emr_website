@@ -40,6 +40,7 @@ router.post('/options',auth, genericCtrl.createOption);
 router.get('/team/search-users', teamCtrl.searchUsers);
 router.post('/team',auth, teamCtrl.createTeamMember);
 router.put('/team/:id',auth, teamCtrl.updateTeamMember);
+router.delete('/team/:id',auth, teamCtrl.deleteTeamMember);
 
 router.route('/forms')
   .post(auth,createForm)

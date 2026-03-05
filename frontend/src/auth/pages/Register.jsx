@@ -36,6 +36,24 @@ export default function Register() {
     number: /[0-9]/.test(formData.password),
     special: /[^A-Za-z0-9]/.test(formData.password)
   };
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get(API_URL + '/auth/me', { withCredentials: true });
+        if (res.data) {
+          if (redirectQuery) {
+            window.location.href = redirectQuery;
+          } else if (!res.data.role) {
+            window.location.href = ('/role-selection');
+          } else {
+            window.location.href = ('/a/profile');
+          }
+        }
+      } catch (error) {
+      }
+    };
+    checkAuth();
+  }, [navigate, searchParams, API_URL, redirectUrl]);
 
   const isPasswordValid = Object.values(pwdReqs).every(Boolean);
 
@@ -103,9 +121,9 @@ export default function Register() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] relative overflow-hidden">
-      
+
       <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
-        <div 
+        <div
           className="absolute inset-0 bg-[linear-gradient(to_right,#51b74915_1px,transparent_1px),linear-gradient(to_bottom,#51b74915_1px,transparent_1px)] bg-[size:40px_40px]"
           style={{
             maskImage: "radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 100%)",
@@ -115,15 +133,15 @@ export default function Register() {
       </div>
 
       <Card className="w-full max-w-md bg-[#111111] border-white/5 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative z-10 rounded-xl mt-8 mb-8">
-        
+
         <CardHeader className="space-y-3 text-center pb-6 pt-8">
           <div className="flex justify-center mb-2">
             <span className="font-bold text-lg tracking-tight flex text-white">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-                  EM
-                </span>
-                R
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
+                Em
               </span>
+              R
+            </span>
           </div>
           <CardTitle className="text-3xl font-bold tracking-tight text-white">
             Create an account

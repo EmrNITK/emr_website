@@ -64,19 +64,19 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
-        scrolled 
-          ? "bg-black/80 backdrop-blur-md border-white/10 py-2" 
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border",
+        scrolled
+          ? "bg-black/80 backdrop-blur-md border-white/30 py-2 my-2 rounded-full mx-2"
           : "bg-black border-transparent py-4"
       )}
     >
       <div className="container max-w-7xl mx-auto px-4 flex items-center justify-between">
-        
+
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
           <span className="font-bold text-xl tracking-tight">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-              EM
+              Em
             </span>R<span className="text-white/30 font-normal ml-1.5">/ NITKKR</span>
           </span>
         </Link>
@@ -127,9 +127,9 @@ const Header = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-white/10" />
-                  <DropdownMenuItem className="focus:bg-white/5 cursor-pointer">
-                    <Link className="flex gap-2 hover:text-white" to={'/a/profile'}><User className="mr-2 h-4 w-4" /> Profile</Link>
-                  </DropdownMenuItem>
+                  <Link className="w-full gap-2 text-white" to={'/a/profile'}><DropdownMenuItem className="text-white cursor-pointer focus:bg-gray-900/50 focus:text-white">
+                 <User className="mr-2 h-4 w-4" /> Profile
+                </DropdownMenuItem></Link>
                   <DropdownMenuItem onClick={logout} className="focus:bg-red-500/10 text-red-400 focus:text-red-400 cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" /> Logout
                   </DropdownMenuItem>
@@ -145,43 +145,43 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         <div className="md:hidden flex items-center">
-           {!isLoading && user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative flex items-center gap-3 px-2 hover:bg-white/5 rounded-full">
-                    <UserAvatar user={user} className="h-8 w-8" />
-                    <span className="text-sm font-medium text-white/80 hidden lg:block">{user.name}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-zinc-950 border-white/10 text-white">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{user.name}</p>
-                      <p className="text-xs text-white/50">{user.email || 'Member'}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-white/10" />
-                  <DropdownMenuItem className="focus:bg-white/5 cursor-pointer">
-                    <Link className="flex gap-2" to={'/a/profile'}><User className="mr-2 h-4 w-4" /> Profile</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout} className="focus:bg-red-500/10 text-red-400 focus:text-red-400 cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" /> Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+          {!isLoading && user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative flex items-center gap-3 px-2 hover:bg-white/5 rounded-full">
+                  <UserAvatar user={user} className="h-8 w-8" />
+                  <span className="text-sm font-medium text-white/80 hidden lg:block">{user.name}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-zinc-950 border-white/10 text-white">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-xs text-white/50">{user.email || 'Member'}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/10" />
+                 <Link className="w-full gap-2 text-white" to={'/a/profile'}><DropdownMenuItem className="text-white cursor-pointer focus:bg-gray-900/50 focus:text-white">
+                 <User className="mr-2 h-4 w-4" /> Profile
+                </DropdownMenuItem></Link>
+                <DropdownMenuItem onClick={logout} className="focus:bg-red-500/10 text-red-400 focus:text-red-400 cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" /> Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="hover:bg-white/10 text-white">
-                <PanelLeftClose className="w-6 h-6" />
+              <Button variant='ghost' className="hover:bg-white/10 hover:text-white/90 text-white/70 px-2 py-1 [&_svg]:size-6">
+                <PanelLeftClose />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] bg-zinc-950 border-white/10 text-white p-0">
+            <SheetContent side="right" className="w-[300px] bg-zinc-950 border-white/10 text-white p-0 [&_svg]:size-6 [&_svg]:mt-3">
               <div className="flex flex-col h-full">
                 <SheetHeader className="p-6 border-b border-white/5">
                   <SheetTitle className="text-left text-[#51b749]">Menu</SheetTitle>
                 </SheetHeader>
-                
+
                 <div className="flex flex-col p-4 gap-2">
                   {navLinks.map((link) => (
                     <Link
@@ -190,8 +190,8 @@ const Header = () => {
                       onClick={() => setIsOpen(false)}
                       className={cn(
                         "text-lg font-medium py-3 px-4 transition-all rounded-lg",
-                        location.pathname === link.path 
-                          ? "bg-[#51b749]/10 text-[#51b749]" 
+                        location.pathname === link.path
+                          ? "bg-[#51b749]/10 text-[#51b749]"
                           : "text-white/60 hover:bg-white/5 hover:text-white"
                       )}
                     >
@@ -205,13 +205,13 @@ const Header = () => {
                     <Loader2 className="animate-spin text-white/20 h-6 w-6" />
                   ) : user ? (
                     <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-3">
+                      <Link to={'/a/profile'} className="flex items-center gap-3">
                         <UserAvatar user={user} className="h-10 w-10" />
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold">{user.name}</span>
                           <span className="text-xs text-white/40">{user.email}</span>
                         </div>
-                      </div>
+                      </Link>
                       <Button onClick={logout} variant="outline" className="w-full border-white/10 bg-red-500 hover:bg-red-500/10 hover:text-red-400">
                         Logout
                       </Button>

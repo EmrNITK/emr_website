@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { 
-  LogOut, CheckCircle2, XCircle, AlertCircle, 
+import {
+  LogOut, CheckCircle2, XCircle, AlertCircle,
   Loader2, Pencil, X, ShieldCheck, Github, Linkedin, Instagram
 } from 'lucide-react';
 import Cropper from 'react-easy-crop';
+import { useAuth } from '../../context/AuthContext';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import Header from '@/components/Header';
 
 const createImage = (url) =>
   new Promise((resolve, reject) => {
@@ -56,14 +58,13 @@ async function getCroppedImg(imageSrc, pixelCrop) {
 }
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
   const [editData, setEditData] = useState({});
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '' });
-  
+  const { user, isLoading, setUser, logout } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
@@ -82,9 +83,6 @@ export default function Profile() {
         const res = await axios.get(`${API_URL}/auth/me`, { withCredentials: true });
         if (!res.data.role) {
           navigate('/a/role-selection');
-        } else {
-          setUser(res.data);
-          setEditData(res.data);
         }
       } catch (err) {
         navigate('/a/login');
@@ -93,7 +91,17 @@ export default function Profile() {
       }
     };
     fetchProfile();
-  }, [navigate, API_URL]);
+  }, [navigate, API_URL, user]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!user) {
+        navigate('/a/login');
+      } else {
+        setEditData(user);
+      }
+    }
+  }, [user, isLoading, navigate]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -113,7 +121,7 @@ export default function Profile() {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError(''); setSuccess('');
-    
+
     if (!isPasswordValid) {
       setError('Please meet all new password requirements.');
       return;
@@ -124,7 +132,7 @@ export default function Profile() {
         userId: user._id,
         ...passwordData
       }, { withCredentials: true });
-      
+
       setSuccess('Password updated securely.');
       setPasswordData({ currentPassword: '', newPassword: '' });
     } catch (err) {
@@ -142,44 +150,22 @@ export default function Profile() {
     }
   };
 
-  if (loading) return (
+  if (loading || isLoading || !user) return (
     <div className="flex items-center justify-center min-h-screen bg-black">
       <Loader2 className="animate-spin text-[#51b749] w-10 h-10" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749]">
-      
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-black sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Link to={'/p'}>
-              <span className="font-bold text-lg tracking-tight flex">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-                  EM
-                </span>
-                R
-                <span className="text-white/30 font-normal ml-1.5 sm:block hidden">/ NITKKR</span>
-              </span>
-            </Link>
-          </div>
-          <span className="text-sm font-semibold tracking-tight text-white/80">Profile Settings</span>
-        </div>
-        <Button 
-          variant="ghost" 
-          onClick={handleLogout} 
-          className="text-white/60 hover:text-white bg-white/5 hover:bg-white/10 transition-colors h-8 px-3 text-sm rounded-lg border border-white/5"
-        >
-          <LogOut className="w-4 h-4 sm:mr-2" /> <span className='hidden sm:inline'>Sign out</span>
-        </Button>
-      </header>
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] pt-16">
+
+      <Header />
 
       <main className="max-w-3xl mx-auto px-4 pb-10 sm:pt-10 pt-6 space-y-6">
-        
+
         <div className="flex items-center gap-4 mb-6">
           <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border border-[#51b749]/30 shadow-[0_0_15px_-3px_rgba(81,183,73,0.3)]">
-            <AvatarImage src={user.profilePhoto} />
+            <AvatarImage src={user?.profilePhoto} />
             <AvatarFallback className="bg-[#111111] text-[#51b749] sm:text-2xl text-xl font-bold">{user.name?.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
@@ -219,9 +205,9 @@ export default function Profile() {
                 <InfoRow label="Name" value={user.name} />
                 <InfoRow label="Role" value={<Badge className="bg-[#13703a]/20 text-[#51b749] border border-[#51b749]/30 rounded-full px-2.5 py-0.5">{user.role}</Badge>} />
                 <InfoRow label="Bio" value={user.bio || 'Add a bio'} />
-                <InfoRow label="LinkedIn" value={user.linkedin ? <a href={user.linkedin} target="_blank" rel="noreferrer" className="text-[#51b749] hover:text-[#38984c] flex items-center gap-1"><Linkedin className="w-3 h-3"/> {user.linkedin}</a> : null} />
-                <InfoRow label="GitHub" value={user.github ? <a href={user.github} target="_blank" rel="noreferrer" className="text-[#51b749] hover:text-[#38984c] flex items-center gap-1"><Github className="w-3 h-3"/> {user.github}</a> : null} />
-                <InfoRow label="Instagram" value={user.instagram ? <a href={user.instagram} target="_blank" rel="noreferrer" className="text-[#51b749] hover:text-[#38984c] flex items-center gap-1"><Instagram className="w-3 h-3"/> {user.instagram}</a> : null} isLast />
+                <InfoRow label="LinkedIn" value={user.linkedin ? <a href={user.linkedin} target="_blank" rel="noreferrer" className="text-[#51b749] hover:text-[#38984c] flex items-center gap-1"><Linkedin className="w-3 h-3" /> {user.linkedin}</a> : null} />
+                <InfoRow label="GitHub" value={user.github ? <a href={user.github} target="_blank" rel="noreferrer" className="text-[#51b749] hover:text-[#38984c] flex items-center gap-1"><Github className="w-3 h-3" /> {user.github}</a> : null} />
+                <InfoRow label="Instagram" value={user.instagram ? <a href={user.instagram} target="_blank" rel="noreferrer" className="text-[#51b749] hover:text-[#38984c] flex items-center gap-1"><Instagram className="w-3 h-3" /> {user.instagram}</a> : null} isLast />
               </CardContent>
             </Card>
 
@@ -253,6 +239,25 @@ export default function Profile() {
                 )}
               </CardContent>
             </Card>
+            <Card className="bg-[#111111] border-red-500/20 hover:border-red-500/40 transition-all duration-300 rounded-xl">
+              <div className="bg-white/5 px-4 py-3 border-b border-white/5">
+                <h3 className="text-sm font-semibold text-white/90">Session</h3>
+              </div>
+
+              <CardContent className="p-6 sm:flex justify-between items-center">
+                <p className="text-sm text-white/60">
+                  Sign out of your account on this device.
+                </p>
+
+                <Button
+                  onClick={logout}
+                  className="bg-red-500/80 hover:bg-red-600 text-white rounded-lg px-5 py-2 text-sm flex items-center gap-2 sm:mt-0 mt-3"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="edit" className="animate-in fade-in duration-300">
@@ -262,13 +267,13 @@ export default function Profile() {
               </div>
               <CardContent className="p-6">
                 <form onSubmit={handleUpdate} className="space-y-6">
-                  
+
                   <div className="flex flex-col items-start space-y-3 mb-6">
                     <Label className="text-white/90 text-sm font-semibold">Profile picture</Label>
-                    <ProfilePictureEditor 
-                      value={editData.profilePhoto} 
+                    <ProfilePictureEditor
+                      value={editData?.profilePhoto}
                       userName={user.name}
-                      onChange={(url) => setEditData({...editData, profilePhoto: url})} 
+                      onChange={(url) => setEditData({ ...editData, profilePhoto: url })}
                       setError={setError}
                       API_URL={API_URL}
                     />
@@ -277,17 +282,17 @@ export default function Profile() {
                   <div className="grid gap-5">
                     <div className="space-y-2">
                       <Label className="text-white/90 text-sm font-semibold">Name</Label>
-                      <EMRInput 
-                        value={editData.name || ''} 
-                        onChange={e => setEditData({...editData, name: e.target.value})} 
+                      <EMRInput
+                        value={editData?.name || ''}
+                        onChange={e => setEditData({ ...editData, name: e.target.value })}
                       />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label className="text-white/90 text-sm font-semibold">Bio</Label>
-                      <Textarea 
-                        value={editData.bio || ''} 
-                        onChange={e => setEditData({...editData, bio: e.target.value})} 
+                      <Textarea
+                        value={editData?.bio || ''}
+                        onChange={e => setEditData({ ...editData, bio: e.target.value })}
                         className="bg-black border-white/10 text-white focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] rounded-lg resize-y min-h-[100px] transition-all"
                         placeholder="Tell us a little bit about yourself"
                       />
@@ -295,26 +300,26 @@ export default function Profile() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 border-t border-white/5 pt-5 mt-2">
                       <div className="space-y-2">
-                        <Label className="text-white/90 text-sm font-semibold flex items-center gap-1"><Linkedin className="w-3.5 h-3.5 text-[#51b749]"/> LinkedIn URL</Label>
-                        <EMRInput 
-                          value={editData.linkedin || ''} 
-                          onChange={e => setEditData({...editData, linkedin: e.target.value})} 
+                        <Label className="text-white/90 text-sm font-semibold flex items-center gap-1"><Linkedin className="w-3.5 h-3.5 text-[#51b749]" /> LinkedIn URL</Label>
+                        <EMRInput
+                          value={editData?.linkedin || ''}
+                          onChange={e => setEditData({ ...editData, linkedin: e.target.value })}
                           placeholder="https://linkedin.com/in/username"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-white/90 text-sm font-semibold flex items-center gap-1"><Github className="w-3.5 h-3.5 text-[#51b749]"/> GitHub URL</Label>
-                        <EMRInput 
-                          value={editData.github || ''} 
-                          onChange={e => setEditData({...editData, github: e.target.value})} 
+                        <Label className="text-white/90 text-sm font-semibold flex items-center gap-1"><Github className="w-3.5 h-3.5 text-[#51b749]" /> GitHub URL</Label>
+                        <EMRInput
+                          value={editData?.github || ''}
+                          onChange={e => setEditData({ ...editData, github: e.target.value })}
                           placeholder="https://github.com/username"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-white/90 text-sm font-semibold flex items-center gap-1"><Instagram className="w-3.5 h-3.5 text-[#51b749]"/> Instagram URL</Label>
-                        <EMRInput 
-                          value={editData.instagram || ''} 
-                          onChange={e => setEditData({...editData, instagram: e.target.value})} 
+                        <Label className="text-white/90 text-sm font-semibold flex items-center gap-1"><Instagram className="w-3.5 h-3.5 text-[#51b749]" /> Instagram URL</Label>
+                        <EMRInput
+                          value={editData?.instagram || ''}
+                          onChange={e => setEditData({ ...editData, instagram: e.target.value })}
                           placeholder="https://instagram.com/username"
                         />
                       </div>
@@ -324,11 +329,11 @@ export default function Profile() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-white/5 pt-5 mt-2">
                         <div className="space-y-2">
                           <Label className="text-white/90 text-sm font-semibold">College Name</Label>
-                          <EMRInput value={editData.collegeName || ''} onChange={e => setEditData({...editData, collegeName: e.target.value})} />
+                          <EMRInput value={editData?.collegeName || ''} onChange={e => setEditData({ ...editData, collegeName: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-white/90 text-sm font-semibold">Roll No</Label>
-                          <EMRInput value={editData.rollNo || ''} onChange={e => setEditData({...editData, rollNo: e.target.value})} />
+                          <EMRInput value={editData?.rollNo || ''} onChange={e => setEditData({ ...editData, rollNo: e.target.value })} />
                         </div>
                       </div>
                     )}
@@ -337,15 +342,15 @@ export default function Profile() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-white/5 pt-5 mt-2">
                         <div className="space-y-2">
                           <Label className="text-white/90 text-sm font-semibold">Graduation Year</Label>
-                          <EMRInput value={editData.graduationYear || ''} onChange={e => setEditData({...editData, graduationYear: e.target.value})} />
+                          <EMRInput value={editData?.graduationYear || ''} onChange={e => setEditData({ ...editData, graduationYear: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-white/90 text-sm font-semibold">Current Company</Label>
-                          <EMRInput value={editData.currentCompany || ''} onChange={e => setEditData({...editData, currentCompany: e.target.value})} />
+                          <EMRInput value={editData?.currentCompany || ''} onChange={e => setEditData({ ...editData, currentCompany: e.target.value })} />
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <Label className="text-white/90 text-sm font-semibold">College Name</Label>
-                          <EMRInput value={editData.collegeName || ''} onChange={e => setEditData({...editData, collegeName: e.target.value})} />
+                          <EMRInput value={editData?.collegeName || ''} onChange={e => setEditData({ ...editData, collegeName: e.target.value })} />
                         </div>
                       </div>
                     )}
@@ -354,11 +359,11 @@ export default function Profile() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-white/5 pt-5 mt-2">
                         <div className="space-y-2">
                           <Label className="text-white/90 text-sm font-semibold">Organization</Label>
-                          <EMRInput value={editData.organization || ''} onChange={e => setEditData({...editData, organization: e.target.value})} />
+                          <EMRInput value={editData?.organization || ''} onChange={e => setEditData({ ...editData, organization: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-white/90 text-sm font-semibold">Profession</Label>
-                          <EMRInput value={editData.profession || ''} onChange={e => setEditData({...editData, profession: e.target.value})} />
+                          <EMRInput value={editData?.profession || ''} onChange={e => setEditData({ ...editData, profession: e.target.value })} />
                         </div>
                       </div>
                     )}
@@ -375,7 +380,26 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="security" className="animate-in fade-in duration-300">
-            <Card className="bg-[#111111] border-white/5 hover:border-[#51b749]/30 transition-all duration-300 rounded-xl">
+            <Card className="bg-[#111111] border-red-500/20 hover:border-red-500/40 transition-all duration-300 rounded-xl">
+              <div className="bg-white/5 px-4 py-3 border-b border-white/5">
+                <h3 className="text-sm font-semibold text-white/90">Account Session</h3>
+              </div>
+
+              <CardContent className="sm:flex p-6 justify-between items-center">
+                <div className="w-full text-sm text-white/60">
+                  Logout from your account securely.
+                </div>
+
+                <Button
+                  onClick={handleLogout}
+                  className="bg-red-500/80 hover:bg-red-600 text-white rounded-lg px-5 py-2 text-sm flex items-center gap-2 sm:mt-0 mt-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </CardContent>
+            </Card>
+            <Card className="bg-[#111111] border-white/5 hover:border-[#51b749]/30 transition-all duration-300 rounded-xl mt-6">
               <div className="bg-white/5 px-4 py-3 border-b border-white/5">
                 <h3 className="text-sm font-semibold text-white/90">Change password</h3>
               </div>
@@ -383,20 +407,20 @@ export default function Profile() {
                 <form onSubmit={handlePasswordChange} className="space-y-5">
                   <div className="space-y-2">
                     <Label className="text-white/90 text-sm font-semibold">Old password</Label>
-                    <EMRInput 
-                      type="password" 
-                      value={passwordData.currentPassword} 
-                      onChange={e => setPasswordData({...passwordData, currentPassword: e.target.value})} 
-                      required 
+                    <EMRInput
+                      type="password"
+                      value={passwordData.currentPassword}
+                      onChange={e => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                      required
                     />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-white/90 text-sm font-semibold">New password</Label>
-                    <EMRInput 
-                      type="password" 
-                      value={passwordData.newPassword} 
-                      onChange={e => setPasswordData({...passwordData, newPassword: e.target.value})} 
-                      required 
+                    <EMRInput
+                      type="password"
+                      value={passwordData.newPassword}
+                      onChange={e => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                      required
                     />
                   </div>
 
@@ -419,6 +443,7 @@ export default function Profile() {
                 </form>
               </CardContent>
             </Card>
+
           </TabsContent>
         </Tabs>
       </main>
@@ -427,13 +452,13 @@ export default function Profile() {
 }
 
 function ProfilePictureEditor({ value, userName, onChange, setError, API_URL }) {
-  const [status, setStatus] = useState('idle'); 
+  const [status, setStatus] = useState('idle');
   const [progress, setProgress] = useState(0);
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  
+
   const fileInputRef = useRef(null);
 
   const onFileSelect = (e) => {
@@ -456,14 +481,14 @@ function ProfilePictureEditor({ value, userName, onChange, setError, API_URL }) 
       setImageSrc(reader.result);
       setStatus('cropping');
     };
-    e.target.value = null; 
+    e.target.value = null;
   };
 
   const handleUpload = async () => {
     try {
       setStatus('uploading');
       setProgress(0);
-      
+
       const croppedFile = await getCroppedImg(imageSrc, croppedAreaPixels);
       const formData = new FormData();
       formData.append('file', croppedFile);
@@ -489,12 +514,12 @@ function ProfilePictureEditor({ value, userName, onChange, setError, API_URL }) 
         <AvatarImage src={value} />
         <AvatarFallback className="bg-[#111111] text-[#51b749] text-2xl font-bold">{userName?.charAt(0)}</AvatarFallback>
       </Avatar>
-      
+
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
-          <Button 
+          <Button
             type="button"
-            variant="outline" 
+            variant="outline"
             onClick={() => fileInputRef.current?.click()}
             className="bg-white/5 border-white/10 text-white hover:bg-[#51b749]/20 hover:text-[#51b749] hover:border-[#51b749]/50 h-8 px-4 text-xs rounded-lg shadow-sm transition-all"
           >
@@ -503,7 +528,7 @@ function ProfilePictureEditor({ value, userName, onChange, setError, API_URL }) 
         </div>
         <p className="text-xs text-white/50">JPG, GIF or PNG. 5MB max.</p>
       </div>
-      
+
       <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={onFileSelect} />
 
       {status === 'cropping' && (
@@ -511,26 +536,26 @@ function ProfilePictureEditor({ value, userName, onChange, setError, API_URL }) 
           <div className="bg-[#111111] rounded-xl w-full max-w-md overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.8)] border border-white/10 flex flex-col">
             <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
               <h3 className="text-sm font-semibold text-white">Crop photo</h3>
-              <button type="button" onClick={() => setStatus('idle')} className="text-white/50 hover:text-white transition-colors"><X className="w-4 h-4"/></button>
+              <button type="button" onClick={() => setStatus('idle')} className="text-white/50 hover:text-white transition-colors"><X className="w-4 h-4" /></button>
             </div>
             <div className="relative h-[300px] w-full bg-black">
               <Cropper
                 image={imageSrc}
                 crop={crop}
                 zoom={zoom}
-                aspect={1} 
-                cropShape="round" 
+                aspect={1}
+                cropShape="round"
                 onCropChange={setCrop}
                 onCropComplete={(_, croppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels)}
                 onZoomChange={setZoom}
               />
             </div>
             <div className="p-4 flex justify-between items-center bg-white/5 border-t border-white/10">
-               <span className="text-xs text-white/50">Drag to pan, scroll to zoom</span>
-               <div className="flex gap-3">
-                  <Button type="button" variant="ghost" onClick={() => setStatus('idle')} className="text-white hover:bg-white/10 h-8 px-4 text-sm rounded-lg border border-transparent">Cancel</Button>
-                  <Button type="button" onClick={handleUpload} className="bg-[#51b749]/80 text-white hover:bg-[#38984c] h-8 px-4 text-sm border-none shadow-[0_0_15px_-3px_rgba(81,183,73,0.5)] rounded-lg">Set new profile picture</Button>
-               </div>
+              <span className="text-xs text-white/50">Drag to pan, scroll to zoom</span>
+              <div className="flex gap-3">
+                <Button type="button" variant="ghost" onClick={() => setStatus('idle')} className="text-white hover:bg-white/10 h-8 px-4 text-sm rounded-lg border border-transparent">Cancel</Button>
+                <Button type="button" onClick={handleUpload} className="bg-[#51b749]/80 text-white hover:bg-[#38984c] h-8 px-4 text-sm border-none shadow-[0_0_15px_-3px_rgba(81,183,73,0.5)] rounded-lg">Set new profile picture</Button>
+              </div>
             </div>
           </div>
         </div>
@@ -539,9 +564,9 @@ function ProfilePictureEditor({ value, userName, onChange, setError, API_URL }) 
       {status === 'uploading' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in">
           <div className="bg-[#111111] rounded-xl w-full max-w-xs p-6 shadow-[0_0_30px_rgba(0,0,0,0.8)] border border-[#51b749]/30 space-y-4 text-center">
-             <Loader2 className="w-8 h-8 animate-spin text-[#51b749] mx-auto" />
-             <p className="text-white text-sm font-semibold">Uploading... {progress}%</p>
-             <Progress value={progress} className="h-1.5 bg-black" indicatorColor="bg-[#51b749]" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#51b749] mx-auto" />
+            <p className="text-white text-sm font-semibold">Uploading... {progress}%</p>
+            <Progress value={progress} className="h-1.5 bg-black" indicatorColor="bg-[#51b749]" />
           </div>
         </div>
       )}
@@ -564,8 +589,8 @@ function InfoRow({ label, value, children, isLast }) {
 
 function EMRInput({ className, ...props }) {
   return (
-    <Input 
-      {...props} 
+    <Input
+      {...props}
       className={cn(
         "bg-black border-white/10 text-white rounded-lg h-9 px-3 py-1 text-sm focus-visible:ring-1 focus-visible:ring-[#51b749] focus-visible:border-[#51b749] transition-all",
         className
@@ -576,8 +601,8 @@ function EMRInput({ className, ...props }) {
 
 function EMRTabTrigger({ value, children }) {
   return (
-    <TabsTrigger 
-      value={value} 
+    <TabsTrigger
+      value={value}
       className="pb-2 rounded-none border-b-2 border-transparent data-[state=active]:border-[#51b749] data-[state=active]:bg-transparent data-[state=active]:text-[#51b749] text-white/50 hover:text-white hover:bg-transparent hover:border-white/30 font-semibold px-4 text-sm transition-all shadow-none"
     >
       {children}

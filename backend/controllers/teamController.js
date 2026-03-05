@@ -114,3 +114,18 @@ export const getTeam = async (req, res) => {
         res.status(500).json({ error: "Server Error fetching team" });
     }
 };
+// 4. Delete Team Member
+export const deleteTeamMember = async (req, res) => {
+    try {
+        const deleted = await Team.findByIdAndDelete(req.params.id);
+
+        if (!deleted) {
+            return res.status(404).json({ error: "Team member not found" });
+        }
+
+        res.json({ message: "Team member deleted successfully", deleted });
+    } catch (err) {
+        console.error("Delete Team Error:", err);
+        res.status(500).json({ error: "Failed to delete team member" });
+    }
+};

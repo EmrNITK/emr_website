@@ -111,7 +111,7 @@ export default function DetailsForm() {
         role,
         ...formData
       });
-      navigate('/a/profile');
+      window.location.href = ('/a/profile');
     } catch (err) {
       setError('Failed to save details');
     } finally {
@@ -137,7 +137,7 @@ export default function DetailsForm() {
           <div className="flex justify-center mb-2">
             <span className="font-bold text-lg tracking-tight flex text-white">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-                  EM
+                  Em
                 </span>
                 R
               </span>

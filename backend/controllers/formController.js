@@ -1,97 +1,131 @@
-import Form from '../models/Form.js'; // Adjust path to your model
+import Form from '../models/Form.js';
 import Response from '../models/Response.js';
 import User from '../models/User.js';
 import AccessRequest from '../models/AccessRequest.js';
+import { sendEmail } from '../utils/sendEmail.js';
 
 export const submitFormResponse = async (req, res) => {
   try {
     const { id: formId } = req.params;
-    const { answers, respondentEmail } = req.body;
+    const { answers, respondentEmail, requestCopy } = req.body;
 
     const form = await Form.findById(formId);
-    if (!form) {
-      return res.status(404).json({ message: "Form not found" });
-    }
+    if (!form) return res.status(404).json({ message: "Form not found" });
 
     if (!form.settings.acceptingResponses) {
       return res.status(403).json({ message: "This form is no longer accepting responses." });
     }
-    if (form.settings.limitToOneResponse && req.user) {
-      const existing = await Response.findOne({ formId, respondentEmail: req.user.email });
-      if (existing) {
-        return res.status(403).json({ message: "You have already submitted a response." });
-      }
+
+    const targetEmail = respondentEmail || req.user?.email;
+    if (form.settings.limitToOneResponse && targetEmail) {
+      const existing = await Response.findOne({ formId, respondentEmail: targetEmail });
+      if (existing) return res.status(403).json({ message: "You have already submitted a response." });
     }
 
-    // Calculate scores if quiz mode is on
     let totalScore = 0;
     let maxScore = 0;
+    const allQuestions = form.sections.flatMap(s => s.elements);
+    const gradedQuestions = allQuestions.filter(el => el.isGraded);
+    const questionMap = new Map(allQuestions.map(q => [q.id, q]));
+
+    let scoredAnswers = answers;
 
     if (form.settings.isQuiz) {
-      // Flatten all graded questions
-      const allQuestions = form.sections.flatMap(s => s.elements).filter(el => el.isGraded);
-
-      // Build a map of questionId -> question object for quick lookup
-      const questionMap = new Map(allQuestions.map(q => [q.id, q]));
-
-      // For each answer, compute pointsEarned
-      const scoredAnswers = answers.map(ans => {
+      scoredAnswers = answers.map(ans => {
         const q = questionMap.get(ans.questionId);
         if (!q) return { ...ans, pointsEarned: 0 };
 
         let earned = 0;
-        // Logic depends on question type
         if (q.type === 'MULTIPLE_CHOICE' || q.type === 'DROPDOWN') {
-          // answer.value is the selected option id
           const selectedOption = q.options.find(opt => opt.id === ans.value);
           if (selectedOption?.isCorrect) earned = q.points;
         } else if (q.type === 'CHECKBOXES') {
-          // answer.value is array of selected option ids
           const correctOptionIds = q.options.filter(opt => opt.isCorrect).map(opt => opt.id);
           const selected = ans.value || [];
-          // All correct options must be selected, no extra
           const allCorrectSelected = correctOptionIds.every(id => selected.includes(id));
           const noExtra = selected.every(id => correctOptionIds.includes(id));
           if (allCorrectSelected && noExtra) earned = q.points;
         } else if (q.type === 'SHORT_TEXT' || q.type === 'LONG_TEXT') {
-          // Simple exact match (or regex if you want)
-          if (q.correctAnswer?.value && q.correctAnswer.value === ans.value) {
-            earned = q.points;
-          }
+          if (q.correctAnswer?.value && q.correctAnswer.value === ans.value) earned = q.points;
         }
-        return { ...ans, pointsEarned: earned };
+        return { ...ans, pointsEarned: earned, isCorrect: earned > 0 && earned === q.points };
       });
 
-      // Replace answers with scored ones
-      answers.splice(0, answers.length, ...scoredAnswers);
-
-      // Calculate totals
       totalScore = scoredAnswers.reduce((sum, a) => sum + (a.pointsEarned || 0), 0);
-      maxScore = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
+      maxScore = gradedQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
     }
 
     const newResponse = new Response({
       formId,
-      answers,
-      respondentEmail: form.settings.collectEmails !== 'DO_NOT_COLLECT' ? respondentEmail : null,
+      userId: req.user ? req.user.id : null,
+      answers: scoredAnswers,
+      respondentEmail: form.settings.collectEmails !== 'DO_NOT_COLLECT' ? targetEmail : null,
       totalScore,
       maxScore
     });
 
     await newResponse.save();
 
+    let sendEmailCopy = form.settings.sendResponderCopy === 'ALWAYS' || 
+                       (form.settings.sendResponderCopy === 'WHEN_REQUESTED' && requestCopy);
+    let releaseImmediate = form.settings.isQuiz && form.settings.releaseGrades === 'IMMEDIATELY';
+
+    if ((sendEmailCopy || releaseImmediate) && targetEmail) {
+      let html = `<div style="font-family: sans-serif; color: #333;">`;
+      html += `<h2 style="color: #0078d4;">${form.title}</h2>`;
+      html += `<p>Thank you for your submission.</p>`;
+
+      if (releaseImmediate) {
+        html += `<h3 style="background: #f3f2f1; padding: 10px; border-radius: 5px;">Your Score: <strong>${totalScore} / ${maxScore}</strong></h3>`;
+      }
+
+      if (sendEmailCopy) {
+        html += `<hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />`;
+        html += `<h3>Your Responses:</h3>`;
+        
+        scoredAnswers.forEach(ans => {
+          const q = questionMap.get(ans.questionId);
+          if (!q) return;
+
+          html += `<div style="margin-bottom: 15px;">`;
+          html += `<strong>${q.question}</strong>`;
+          if (form.settings.showPointValues && form.settings.isQuiz) {
+             html += ` <span style="font-size: 12px; color: #666;">(${ans.pointsEarned}/${q.points} pts)</span>`;
+          }
+          html += `<div style="margin-top: 5px; padding-left: 10px; border-left: 2px solid #ccc;">${Array.isArray(ans.value) ? ans.value.join(', ') : ans.value || '<em>No answer provided</em>'}</div>`;
+
+          if (releaseImmediate) {
+             if (form.settings.showMissedQuestions && !ans.isCorrect) {
+                 html += `<div style="color: #d13438; font-size: 13px; margin-top: 4px;">❌ Incorrect</div>`;
+             }
+             if (form.settings.showCorrectAnswers && !ans.isCorrect && q.type !== 'TEXT_ONLY' && q.type !== 'FILE_UPLOAD') {
+                 let correctText = "Check form owner for answer.";
+                 if (q.type === 'MULTIPLE_CHOICE' || q.type === 'DROPDOWN' || q.type === 'CHECKBOXES') {
+                     const correctOpts = q.options.filter(o => o.isCorrect).map(o => o.text).join(', ');
+                     if (correctOpts) correctText = correctOpts;
+                 } else if (q.correctAnswer?.value) {
+                     correctText = q.correctAnswer.value;
+                 }
+                 html += `<div style="color: #107c10; font-size: 13px; margin-top: 4px;">✅ Correct Answer: ${correctText}</div>`;
+             }
+          }
+          html += `</div>`;
+        });
+      }
+      html += `</div>`;
+      
+      sendEmail(targetEmail, `Your response to ${form.title}`, html).catch(err => console.error(err));
+    }
+
     res.status(201).json({
-      message: form.settings.confirmationMessage || "Your response has been recorded."
+      message: form.settings.confirmationMessage || "Your response has been recorded.",
+      score: releaseImmediate ? { totalScore, maxScore } : null
     });
   } catch (error) {
-    console.error("Error submitting response:", error);
     res.status(500).json({ message: "Server error submitting form" });
   }
 };
 
-// @desc    Create a new form
-// @route   POST /api/forms
-// @access  Private
 export const createForm = async (req, res) => {
   try {
     const { title, description, settings, sections, collaborators } = req.body;
@@ -102,26 +136,16 @@ export const createForm = async (req, res) => {
       settings,
       sections,
       collaborators,
-      userId: req.user.id // Assuming your auth middleware sets req.user
+      userId: req.user.id
     });
 
     const savedForm = await newForm.save();
     res.status(201).json(savedForm);
   } catch (error) {
-    console.error("Error creating form:", error);
     res.status(500).json({ message: "Server error creating form", error: error.message });
   }
 };
 
-// @desc    Get all forms for the logged-in user (For the Dashboard)
-// @route   GET /api/forms
-// @access  Private
-// @desc    Get a single form by ID (For the Builder)
-// @route   GET /api/forms/:id
-// @access  Private
-// @desc    Get a public form for responding (No Auth Required)
-// @route   GET /api/forms/public/:id
-// @access  Public
 export const getPublicForm = async (req, res) => {
   try {
     const form = await Form.findById(req.params.id);
@@ -134,7 +158,6 @@ export const getPublicForm = async (req, res) => {
       return res.status(403).json({ message: "This form is no longer accepting responses." });
     }
 
-    // Strip out the userId before sending to the public frontend
     const formObj = form.toObject();
     delete formObj.userId;
 
@@ -144,14 +167,8 @@ export const getPublicForm = async (req, res) => {
   }
 };
 
-// @desc    Update a form (Full Replace of nested data)
-// @route   PUT /api/forms/:id
-// @access  Private
 export const updateForm = async (req, res) => {
   try {
-    // findOneAndUpdate with { new: true } returns the updated document.
-    // By passing req.body, Mongoose will completely overwrite the 'sections' array,
-    // which handles all the drag-and-drop reordering natively.
     const updatedForm = await Form.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
       req.body,
@@ -164,14 +181,10 @@ export const updateForm = async (req, res) => {
 
     res.status(200).json(updatedForm);
   } catch (error) {
-    console.error("Error updating form:", error);
     res.status(500).json({ message: "Server error updating form", error: error.message });
   }
 };
 
-// @desc    Delete a form
-// @route   DELETE /api/forms/:id
-// @access  Private
 export const deleteForm = async (req, res) => {
   try {
     const deletedForm = await Form.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
@@ -192,7 +205,6 @@ export const deleteResponse = async (req, res) => {
     const response = await Response.findById(id);
     if (!response) return res.status(404).json({ message: "Response not found" });
 
-    // Verify form ownership
     const form = await Form.findOne({ _id: response.formId, userId: req.user.id });
     if (!form) {
       return res.status(403).json({ message: "Unauthorized" });
@@ -205,8 +217,6 @@ export const deleteResponse = async (req, res) => {
   }
 };
 
-
-// @desc    Get all forms for the logged-in user (with collaboration)
 export const getForms = async (req, res) => {
   try {
     const forms = await Form.find({
@@ -223,7 +233,6 @@ export const getForms = async (req, res) => {
   }
 };
 
-// @desc    Get a single form by ID (check ownership/collaboration)
 export const getFormById = async (req, res) => {
   try {
     const form = await Form.findOne({
@@ -240,10 +249,9 @@ export const getFormById = async (req, res) => {
   }
 };
 
-// @desc    Check if user already submitted (fixed param)
 export const checkExistingSubmission = async (req, res) => {
   try {
-    const { formId } = req.params; // now matches route
+    const { formId } = req.params;
     const existing = await Response.findOne({ formId, respondentEmail: req.user.email });
     res.status(200).json({ hasSubmitted: !!existing });
   } catch (error) {
@@ -251,7 +259,6 @@ export const checkExistingSubmission = async (req, res) => {
   }
 };
 
-// @desc    Get responses for a form (with ownership check)
 export const getFormResponses2 = async (req, res) => {
   try {
     const form = await Form.findOne({
@@ -270,7 +277,6 @@ export const getFormResponses2 = async (req, res) => {
   }
 };
 
-// @desc    Get pending access requests (only for owner/collaborators)
 export const getAccessRequests = async (req, res) => {
   try {
     const form = await Form.findOne({
@@ -290,7 +296,6 @@ export const getAccessRequests = async (req, res) => {
   }
 };
 
-// @desc    Delete access request (only for owner/collaborators)
 export const deleteAccessRequest = async (req, res) => {
   try {
     const request = await AccessRequest.findById(req.params.requestId);
@@ -312,7 +317,6 @@ export const deleteAccessRequest = async (req, res) => {
   }
 };
 
-// @desc    Search users (now protected)
 export const searchUsersForAccess = async (req, res) => {
   try {
     const { q } = req.query;

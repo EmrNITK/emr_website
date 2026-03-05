@@ -66,7 +66,7 @@ const FormSchema = new mongoose.Schema({
     loginReq: {type: Boolean, default: false},
     requireNitkkrDomain: {type: Boolean, default: false},
     isQuiz: { type: Boolean, default: false },
-    releaseGrades: { type: String, default: 'IMMEDIATELY' },
+    releaseGrades: { type: String, default: 'MANUALLY' },
     showMissedQuestions: { type: Boolean, default: true },
     showCorrectAnswers: { type: Boolean, default: true },
     showPointValues: { type: Boolean, default: true },

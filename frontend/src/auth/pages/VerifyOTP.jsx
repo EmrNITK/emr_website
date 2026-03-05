@@ -24,7 +24,7 @@ export default function VerifyOTP() {
 
   useEffect(() => {
     if (!email) {
-      navigate('/a/register' + redirectQuery);
+      window.location.href=('/a/register' + redirectQuery);
     }
   }, [email, navigate, redirectQuery]);
 
@@ -44,7 +44,7 @@ export default function VerifyOTP() {
       if (redirectUrl) {
         window.location.href = redirectUrl;
       } else {
-        navigate('/a/role-selection');
+        window.location.href = ('/a/role-selection');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Verification failed. Please check your OTP and try again.');
@@ -73,7 +73,7 @@ export default function VerifyOTP() {
           <div className="flex justify-center mb-2">
             <span className="font-bold text-lg tracking-tight flex text-white">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-                  EM
+                  Em
                 </span>
                 R
               </span>

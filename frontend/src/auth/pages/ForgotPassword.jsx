@@ -103,7 +103,7 @@ export default function ForgotPassword() {
           <div className="flex justify-center mb-2">
            <span className="font-bold text-lg tracking-tight flex text-white">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-                  EM
+                  Em
                 </span>
                 R
               </span>

@@ -93,7 +93,7 @@ export default function FormBuilder({ initialFormId = null }) {
         settings: {
             loginReq: false,
             isQuiz: false,
-            releaseGrades: 'IMMEDIATELY',
+            releaseGrades: 'MANUALLY',
             showMissedQuestions: true,
             showCorrectAnswers: true,
             showPointValues: true,

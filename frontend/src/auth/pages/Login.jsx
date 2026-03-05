@@ -23,9 +23,9 @@ export default function Login() {
           if (redirectUrl) {
             window.location.href = redirectUrl;
           } else if (!res.data.role) {
-            navigate('/role-selection');
+            window.location.href = ('/role-selection');
           } else {
-            navigate('/profile');
+            window.location.href = ('/a/profile');
           }
         }
       } catch (error) {
@@ -47,9 +47,9 @@ export default function Login() {
       if (redirectUrl) {
         window.location.href = searchParams.get('redirect');
       } else if (!res.data.user.role) {
-        navigate('/a/role-selection');
+        window.location.href =('/a/role-selection');
       } else {
-        navigate('/a/profile');
+        window.location.href =('/p');
       }
 
     } catch (error) {
@@ -81,7 +81,7 @@ export default function Login() {
           <div className="flex justify-center mb-2">
             <span className="font-bold text-lg tracking-tight flex text-white">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51b749] to-[#13703a]">
-                  EM
+                  Em
                 </span>
                 R
               </span>
