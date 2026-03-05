@@ -32,7 +32,7 @@ const generateEMREmailTemplate = (title, name, message, otp) => `
   <div style="width: 100%; max-width: 600px; margin: 40px auto; background-color: #111111; border: 1px solid #333333; border-radius: 16px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8);">
     <div style="background-color: #0a0a0a; padding: 30px; text-align: center; border-bottom: 1px solid #222222;">
       <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">
-        <span style="color: #51b749;">EM</span><span style="color: #ffffff;">R</span>
+        <span style="color: #51b749;">Em</span><span style="color: #ffffff;">R</span>
       </h1>
       <p style="margin: 5px 0 0 0; color: #666666; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">NIT Kurukshetra</p>
     </div>

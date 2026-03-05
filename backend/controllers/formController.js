@@ -3,6 +3,7 @@ import Response from '../models/Response.js';
 import User from '../models/User.js';
 import AccessRequest from '../models/AccessRequest.js';
 import { sendEmail } from '../utils/sendEmail.js';
+import jwt from 'jsonwebtoken';
 
 export const submitFormResponse = async (req, res) => {
   try {
@@ -15,8 +16,19 @@ export const submitFormResponse = async (req, res) => {
     if (!form.settings.acceptingResponses) {
       return res.status(403).json({ message: "This form is no longer accepting responses." });
     }
-
-    const targetEmail = respondentEmail || req.user?.email;
+    const token = req.cookies.token;
+    let targetEmail = '';
+    if (!token){
+      if(respondentEmail){
+        targetEmail = targetEmail;
+      }
+    }{
+       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id).select('-password -otp -collegeOtp');
+        if(user){
+          targetEmail = user.email;
+        }
+      }
     if (form.settings.limitToOneResponse && targetEmail) {
       const existing = await Response.findOne({ formId, respondentEmail: targetEmail });
       if (existing) return res.status(403).json({ message: "You have already submitted a response." });
@@ -66,15 +78,12 @@ export const submitFormResponse = async (req, res) => {
 
     await newResponse.save();
 
-    let sendEmailCopy = form.settings.sendResponderCopy === 'ALWAYS' || 
-                       (form.settings.sendResponderCopy === 'WHEN_REQUESTED' && requestCopy);
+    let sendEmailCopy = form.settings.sendResponderCopy === 'ON_SUBMIT' ||  requestCopy;
     let releaseImmediate = form.settings.isQuiz && form.settings.releaseGrades === 'IMMEDIATELY';
-
     if ((sendEmailCopy || releaseImmediate) && targetEmail) {
       let html = `<div style="font-family: sans-serif; color: #333;">`;
       html += `<h2 style="color: #0078d4;">${form.title}</h2>`;
       html += `<p>Thank you for your submission.</p>`;
-
       if (releaseImmediate) {
         html += `<h3 style="background: #f3f2f1; padding: 10px; border-radius: 5px;">Your Score: <strong>${totalScore} / ${maxScore}</strong></h3>`;
       }
@@ -114,7 +123,7 @@ export const submitFormResponse = async (req, res) => {
       }
       html += `</div>`;
       
-      sendEmail(targetEmail, `Your response to ${form.title}`, html).catch(err => console.error(err));
+      sendEmail(targetEmail, `EmR: Your response to ${form.title}`, html).catch(err => console.error(err));
     }
 
     res.status(201).json({
@@ -122,6 +131,7 @@ export const submitFormResponse = async (req, res) => {
       score: releaseImmediate ? { totalScore, maxScore } : null
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Server error submitting form" });
   }
 };
@@ -170,7 +180,7 @@ export const getPublicForm = async (req, res) => {
 export const updateForm = async (req, res) => {
   try {
     const updatedForm = await Form.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.id },
+      { _id: req.params.id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -187,7 +197,7 @@ export const updateForm = async (req, res) => {
 
 export const deleteForm = async (req, res) => {
   try {
-    const deletedForm = await Form.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
+    const deletedForm = await Form.findOneAndDelete({ _id: req.params.id });
 
     if (!deletedForm) {
       return res.status(404).json({ message: "Form not found or unauthorized" });
@@ -205,7 +215,7 @@ export const deleteResponse = async (req, res) => {
     const response = await Response.findById(id);
     if (!response) return res.status(404).json({ message: "Response not found" });
 
-    const form = await Form.findOne({ _id: response.formId, userId: req.user.id });
+    const form = await Form.findOne({ _id: response.formId });
     if (!form) {
       return res.status(403).json({ message: "Unauthorized" });
     }
@@ -219,12 +229,7 @@ export const deleteResponse = async (req, res) => {
 
 export const getForms = async (req, res) => {
   try {
-    const forms = await Form.find({
-      $or: [
-        { userId: req.user.id },
-        { 'collaborators.user': req.user.id }
-      ]
-    })
+    const forms = await Form.find()
       .select('title description createdAt updatedAt settings.acceptingResponses')
       .sort({ updatedAt: -1 });
     res.status(200).json(forms);
@@ -236,11 +241,7 @@ export const getForms = async (req, res) => {
 export const getFormById = async (req, res) => {
   try {
     const form = await Form.findOne({
-      _id: req.params.id,
-      $or: [
-        { userId: req.user.id },
-        { 'collaborators.user': req.user.id }
-      ]
+      _id: req.params.id
     });
     if (!form) return res.status(404).json({ message: "Form not found" });
     res.status(200).json(form);
@@ -262,11 +263,7 @@ export const checkExistingSubmission = async (req, res) => {
 export const getFormResponses2 = async (req, res) => {
   try {
     const form = await Form.findOne({
-      _id: req.params.id,
-      $or: [
-        { userId: req.user.id },
-        { 'collaborators.user': req.user.id }
-      ]
+      _id: req.params.id
     });
     if (!form) return res.status(404).json({ message: "Form not found" });
 

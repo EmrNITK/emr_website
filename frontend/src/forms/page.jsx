@@ -272,8 +272,7 @@ export default function PublicForm() {
         respondentEmail,
         requestCopy
       }, {
-        headers: isAuthenticated ? { Authorization: localStorage.getItem('token') } : {},
-      });
+       withCredentials: true});
       
       setSubmissionResult(response.data);
       setIsSubmitted(true);

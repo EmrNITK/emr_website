@@ -1156,7 +1156,6 @@ export default function FormBuilder({ initialFormId = null }) {
                                     >
                                         <option value="OFF">Off</option>
                                         <option value="ON_SUBMIT">On submission</option>
-                                        <option value="ON_GRADE">When grades released</option>
                                     </select>
                                 </div>
                                 <div className="pt-4 space-y-3">
