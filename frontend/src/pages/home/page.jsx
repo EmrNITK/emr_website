@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Zap, Calendar, Image as ImageIcon, ChevronRight, Terminal,
+  Zap, Calendar, Image as ImageIcon, ChevronRight, ChevronLeft, Terminal,
   CircuitBoard, School, ExternalLink, ArrowRight, ArrowUpRight, Edit, Star
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -136,10 +136,45 @@ const Card = ({ children, className = "" }) => (
   </div>
 );
 
-const PageSkeleton = () => <div className="min-h-screen bg-black text-white pt-24 pb-12 flex items-center justify-center">Loading...</div>;
+// New Structured Skeleton
+const PageSkeleton = () => (
+  <div className="min-h-screen bg-black text-white pt-24 pb-12 flex flex-col items-center gap-20 px-6 overflow-hidden w-full">
+    {/* Hero Skeleton */}
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center space-y-8 mt-10">
+      <div className="h-8 w-40 bg-white/10 rounded-full animate-pulse" />
+      <div className="h-24 md:h-40 w-full max-w-2xl bg-white/10 rounded-2xl animate-pulse" />
+      <div className="h-6 w-3/4 max-w-md bg-white/10 rounded-full animate-pulse" />
+      <div className="flex gap-4">
+        <div className="h-12 w-32 bg-white/10 rounded-xl animate-pulse" />
+        <div className="h-12 w-32 bg-white/10 rounded-xl animate-pulse" />
+      </div>
+    </div>
+    
+    {/* Happening Now Skeleton */}
+    <div className="w-full max-w-5xl mx-auto space-y-6">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-4 w-32 bg-white/10 rounded-full animate-pulse" />
+        <div className="h-10 w-64 bg-white/10 rounded-full animate-pulse" />
+      </div>
+      <div className="h-64 md:h-80 w-full bg-white/10 rounded-3xl animate-pulse" />
+    </div>
+
+    {/* Section Cards Skeleton */}
+    <div className="w-full max-w-7xl mx-auto space-y-6">
+      <div className="flex flex-col items-center gap-3 mb-10">
+        <div className="h-4 w-32 bg-white/10 rounded-full animate-pulse" />
+        <div className="h-10 w-64 bg-white/10 rounded-full animate-pulse" />
+      </div>
+      <div className="flex flex-wrap justify-center gap-5">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="w-full max-w-md h-[400px] bg-white/10 rounded-xl animate-pulse" />
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 // --- CSS Animation for Infinite Marquee ---
-// Injecting styles directly so you don't need to touch your globals.css
 const MarqueeStyles = () => (
   <style>
     {`
@@ -148,7 +183,7 @@ const MarqueeStyles = () => (
         100% { transform: translateX(-50%); } 
       }
       .animate-scroll {
-        animation: scroll 30s linear infinite; /* Adjust 30s to change speed */
+        animation: scroll 30s linear infinite;
       }
       .animate-scroll:hover {
         animation-play-state: paused;
@@ -157,7 +192,6 @@ const MarqueeStyles = () => (
   </style>
 );
 
-
 // --- Main Page ---
 
 const EMRHomePage = () => {
@@ -165,13 +199,25 @@ const EMRHomePage = () => {
     workshops: [], events: [], projects: [], gallery: [], team: [], sponsor: [], current: [] 
   });
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { user, isLoading } = useAuth();
   
   // Embla Carousel Setup for Happening Now
-  const [emblaRef] = useEmblaCarousel(
+  const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'center', containScroll: 'trimSnaps' }, 
-    [Autoplay({ delay: 5000, stopOnInteraction: false })] // Slightly longer delay for reading
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
   );
+
+  // Arrow click handlers
+  const scrollPrev = useCallback(() => { if (emblaApi) emblaApi.scrollPrev(); }, [emblaApi]);
+  const scrollNext = useCallback(() => { if (emblaApi) emblaApi.scrollNext(); }, [emblaApi]);
+
+  // Handle Resize for responsive sponsor logic
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -189,8 +235,12 @@ const EMRHomePage = () => {
 
   if (loading) return <PageSkeleton />;
 
-  // Double the sponsors array to create a seamless infinite loop
-  const marqueeSponsors = data.sponsor ? [...data.sponsor, ...data.sponsor, ...data.sponsor] : [];
+  // Sponsor Logic: Only animate if sponsors exceed threshold (2 for mobile, 4 for desktop)
+  const sponsorThreshold = isMobile ? 2 : 4;
+  const shouldAnimateSponsors = data.sponsor && data.sponsor.length > sponsorThreshold;
+  const displaySponsors = shouldAnimateSponsors 
+    ? [...data.sponsor, ...data.sponsor, ...data.sponsor] 
+    : data.sponsor || [];
 
   return (
     <div className="relative min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749] overflow-x-hidden">
@@ -229,62 +279,73 @@ const EMRHomePage = () => {
           <section className="w-full max-w-5xl mx-auto py-8 px-6">
             <SectionHeader title="Happening Now" subtitle="Live & Upcoming" />
             
-            <div className="overflow-hidden w-full cursor-grab active:cursor-grabbing rounded-3xl border border-[#51b749]/20 bg-gradient-to-br from-[#111111] to-[#0a0a0a] shadow-[0_0_40px_-15px_rgba(81,183,73,0.3)]" ref={emblaRef}>
-              <div className="flex touch-pan-y">
-                {data.current.map((item, idx) => (
-                  // Full width item (100%)
-                  <div key={idx} className="flex-[0_0_100%] min-w-0">
-                    <div className="relative p-6 md:p-14 flex flex-col justify-center min-h-[200px]">
-                      
-                      {/* Decorative Background Glows */}
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-[#51b749]/5 rounded-full blur-3xl" />
-                      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#13703a]/10 rounded-full blur-3xl" />
-                      
-                      <div className="relative z-10 flex flex-col gap-4 text-center items-center">
-                        <div className="flex justify-center items-center flex-wrap gap-3">
-                          {item.status === 'LIVE' ? (
-                            <Badge className="uppercase text-xs md:text-sm font-bold tracking-widest px-4 py-1.5 bg-red-500 text-white animate-pulse flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-white animate-ping" /> LIVE NOW
-                            </Badge>
-                          ) : (
-                            <Badge className="uppercase text-xs md:text-sm font-bold tracking-widest px-3 py-1 bg-[#51b749] text-black flex items-center gap-1">
-                               <Star size={14} /> UPCOMING
-                            </Badge>
-                          )}
-                          <span className="text-xs md:text-sm font-mono text-white/60 uppercase tracking-widest px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                            {item.collectionType}
-                          </span>
-                        </div>
-                        
-                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mt-1 tracking-tight">
-                          {item.title}
-                        </h3>
-                        
-                        <p className="text-sm md:text-xl text-gray-400 mt-2 max-w-3xl leading-relaxed">
-                          {item.description || item.tagline}
-                        </p>
-                        
-                        <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-6">
-                          <span className="text-[#51b749] font-mono text-base md:text-lg flex items-center gap-2 bg-[#51b749]/10 px-6 py-3 rounded-xl border border-[#51b749]/20">
-                            <Calendar size={20}/>
-                            {item.collectionType === 'event' 
-                              ? new Date(item.targetDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric'})
-                              : item.details?.date || "TBA"}
-                          </span>
+            <div className="relative group">
+              {/* Added Left/Right Navigation Arrows */}
+              <button onClick={scrollPrev} className="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 bg-black/60 backdrop-blur-md p-2 md:p-3 rounded-full border border-white/10 text-white/70 hover:text-white hover:border-[#51b749] opacity-0 group-hover:opacity-100 transition-all z-20 hover:scale-110 shadow-lg">
+                <ChevronLeft size={24} />
+              </button>
+              
+              <button onClick={scrollNext} className="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 bg-black/60 backdrop-blur-md p-2 md:p-3 rounded-full border border-white/10 text-white/70 hover:text-white hover:border-[#51b749] opacity-0 group-hover:opacity-100 transition-all z-20 hover:scale-110 shadow-lg">
+                <ChevronRight size={24} />
+              </button>
 
-                          {item.regLink && (
-                             <a href={item.regLink} target="_blank" rel="noreferrer" className="z-20 w-full sm:w-auto">
-                               <Button variant="solid" className="w-full !py-3 !px-8 text-base shadow-[0_0_25px_-5px_rgba(81,183,73,0.6)]">
-                                 Secure Your Spot <ArrowUpRight size={18}/>
-                               </Button>
-                             </a>
-                          )}
+              <div className="overflow-hidden w-full cursor-grab active:cursor-grabbing rounded-3xl border border-[#51b749]/20 bg-gradient-to-br from-[#111111] to-[#0a0a0a] shadow-[0_0_40px_-15px_rgba(81,183,73,0.3)]" ref={emblaRef}>
+                <div className="flex touch-pan-y">
+                  {data.current.map((item, idx) => (
+                    // Full width item (100%)
+                    <div key={idx} className="flex-[0_0_100%] min-w-0">
+                      <div className="relative p-6 md:p-14 flex flex-col justify-center min-h-[200px]">
+                        
+                        {/* Decorative Background Glows */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#51b749]/5 rounded-full blur-3xl" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#13703a]/10 rounded-full blur-3xl" />
+                        
+                        <div className="relative z-10 flex flex-col gap-4 text-center items-center">
+                          <div className="flex justify-center items-center flex-wrap gap-3">
+                            {item.status === 'LIVE' ? (
+                              <Badge className="uppercase text-xs md:text-sm font-bold tracking-widest px-4 py-1.5 bg-red-500 text-white animate-pulse flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-white animate-ping" /> LIVE NOW
+                              </Badge>
+                            ) : (
+                              <Badge className="uppercase text-xs md:text-sm font-bold tracking-widest px-3 py-1 bg-[#51b749] text-black flex items-center gap-1">
+                                 <Star size={14} /> UPCOMING
+                              </Badge>
+                            )}
+                            <span className="text-xs md:text-sm font-mono text-white/60 uppercase tracking-widest px-3 py-1 bg-white/5 rounded-full border border-white/10">
+                              {item.collectionType}
+                            </span>
+                          </div>
+                          
+                          <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mt-1 tracking-tight">
+                            {item.title}
+                          </h3>
+                          
+                          <p className="text-sm md:text-xl text-gray-400 mt-2 max-w-3xl leading-relaxed">
+                            {item.description || item.tagline}
+                          </p>
+                          
+                          <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-6">
+                            <span className="text-[#51b749] font-mono text-base md:text-lg flex items-center gap-2 bg-[#51b749]/10 px-6 py-3 rounded-xl border border-[#51b749]/20">
+                              <Calendar size={20}/>
+                              {item.collectionType === 'event' 
+                                ? new Date(item.targetDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric'})
+                                : item.details?.date || "TBA"}
+                            </span>
+
+                            {item.regLink && (
+                               <a href={item.regLink} target="_blank" rel="noreferrer" className="z-20 w-full sm:w-auto">
+                                 <Button variant="solid" className="w-full !py-3 !px-8 text-base shadow-[0_0_25px_-5px_rgba(81,183,73,0.6)]">
+                                   Secure Your Spot <ArrowUpRight size={18}/>
+                                 </Button>
+                               </a>
+                            )}
+                          </div>
                         </div>
+
                       </div>
-
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </section>
@@ -384,9 +445,6 @@ const EMRHomePage = () => {
                              <Button className="w-full">Register <ExternalLink size={16} /></Button>
                            </a>
                          )}
-                         {/* {event.status === 'completed' && (
-                           <span className="inline-block text-white/40 text-sm font-medium bg-white/5 px-4 py-2 rounded-xl border border-white/5">Event Concluded</span>
-                         )} */}
                       </div>
                     </div>
                   </Card>
@@ -396,8 +454,6 @@ const EMRHomePage = () => {
             <SeeMore sectionName="Events" />
           </section>
         )}
-
-        {/* --- PROJECTS omitted for brevity --- */}
         
         {/* --- ASYMMETRICAL GALLERY --- */}
         {data.gallery?.length > 0 && (
@@ -423,7 +479,7 @@ const EMRHomePage = () => {
           </section>
         )}
 
-        {/* --- SPONSORS (CONTINUOUS MARQUEE) --- */}
+        {/* --- SPONSORS (CONDITIONAL MARQUEE) --- */}
         {data.sponsor?.length > 0 && (
           <section className="w-full py-16 relative overflow-hidden bg-black/50 border-y border-white/5">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#13703a]/5 to-transparent blur-3xl -z-10" />
@@ -437,14 +493,19 @@ const EMRHomePage = () => {
               </h2>
             </div>
 
-            {/* Continuous Scrolling Track */}
-            <div className="relative flex overflow-x-hidden w-full group">
-              {/* Left/Right Fade Masks */}
-              <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-black to-transparent z-10" />
-              <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-black to-transparent z-10" />
+            {/* Conditionally apply the overflow and track styles based on whether we should animate */}
+            <div className={`relative flex w-full group ${shouldAnimateSponsors ? 'overflow-x-hidden' : 'justify-center'}`}>
+              
+              {/* Only show Left/Right Fade Masks if it's actually scrolling */}
+              {shouldAnimateSponsors && (
+                <>
+                  <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-black to-transparent z-10" />
+                  <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-black to-transparent z-10" />
+                </>
+              )}
 
-              <div className="flex animate-scroll w-[200%] gap-8 sm:gap-16 items-center px-6">
-                {marqueeSponsors.map((sp, idx) => (
+              <div className={`flex ${shouldAnimateSponsors ? 'animate-scroll w-max gap-8 sm:gap-16 px-6 items-center' : 'flex-wrap justify-center gap-8 sm:gap-16 px-6 w-full'}`}>
+                {displaySponsors.map((sp, idx) => (
                   <div key={`${sp._id}-${idx}`} className="w-48 md:w-64 shrink-0 flex flex-col items-center justify-center">
                     <a href={sp.website} target="_blank" rel="noreferrer" className="flex flex-col items-center group/logo w-full">
                       <div className="w-full h-36 p-4 rounded-xl bg-white/[0.02] border border-white/5 group-hover/logo:bg-white/[0.05] group-hover/logo:border-[#51b749]/30 transition-all duration-300 flex items-center justify-center">
