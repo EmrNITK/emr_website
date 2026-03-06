@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Search, Loader2, Play, ChevronDown, Image as ImageIcon, Film } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Loader2, Play, ChevronDown, Image as ImageIcon, Film } from 'lucide-react';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import ReactPlayer from 'react-player';
 import MediaUploader from '../components/ImageUploader';
 
-// --- HELPER: Smart Video Detection ---
 const isVideoMedia = (item) => {
   if (item?.mediaType === 'video') return true;
   if (item?.src && typeof item.src === 'string') {
@@ -21,43 +20,43 @@ const isVideoMedia = (item) => {
   return false;
 };
 
+const isVideoUrl = (url) => {
+  if (!url) return false;
+  return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url);
+};
+
 const Gallery = () => {
   const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
   const title = "Gallery";
   const endpoint = "gallery";
 
-  // --- STATE ---
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Pagination & Filtering
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [filters, setFilters] = useState({ search: '', category: '', year: '' });
 
-  // Options (Dynamic Categories/Years)
   const [options, setOptions] = useState({ categories: [], years: [] });
   const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
   const [newOptionData, setNewOptionData] = useState({ type: 'category', value: '' });
 
-  // Main Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [formData, setFormData] = useState({});
   
-  // Video Player State
+  const [globalData, setGlobalData] = useState({ category: '', year: '' });
+  const [batchItems, setBatchItems] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const [playingVideo, setPlayingVideo] = useState(null);
 
-  // Infinite Scroll Observer
   const observer = useRef();
 
   const token = localStorage.getItem('token');
   const headers = { Authorization: token };
 
-  // Reusable Input Class
   const inputClass = "w-full bg-black border border-white/10 rounded-lg p-3 text-white focus:border-[#51b749] focus:ring-1 focus:ring-[#51b749] outline-none transition-all placeholder:text-white/20";
 
-  // --- INITIAL DATA FETCHING ---
   useEffect(() => {
     fetchOptions();
   }, []);
@@ -80,7 +79,7 @@ const Gallery = () => {
         categories: res.data.categories.map(c => c.value),
         years: res.data.years.map(y => y.value)
       });
-    } catch (err) { console.error("Failed to load options"); }
+    } catch (err) {}
   };
 
   const fetchItems = async (pageNum, isReset) => {
@@ -116,25 +115,95 @@ const Gallery = () => {
     if (node) observer.current.observe(node);
   }, [loading, hasMore]);
 
-  // --- CRUD HANDLERS ---
+  const handleUploadUrls = (urls) => {
+    const urlArray = Array.isArray(urls) ? urls : [urls];
+    
+    const newBatchItems = urlArray.map(url => ({
+      src: url,
+      title: '',
+      description: '',
+      mediaType: isVideoUrl(url) ? 'video' : 'image'
+    }));
+
+    setBatchItems(prev => [...prev, ...newBatchItems]);
+  };
+
+  const updateBatchItem = (index, field, value) => {
+    const updated = [...batchItems];
+    updated[index][field] = value;
+    setBatchItems(updated);
+  };
+
+  const removeBatchItem = (index) => {
+    setBatchItems(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (batchItems.length === 0) {
+      return toast.error("Please upload at least one media item");
+    }
+
+    if (!globalData.category || !globalData.year) {
+      return toast.error("Please select a global category and year");
+    }
+
+    setIsSubmitting(true);
+
     try {
       if (editingItem) {
-        await axios.put(`${API_URL}/${endpoint}/${editingItem._id}`, formData, { headers, withCredentials: true });
+        const itemData = { ...batchItems[0], category: globalData.category, year: globalData.year };
+        await axios.put(`${API_URL}/${endpoint}/${editingItem._id}`, itemData, { headers, withCredentials: true });
+        setItems(items.map(i => i._id === editingItem._id ? { ...i, ...itemData } : i));
         toast.success("Updated successfully", { style: { background: '#111', color: '#fff', border: '1px solid rgba(81,183,73,0.3)' }});
-        setItems(items.map(i => i._id === editingItem._id ? { ...i, ...formData } : i));
       } else {
-        const res = await axios.post(`${API_URL}/${endpoint}`, formData, { headers, withCredentials: true });
-        toast.success("Created successfully", { style: { background: '#111', color: '#fff', border: '1px solid rgba(81,183,73,0.3)' }});
-        setItems([res.data, ...items]);
+        const promises = batchItems.map(item => {
+          const payload = {
+            ...item,
+            category: globalData.category,
+            year: globalData.year,
+            title: item.title || 'Untitled'
+          };
+          return axios.post(`${API_URL}/${endpoint}`, payload, { headers, withCredentials: true });
+        });
+
+        const results = await Promise.all(promises);
+        const newCreatedItems = results.map(res => res.data);
+        setItems([...newCreatedItems, ...items]);
+        toast.success(`Created ${newCreatedItems.length} items successfully`, { style: { background: '#111', color: '#fff', border: '1px solid rgba(81,183,73,0.3)' }});
       }
+
       setIsModalOpen(false);
-      setEditingItem(null);
-      setFormData({});
+      resetModalState();
     } catch (err) { 
       toast.error("Operation failed", { style: { background: '#111', color: '#fff', border: '1px solid rgba(239,68,68,0.3)' }}); 
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const resetModalState = () => {
+    setEditingItem(null);
+    setBatchItems([]);
+    setGlobalData({ category: '', year: '' });
+  };
+
+  const openCreateModal = () => {
+    resetModalState();
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (item) => {
+    setEditingItem(item);
+    setGlobalData({ category: item.category || '', year: item.year || '' });
+    setBatchItems([{
+      src: item.src,
+      title: item.title || '',
+      description: item.description || '',
+      mediaType: item.mediaType || (isVideoMedia(item) ? 'video' : 'image')
+    }]);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -154,7 +223,7 @@ const Gallery = () => {
       await axios.post(`${API_URL}/options`, newOptionData, { headers, withCredentials: true });
       toast.success(`Added ${newOptionData.type}`, { style: { background: '#111', color: '#fff', border: '1px solid rgba(81,183,73,0.3)' }});
       fetchOptions();
-      setFormData({ ...formData, [newOptionData.type]: newOptionData.value });
+      setGlobalData({ ...globalData, [newOptionData.type]: newOptionData.value });
       setIsOptionModalOpen(false);
       setNewOptionData({ type: 'category', value: '' });
     } catch (err) { 
@@ -162,25 +231,36 @@ const Gallery = () => {
     }
   };
 
+  const handleDeleteOption = async (type, value) => {
+    if (!window.confirm(`Are you sure you want to delete the ${type} "${value}"?`)) return;
+    try {
+      await axios.delete(`${API_URL}/options/${type}/${value}`, { headers, withCredentials: true });
+      toast.success(`Deleted ${type}`, { style: { background: '#111', color: '#fff', border: '1px solid rgba(81,183,73,0.3)' }});
+      fetchOptions();
+      if (globalData[type] === value) setGlobalData({ ...globalData, [type]: '' });
+      if (filters[type] === value) setFilters({ ...filters, [type]: '' });
+    } catch (err) {
+      toast.error("Failed to delete option", { style: { background: '#111', color: '#fff', border: '1px solid rgba(239,68,68,0.3)' }});
+    }
+  };
+
   return (
     <div className="p-4 md:p-8 min-h-screen relative z-10 w-full selection:bg-[#51b749]/30 selection:text-[#51b749]">
       <Toaster position="bottom-right" />
 
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-white/10 pb-6">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-white">{title}</h2>
           <p className="text-white/60 mt-1">Manage your {title.toLowerCase()} content</p>
         </div>
         <button 
-          onClick={() => { setEditingItem(null); setFormData({ mediaType: 'image' }); setIsModalOpen(true); }} 
+          onClick={openCreateModal} 
           className="flex items-center gap-2 bg-[#51b749]/80 hover:bg-[#38984c] text-white px-5 py-2.5 rounded-lg font-medium shadow-[0_0_20px_-5px_rgba(19,112,58,0.5)] transition-all active:scale-95"
         >
           <Plus size={20} /> Add New
         </button>
       </div>
 
-      {/* Filters Bar */}
       <div className="bg-[#111111] border border-white/5 p-4 rounded-xl mb-8 flex flex-wrap gap-4 items-center">
         
         <div className="relative flex-1 min-w-[150px]">
@@ -207,7 +287,6 @@ const Gallery = () => {
           <ChevronDown className="absolute right-3 top-3 text-white/40 pointer-events-none" size={16} />
         </div>
 
-        {/* Reset Filters */}
         {(filters.search || filters.category || filters.year) && (
           <button 
             onClick={() => setFilters({ search: '', category: '', year: '' })} 
@@ -218,7 +297,6 @@ const Gallery = () => {
         )}
       </div>
 
-      {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {items.map((item, index) => {
           const isLast = items.length === index + 1;
@@ -262,9 +340,7 @@ const Gallery = () => {
                   <button 
                     onClick={(e) => { 
                       e.stopPropagation(); 
-                      setEditingItem(item); 
-                      setFormData({ ...item, mediaType: isVideo ? 'video' : 'image' }); 
-                      setIsModalOpen(true); 
+                      openEditModal(item);
                     }} 
                     className="p-2 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-white hover:bg-[#51b749]/20 hover:text-[#51b749] hover:border-[#51b749]/50 transition-all"
                   >
@@ -309,7 +385,6 @@ const Gallery = () => {
         </div>
       )}
 
-      {/* --- ADD/EDIT ITEM MODAL --- */}
       <AnimatePresence>
         {isModalOpen && (
           <motion.div
@@ -318,10 +393,10 @@ const Gallery = () => {
           >
             <motion.div
               initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
-              className="bg-[#111111] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-[0_0_40px_rgba(0,0,0,0.8)] custom-scrollbar flex flex-col"
+              className="bg-[#111111] border border-white/10 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-[0_0_40px_rgba(0,0,0,0.8)] custom-scrollbar flex flex-col"
             >
-              <div className="p-6 border-b border-white/10 flex justify-between items-center sticky top-0 bg-[#111111] z-20">
-                <h3 className="text-xl font-bold text-white tracking-tight">{editingItem ? 'Edit' : 'Create'} Gallery Item</h3>
+              <div className="p-6 border-b border-white/10 flex justify-between items-center sticky top-0 bg-[#111111] z-30">
+                <h3 className="text-xl font-bold text-white tracking-tight">{editingItem ? 'Edit' : 'Batch Upload'} Gallery</h3>
                 <button 
                   type="button" 
                   onClick={() => setIsModalOpen(false)}
@@ -331,31 +406,34 @@ const Gallery = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+              <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
                 
-                <div>
-                  <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">Title</label>
-                  <input 
-                    className={inputClass}
-                    value={formData.title || ''} 
-                    onChange={e => setFormData({ ...formData, title: e.target.value })} 
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/5 p-6 rounded-xl border border-white/10">
+                  <div className="md:col-span-2">
+                    <h4 className="text-sm font-bold text-white mb-1">Global Settings</h4>
+                    <p className="text-xs text-white/50 mb-4">These settings will be applied to all uploaded media in this batch.</p>
+                  </div>
+                  
                   <div>
                     <label className="text-xs font-semibold text-white/70 uppercase tracking-wider flex justify-between items-center mb-1.5">
-                      Category
-                      <button type="button" onClick={() => { setNewOptionData({ type: 'category', value: '' }); setIsOptionModalOpen(true); }} className="text-[#51b749] hover:text-[#38984c] text-[10px] flex items-center gap-1 font-bold transition-colors">
-                        <Plus size={12} /> ADD NEW
-                      </button>
+                      Apply Category
+                      <div className="flex items-center gap-3">
+                        {globalData.category && (
+                          <button type="button" onClick={() => handleDeleteOption('category', globalData.category)} className="text-red-400 hover:text-red-500 transition-colors">
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                        <button type="button" onClick={() => { setNewOptionData({ type: 'category', value: '' }); setIsOptionModalOpen(true); }} className="text-[#51b749] hover:text-[#38984c] text-[10px] flex items-center gap-1 font-bold transition-colors">
+                          <Plus size={12} /> ADD NEW
+                        </button>
+                      </div>
                     </label>
                     <div className="relative">
                       <select 
                         className={`${inputClass} appearance-none cursor-pointer`}
-                        value={formData.category || ''} onChange={e => setFormData({ ...formData, category: e.target.value })} required 
+                        value={globalData.category} onChange={e => setGlobalData({ ...globalData, category: e.target.value })} required 
                       >
-                        <option value="" disabled className="bg-black text-white/50">Select Category</option>
+                        <option value="" disabled className="bg-black text-white/50">Select Category for All</option>
                         {options.categories.map(c => <option key={c} value={c} className="bg-black text-white">{c}</option>)}
                       </select>
                       <ChevronDown className="absolute right-3 top-3.5 text-white/40 pointer-events-none" size={16} />
@@ -364,17 +442,24 @@ const Gallery = () => {
 
                   <div>
                     <label className="text-xs font-semibold text-white/70 uppercase tracking-wider flex justify-between items-center mb-1.5">
-                      Year
-                      <button type="button" onClick={() => { setNewOptionData({ type: 'year', value: '' }); setIsOptionModalOpen(true); }} className="text-[#51b749] hover:text-[#38984c] text-[10px] flex items-center gap-1 font-bold transition-colors">
-                        <Plus size={12} /> ADD NEW
-                      </button>
+                      Apply Year
+                      <div className="flex items-center gap-3">
+                        {globalData.year && (
+                          <button type="button" onClick={() => handleDeleteOption('year', globalData.year)} className="text-red-400 hover:text-red-500 transition-colors">
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                        <button type="button" onClick={() => { setNewOptionData({ type: 'year', value: '' }); setIsOptionModalOpen(true); }} className="text-[#51b749] hover:text-[#38984c] text-[10px] flex items-center gap-1 font-bold transition-colors">
+                          <Plus size={12} /> ADD NEW
+                        </button>
+                      </div>
                     </label>
                     <div className="relative">
                       <select 
                         className={`${inputClass} appearance-none cursor-pointer`}
-                        value={formData.year || ''} onChange={e => setFormData({ ...formData, year: e.target.value })} required 
+                        value={globalData.year} onChange={e => setGlobalData({ ...globalData, year: e.target.value })} required 
                       >
-                        <option value="" disabled className="bg-black text-white/50">Select Year</option>
+                        <option value="" disabled className="bg-black text-white/50">Select Year for All</option>
                         {options.years.map(y => <option key={y} value={y} className="bg-black text-white">{y}</option>)}
                       </select>
                       <ChevronDown className="absolute right-3 top-3.5 text-white/40 pointer-events-none" size={16} />
@@ -382,53 +467,74 @@ const Gallery = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-xs font-semibold text-white/70 uppercase tracking-wider block mb-2">Media Type</label>
-                  <div className="flex gap-4">
-                    <label className="flex flex-1 items-center justify-center gap-2 cursor-pointer bg-black px-4 py-3 border border-white/10 rounded-lg hover:border-white/20 hover:bg-white/5 transition-all has-[:checked]:border-[#51b749] has-[:checked]:bg-[#51b749]/10">
-                      <input 
-                        type="radio" 
-                        name="mediaType"
-                        checked={formData.mediaType === 'image' || !formData.mediaType} 
-                        onChange={() => setFormData({...formData, mediaType: 'image', src: ''})} 
-                        className="accent-[#51b749] w-4 h-4"
-                      />
-                      <span className="font-medium text-white/80"><ImageIcon size={16} className="inline mr-1 mb-0.5 text-[#51b749]"/> Image</span>
-                    </label>
-                    <label className="flex flex-1 items-center justify-center gap-2 cursor-pointer bg-black px-4 py-3 border border-white/10 rounded-lg hover:border-white/20 hover:bg-white/5 transition-all has-[:checked]:border-[#51b749] has-[:checked]:bg-[#51b749]/10">
-                      <input 
-                        type="radio" 
-                        name="mediaType"
-                        checked={formData.mediaType === 'video'} 
-                        onChange={() => setFormData({...formData, mediaType: 'video', src: ''})} 
-                        className="accent-[#51b749] w-4 h-4"
-                      />
-                      <span className="font-medium text-white/80"><Film size={16} className="inline mr-1 mb-0.5 text-[#51b749]"/> Video</span>
-                    </label>
+                {!editingItem && (
+                  <div>
+                    <MediaUploader 
+                      multiple={true}
+                      width={1500} 
+                      onUpload={handleUploadUrls} 
+                    />
                   </div>
-                </div>
+                )}
 
-                <div className="pt-2">
-                  <MediaUploader 
-                    currentMedia={formData.src} 
-                    mediaType={formData.mediaType || 'image'} 
-                    width={1500} 
-                    onUpload={(url) => setFormData({ ...formData, src: url })} 
-                  />
-                </div>
+                {batchItems.length > 0 && (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-white mb-4 border-b border-white/10 pb-2">
+                      Media Details ({batchItems.length})
+                    </h4>
+                    
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                      {batchItems.map((item, index) => (
+                        <div key={index} className="flex flex-col sm:flex-row gap-4 bg-black/50 p-4 rounded-xl border border-white/10 relative group">
+                          
+                          <div className="w-full sm:w-32 h-32 rounded-lg overflow-hidden bg-black shrink-0 relative border border-white/5">
+                            {item.mediaType === 'video' ? (
+                              <video src={item.src} className="w-full h-full object-cover" />
+                            ) : (
+                              <img src={item.src} alt="Preview" className="w-full h-full object-cover" />
+                            )}
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              {!editingItem && (
+                                <button type="button" onClick={() => removeBatchItem(index)} className="p-2 bg-red-500/80 rounded-full text-white hover:bg-red-500">
+                                  <Trash2 size={14} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
 
-                <div>
-                  <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">Description</label>
-                  <textarea 
-                    className={`${inputClass} min-h-[100px] resize-none`}
-                    value={formData.description || ''} 
-                    onChange={e => setFormData({ ...formData, description: e.target.value })} 
-                  />
-                </div>
+                          <div className="flex-1 space-y-3">
+                            <div>
+                              <input 
+                                placeholder="Title (e.g. Campus Event)"
+                                className={`${inputClass} py-2 text-sm`}
+                                value={item.title} 
+                                onChange={e => updateBatchItem(index, 'title', e.target.value)} 
+                              />
+                            </div>
+                            <div>
+                              <textarea 
+                                placeholder="Description (Optional)"
+                                className={`${inputClass} py-2 text-sm min-h-[60px] resize-none`}
+                                value={item.description} 
+                                onChange={e => updateBatchItem(index, 'description', e.target.value)} 
+                              />
+                            </div>
+                          </div>
 
-                <div className="pt-4 border-t border-white/10">
-                  <button type="submit" className="w-full bg-[#51b749]/80 text-white font-medium py-3 rounded-lg hover:bg-[#38984c] shadow-[0_0_20px_-5px_rgba(19,112,58,0.5)] transition-all active:scale-95">
-                    {editingItem ? 'Save Changes' : 'Upload Media'}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-4 border-t border-white/10 sticky bottom-0 bg-[#111111] pb-2 z-20">
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full bg-[#51b749]/80 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-lg hover:bg-[#38984c] shadow-[0_0_20px_-5px_rgba(19,112,58,0.5)] transition-all active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {isSubmitting ? 'Saving...' : editingItem ? 'Save Changes' : `Upload ${batchItems.length} Items`}
                   </button>
                 </div>
               </form>
@@ -437,7 +543,6 @@ const Gallery = () => {
         )}
       </AnimatePresence>
 
-      {/* --- SMALL MODAL FOR ADDING CATEGORY/YEAR --- */}
       <AnimatePresence>
         {isOptionModalOpen && (
           <motion.div
@@ -465,7 +570,6 @@ const Gallery = () => {
         )}
       </AnimatePresence>
 
-      {/* --- VIDEO PLAYER MODAL --- */}
       <AnimatePresence>
         {playingVideo && (
           <motion.div
@@ -509,7 +613,6 @@ const Gallery = () => {
       </AnimatePresence>
 
       <style jsx global>{`
-        /* Custom Scrollbar for Modal & Page */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }

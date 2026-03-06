@@ -134,7 +134,7 @@ const TeamPage = () => {
     setFormData(item || {
       name: '', role: '', image: '',
       linkedin: '', instagram: '', github: '', bio: '',
-      rank: members.length + 1, year: activeYear,
+      rank: 1, year: activeYear,
       isExistingUser: false, userId: null
     });
 
@@ -402,7 +402,7 @@ const TeamPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">Position / Role</label>
-                        <input className={inputClass} value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} required placeholder="e.g. Lead Developer" />
+                        <input className={inputClass} value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} placeholder="e.g. Lead Developer" />
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">Team Year</label>

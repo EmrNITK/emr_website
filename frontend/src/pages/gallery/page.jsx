@@ -98,6 +98,8 @@ const FilterPill = ({ children, active, onClick, icon: Icon }) => (
 
 // --- GALLERY CARD (THUMBNAIL) ---
 
+// --- GALLERY CARD (THUMBNAIL) ---
+
 const GalleryCard = React.forwardRef(({ item, onOpen, index }, ref) => {
   const isVideo = isVideoMedia(item);
   const videoRef = useRef(null);
@@ -139,8 +141,14 @@ const GalleryCard = React.forwardRef(({ item, onOpen, index }, ref) => {
               playsInline
               className="relative z-10 w-full h-auto object-cover transition-transform duration-700 ease-in-out group-hover:scale-105 group-hover:contrast-110"
             />
-            {/* Play Icon Indicator for Videos */}
-            <div className="absolute inset-0 z-15 flex items-center justify-center pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
+            
+            {/* NEW: Top-Left Play Icon Indicator */}
+            <div className="absolute top-3 left-3 z-30 bg-black/60 backdrop-blur-md p-2 rounded-lg border border-white/10 transition-transform group-hover:scale-110">
+              <Play size={14} fill="white" className="text-white" />
+            </div>
+
+            {/* Center Play Icon Indicator (Optional: kept from your original code) */}
+            <div className="absolute inset-0 z-15 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
                <div className="bg-black/50 backdrop-blur-md p-4 rounded-full">
                  <Play size={24} fill="white" className="text-white ml-1" />
                </div>
@@ -155,7 +163,7 @@ const GalleryCard = React.forwardRef(({ item, onOpen, index }, ref) => {
           />
         )}
 
-        {/* Overlay - Desktop */}
+        {/* Overlay - Desktop Info */}
         <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
           <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
             <p className="text-[#51b749] text-[10px] font-mono uppercase tracking-widest mb-2 flex items-center gap-2">
@@ -166,7 +174,7 @@ const GalleryCard = React.forwardRef(({ item, onOpen, index }, ref) => {
           </div>
         </div>
 
-        {/* Mobile Icon Hint */}
+        {/* Mobile/Right-side Hint (kept from your original code) */}
         <div className="absolute top-3 right-3 z-20 md:hidden bg-black/50 backdrop-blur rounded-full p-2">
           {isVideo ? <Play size={14} className="text-white" /> : <ZoomIn size={14} className="text-white" />}
         </div>
@@ -534,9 +542,9 @@ const GalleryPage = () => {
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#38984c]/10 blur-[120px] rounded-full mix-blend-screen"></div>
       </div>
 
-      <header className="sticky top-0 z-30 sm:pt-24 pt-16 px-6 mx-auto space-y-6 bg-black">
+      <header className="sticky top-0 z-30 sm:pt-20 pt-16 px-6 mx-auto space-y-6 bg-black">
         <div className="mx-auto py-2 max-w-6xl">
-          <div className="flex items-center gap-4 mt-2 px-0 md:px-8 w-full">
+          <div className="flex items-center gap-4 mt-2 px-0 md:px-8 mx-auto max-w-[400px]">
             <FilterDropdown
               label="Years"
               options={options.years}
@@ -546,7 +554,7 @@ const GalleryPage = () => {
               classNames={'min-w-[140px]'}
             />
             <div className="flex items-center gap-2 w-full">
-              <div className="md:hidden w-full">
+              <div className="w-full">
                 <FilterDropdown
                   label="Categories"
                   options={options.categories}
@@ -556,13 +564,13 @@ const GalleryPage = () => {
                   classNames={'w-full'}
                 />
               </div>
-              <div className="hidden md:flex items-center gap-2">
+              {/* <div className="hidden md:flex items-center gap-2">
                 <span className="text-white/40 mr-2"><Layers size={14} /></span>
                 <FilterPill active={filters.category === ''} onClick={() => handleFilterChange('category', '')}>All</FilterPill>
                 {options.categories.map(cat => (
                   <FilterPill key={cat} active={filters.category === cat} onClick={() => handleFilterChange('category', cat)}>{cat}</FilterPill>
                 ))}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

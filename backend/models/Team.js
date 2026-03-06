@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const teamSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // Null if entirely new
   name: { type: String, required: true },
-  role: { type: String, required: true }, // Position
+  role: { type: String}, // Position
   image: { type: String, default: '' },
   year: { type: Number, default: new Date().getFullYear() },
   rank: { type: Number, default: 99 },

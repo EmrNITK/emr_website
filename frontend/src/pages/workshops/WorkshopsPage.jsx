@@ -148,8 +148,8 @@ const WorkshopsPage = () => {
     fetchWorkshops();
   }, []);
 
-  const upcomingWorkshops = workshops.filter(w => w.section === 'upcoming');
-  const pastWorkshops = workshops.filter(w => w.section !== 'upcoming');
+  const upcomingWorkshops = workshops.filter(w => w.status === 'upcoming');
+  const pastWorkshops = workshops.filter(w => w.status !== 'upcoming');
 
   return (
 <div className="min-h-screen bg-black text-white font-sans selection:bg-[#51b749]/30 selection:text-[#51b749]">

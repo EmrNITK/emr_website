@@ -45,3 +45,12 @@ export const createOption = async (req, res) => {
     res.json(newOption);
   } catch (err) { res.status(500).json({ error: "Creation failed" }); }
 };
+
+export const deleteOption = async (req, res) => {
+  const { type, value } = req.params;
+  try {
+    const deleted = await GalleryOption.findOneAndDelete({ type, value });
+    if (!deleted) return res.status(404).json({ error: "Option not found" });
+    res.json({ message: "Option deleted successfully" });
+  } catch (err) { res.status(500).json({ error: "Deletion failed" }); }
+};

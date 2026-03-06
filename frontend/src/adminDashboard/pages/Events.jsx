@@ -12,6 +12,9 @@ import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 import 'react-markdown-editor-lite/lib/index.css';
 
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
 const API_URL = import.meta.env.VITE_API_BASE_URL+'/api';
 const mdParser = new MarkdownIt({ html: true, linkify: true, typographer: true });
 
@@ -27,7 +30,6 @@ const Events = () => {
   const token = localStorage.getItem('token');
   const headers = { Authorization: token };
 
-  // Reusable input class
   const inputClass = "w-full bg-black border border-white/10 rounded-lg p-3 text-white focus:border-[#51b749] focus:ring-1 focus:ring-[#51b749] outline-none transition-all placeholder:text-white/20";
 
   useEffect(() => { fetchItems(); }, []);
@@ -51,13 +53,14 @@ const Events = () => {
     setFormData(newData);
   };
 
-  // --- LIST HANDLERS (Rules/Prizes) ---
   const handleListChange = (field, index, value) => {
     const list = [...(formData[field] || [])];
     list[index] = value;
     setFormData({ ...formData, [field]: list });
   };
+  
   const addListItem = (field) => setFormData({ ...formData, [field]: [...(formData[field]||[]), ""] });
+  
   const removeListItem = (field, index) => {
     const list = [...(formData[field] || [])];
     list.splice(index, 1);
@@ -110,7 +113,6 @@ const Events = () => {
     <div className="p-4 md:p-8 min-h-screen relative z-10 w-full selection:bg-[#51b749]/30 selection:text-[#51b749]">
       <Toaster position="bottom-right" />
 
-      {/* --- HEADER --- */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 border-b border-white/10 pb-6 gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-white">Events</h2>
@@ -168,7 +170,6 @@ const Events = () => {
         </div>
       )}
 
-      {/* --- MODAL --- */}
       <AnimatePresence>
         {isModalOpen && (
           <motion.div 
@@ -196,7 +197,6 @@ const Events = () => {
 
               <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
                 
-                {/* --- BASIC INFO --- */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">Title</label>
@@ -237,16 +237,22 @@ const Events = () => {
                               <div className="absolute right-3 top-3.5 pointer-events-none text-white/40 text-xs">▼</div>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">Event Date & Time</label>
-                            <input type="datetime-local" className={`${inputClass} [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert`}
-                                value={formData.targetDate ? new Date(formData.targetDate).toISOString().slice(0, 16) : ''} 
-                                onChange={(e) => handleInputChange('targetDate', e.target.value)} />
+                        <div className="space-y-2 flex flex-col">
+                            <label className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Event Date & Time</label>
+                            <DatePicker
+                                selected={formData.targetDate ? new Date(formData.targetDate) : null}
+                                onChange={(date) => handleInputChange('targetDate', date)}
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={15}
+                                dateFormat="MMMM d, yyyy h:mm aa"
+                                className={inputClass}
+                                placeholderText="Select Date & Time"
+                            />
                         </div>
                     </div>
                 </div>
 
-                {/* --- LINKS & MEDIA --- */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-white/5">
                     <div className="space-y-4">
                         <div className="space-y-2">
@@ -272,7 +278,6 @@ const Events = () => {
                     </div>
                 </div>
 
-                {/* --- LISTS (PRIZES & RULES) --- */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-white/5">
                     <div className="bg-white/5 p-5 rounded-xl border border-white/5">
                         <div className="flex justify-between items-center mb-4">
@@ -312,7 +317,6 @@ const Events = () => {
                     </div>
                 </div>
 
-                {/* --- DESCRIPTIONS --- */}
                 <div className="space-y-2 pt-2 border-t border-white/5">
                     <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">Short Description</label>
                     <textarea className={`${inputClass} h-24 resize-none`}
@@ -328,7 +332,6 @@ const Events = () => {
                    </div>
                 </div>
 
-                {/* --- FOOTER --- */}
                 <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
                   <button 
                     type="button" 
@@ -350,16 +353,13 @@ const Events = () => {
         )}
       </AnimatePresence>
 
-      {/* --- DARK MODE OVERRIDES FOR MARKDOWN EDITOR & SCROLLBAR --- */}
       <style jsx global>{`
-        /* Main Container */
         .rc-md-editor { 
             background-color: #111111 !important; 
             border: none !important; 
             color: #fff !important;
         }
         
-        /* Toolbar */
         .rc-md-editor .rc-md-navigation { 
             background-color: rgba(255,255,255,0.03) !important; 
             border-bottom: 1px solid rgba(255,255,255,0.05) !important; 
@@ -373,7 +373,6 @@ const Events = () => {
             border-radius: 4px;
         }
 
-        /* Editing Area */
         .rc-md-editor .editor-container .section { 
             background-color: #000000 !important; 
         }
@@ -385,7 +384,6 @@ const Events = () => {
             padding: 16px !important;
         }
 
-        /* Preview Area */
         .rc-md-editor .custom-html-style {
             padding: 20px;
             color: rgba(255,255,255,0.8); 
@@ -402,11 +400,59 @@ const Events = () => {
         .rc-md-editor .custom-html-style pre { background-color: #000000; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
         .rc-md-editor .custom-html-style blockquote { border-left: 4px solid #51b749; padding-left: 1rem; color: rgba(255,255,255,0.5); }
 
-        /* Custom Scrollbar for Modal */
         .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(81,183,73,0.5); }
+
+        .react-datepicker {
+          background-color: #111111;
+          border: 1px solid rgba(255,255,255,0.1);
+          font-family: inherit;
+        }
+        .react-datepicker__header {
+          background-color: #000000;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .react-datepicker__current-month, 
+        .react-datepicker-time__header, 
+        .react-datepicker-year-header {
+          color: #fff;
+        }
+        .react-datepicker__day-name {
+          color: rgba(255,255,255,0.5);
+        }
+        .react-datepicker__day, 
+        .react-datepicker__time-name {
+          color: rgba(255,255,255,0.8);
+        }
+        .react-datepicker__day:hover, 
+        .react-datepicker__month-text:hover, 
+        .react-datepicker__quarter-text:hover, 
+        .react-datepicker__year-text:hover {
+          background-color: rgba(81,183,73,0.2);
+        }
+        .react-datepicker__day--selected, 
+        .react-datepicker__day--keyboard-selected,
+        .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item--selected {
+          background-color: #51b749 !important;
+          color: #fff !important;
+        }
+        .react-datepicker__time-container {
+          border-left: 1px solid rgba(255,255,255,0.1);
+        }
+        .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
+          color: rgba(255,255,255,0.8);
+        }
+        .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item:hover {
+          background-color: rgba(81,183,73,0.2);
+        }
+        .react-datepicker__time {
+          background-color: #111111 !important;
+        }
+        .react-datepicker__input-container {
+          width: 100%;
+        }
       `}</style>
     </div>
   );

@@ -38,7 +38,8 @@ router.get('/team', teamCtrl.getTeam);
 router.get('/forms/public/:id', getPublicForm);
 router.post('/forms/public/:id', submitFormResponse);
 
-router.post('/options',auth, genericCtrl.createOption);
+router.post('/options', auth, genericCtrl.createOption);
+router.delete('/options/:type/:value', auth, genericCtrl.deleteOption);
 router.get('/team/search-users', teamCtrl.searchUsers);
 router.post('/team',auth, teamCtrl.createTeamMember);
 router.put('/team/:id',auth, teamCtrl.updateTeamMember);

@@ -20,17 +20,14 @@ const COLORS = {
 // --- SKELETON LOADER ---
 const MemberSkeleton = () => {
   return (
-    <div className="flex flex-col items-center w-full sm:w-72 md:w-80 p-4 rounded-2xl border border-white/5 bg-[#111111] animate-pulse">
-      {/* Image Placeholder - UPDATED TO CIRCLE */}
+    <div className="flex flex-col items-center w-full sm:w-72 md:w-80 h-full p-4 rounded-2xl border border-white/5 bg-[#111111] animate-pulse">
       <div className="w-48 h-48 rounded-full bg-white/10 mb-6 border border-white/5 mx-auto" />
-      
-      {/* Text Lines (Centered) */}
-      <div className="flex flex-col items-center w-full space-y-3 pb-2">
-        <div className="h-6 w-32 bg-white/10 rounded" /> {/* Name */}
-        <div className="h-5 w-20 bg-white/5 rounded" /> {/* Role Badge */}
+      <div className="flex flex-col items-center w-full space-y-3 pb-2 flex-grow">
+        <div className="h-6 w-32 bg-white/10 rounded" />
+        <div className="h-5 w-20 bg-white/5 rounded" />
         <div className="space-y-1 w-full flex flex-col items-center pt-1">
-          <div className="h-3 w-48 bg-white/5 rounded" /> {/* Bio Line 1 */}
-          <div className="h-3 w-36 bg-white/5 rounded" /> {/* Bio Line 2 */}
+          <div className="h-3 w-48 bg-white/5 rounded" />
+          <div className="h-3 w-36 bg-white/5 rounded" />
         </div>
       </div>
     </div>
@@ -45,17 +42,18 @@ const MemberCard = ({ member }) => {
         hidden: { opacity: 0, scale: 0.9, y: 30 },
         visible: { opacity: 1, scale: 1, y: 0 }
       }}
-      className="group relative flex flex-col items-center w-full sm:w-72 md:w-80"
+      // Added flex to allow the inner div to stretch to full height
+      className="group relative flex w-full sm:w-72 md:w-80"
     >
-      {/* Card Content Wrapper */}
-      <div className="relative w-full p-4 rounded-2xl border border-white/5 bg-[#111111] backdrop-blur-sm group-hover:bg-[#151515] group-hover:border-[#51b749]/30 transition-all duration-500 overflow-hidden">
+      {/* Added h-full and flex/flex-col to ensure it expands */}
+      <div className="relative flex flex-col w-full h-full p-4 rounded-2xl border border-white/5 bg-[#111111] backdrop-blur-sm group-hover:bg-[#151515] group-hover:border-[#51b749]/30 transition-all duration-500 overflow-hidden">
         
         {/* Decorative Corner Markers */}
         <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-[#51b749]/30 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-[#51b749]/30 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        {/* Image Frame - UPDATED TO CIRCLE */}
-        <div className="relative w-48 h-48 mx-auto overflow-hidden rounded-full bg-black mb-6 border border-white/5 group-hover:border-[#51b749]/50 transition-colors duration-500">
+        {/* Image Frame */}
+        <div className="relative w-48 h-48 mx-auto overflow-hidden rounded-full bg-black mb-6 border border-white/5 group-hover:border-[#51b749]/50 transition-colors duration-500 flex-shrink-0">
           
           {/* Hover Gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#13703a]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
@@ -92,9 +90,8 @@ const MemberCard = ({ member }) => {
           </div>
         </div>
 
-        {/* Info Block */}
-        <div className="flex flex-col items-center text-center space-y-3 pb-2">
-          
+        {/* Info Block - flex-grow pushes this to fill remaining space */}
+        <div className="flex flex-col items-center text-center space-y-3 pb-2 flex-grow">
           <div className="space-y-1">
             <h3 className="text-xl font-bold text-white group-hover:text-[#51b749] transition-colors">
               {member.name}
@@ -102,11 +99,11 @@ const MemberCard = ({ member }) => {
             <div className="h-0.5 w-12 bg-[#51b749]/50 mx-auto rounded-full group-hover:w-24 transition-all duration-500"></div>
           </div>
           
-          <div className="inline-flex items-center px-2.5 py-1 rounded bg-black/40 border border-white/5">
+          {member.role && <div className="inline-flex items-center px-2.5 py-1 rounded bg-black/40 border border-white/5">
             <span className="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em] font-mono">
-              {member.role || 'MEMBER'}
+              {member.role}
             </span>
-          </div>
+          </div>}
           
           {member.bio && (
             <p className="text-xs text-white/60 leading-relaxed line-clamp-2 max-w-[200px]">
@@ -127,7 +124,7 @@ const TeamPage = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const { user, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   
   const membersCache = useRef({});
   const dropdownRef = useRef(null);
@@ -159,19 +156,38 @@ const TeamPage = () => {
     init();
   }, []);
 
+  // Sort and randomize logic
+  const shuffleAndSortMembers = (membersArray) => {
+    return [...membersArray].sort((a, b) => {
+      const rankA = a.rank || 99;
+      const rankB = b.rank || 99;
+      
+      // If ranks are identical, randomly shuffle them
+      if (rankA === rankB) {
+        return Math.random() - 0.5; 
+      }
+      
+      // Otherwise, maintain standard ascending rank order
+      return rankA - rankB;
+    });
+  };
+
   const fetchMembersByYear = async (year) => {
     setActiveYear(year);
     setIsDropdownOpen(false);
+    
+    // If we have cached data, shuffle and set it
     if (membersCache.current[year]) {
-      setMembers(membersCache.current[year]);
+      setMembers(shuffleAndSortMembers(membersCache.current[year]));
       return;
     }
+    
     setLoading(true);
     try {
       const res = await axios.get(`${API_URL}/team`, { params: { year } });
-      const sorted = res.data.sort((a, b) => (a.rank || 99) - (b.rank || 99));
-      membersCache.current[year] = sorted;
-      setMembers(sorted);
+      // Store raw, unsorted data in cache so it can be re-shuffled freshly next time
+      membersCache.current[year] = res.data; 
+      setMembers(shuffleAndSortMembers(res.data));
     } catch (err) {
       console.error("Failed to load year", year);
     } finally {
@@ -206,29 +222,9 @@ const TeamPage = () => {
       </section>
 
       {/* --- STICKY NAVIGATION --- */}
-      <div className="sticky top-0 z-50 py-4 mb-10">
+      <div className="sticky top-14 z-50 py-4 mb-10">
         <div className="mx-auto px-6 flex justify-center">
           
-          {/* DESKTOP VIEW: Premium Pills */}
-          {/* <div className="hidden md:flex flex-wrap gap-3">
-            {availableYears.map((year) => (
-              <button
-                key={year}
-                onClick={() => fetchMembersByYear(year)}
-                className={`group relative px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 border ${
-                  activeYear === year 
-                    ? 'text-white border-[#51b749] bg-[#51b749]/10 shadow-[0_0_15px_rgba(81,183,73,0.2)]' 
-                    : 'text-white/40 border-white/5 hover:border-white/20 hover:text-white bg-white/5'
-                }`}
-              >
-                {year}
-                {activeYear === year && (
-                  <motion.div layoutId="activeGlow" className="absolute inset-0 rounded-full bg-[#51b749]/10 blur-md -z-10" />
-                )}
-              </button>
-            ))}
-          </div> */}
-
           {/* MOBILE VIEW: Modern Dropdown */}
           <div className="w-[280px]" ref={dropdownRef}>
             <div className="relative">
@@ -276,11 +272,12 @@ const TeamPage = () => {
 
       {/* --- MEMBER CONTAINER --- */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 min-h-[50vh]">
-        <div className="flex flex-wrap justify-center gap-8">
+        {/* Added items-stretch here so flex children will naturally fill height */}
+        <div className="flex flex-wrap justify-center gap-8 items-stretch">
           {loading ? (
             <>{[...Array(6)].map((_, i) => <MemberSkeleton key={i} />)}</>
           ) : members.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 opacity-50 border border-dashed border-white/10 rounded-3xl w-full max-w-2xl">
+            <div className="flex flex-col items-center justify-center py-20 opacity-50 border border-dashed border-white/10 rounded-3xl w-full max-w-2xl h-full">
                <Terminal size={48} className="mb-4 text-white/30"/>
                <p className="text-white/60 font-mono text-sm uppercase tracking-widest">No records found for {activeYear}</p>
             </div>

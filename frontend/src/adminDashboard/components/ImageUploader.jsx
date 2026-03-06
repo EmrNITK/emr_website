@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, FileImage, FileVideo, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, FileImage, FileVideo, CheckCircle, AlertCircle, Images } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import heic2any from 'heic2any';
 
 // --- Helper: Resize & Convert to WebP (IMAGES ONLY) ---
 const processImage = (file, targetWidth = 800, quality = 0.8) => {
@@ -31,7 +32,7 @@ const processImage = (file, targetWidth = 800, quality = 0.8) => {
 
         canvas.toBlob((blob) => {
           if (!blob) return reject(new Error('Conversion failed'));
-          const fileNameWithoutExt = file.name.split('.').slice(0, -1).join('.');
+          const fileNameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
           const newFileName = `${fileNameWithoutExt}.webp`;
           
           const newFile = new File([blob], newFileName, { 
@@ -47,61 +48,108 @@ const processImage = (file, targetWidth = 800, quality = 0.8) => {
   });
 };
 
-const MediaUploader = ({ onUpload, currentMedia, mediaType = 'image', width = 800 }) => {
+// --- Helper: Detect Video from URL ---
+const isVideoUrl = (url) => {
+  if (!url) return false;
+  return /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url);
+};
+
+// --- Helper: Detect HEIC File ---
+const isHeic = (file) => {
+  return file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic');
+};
+
+const MediaUploader = ({ onUpload, currentMedia, width = 800, multiple = false }) => {
   const [status, setStatus] = useState('idle'); 
   const [progress, setProgress] = useState(0);
+  const [activeType, setActiveType] = useState('image'); 
   const API_URL = import.meta.env.VITE_API_BASE_URL + '/api';
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    const file = acceptedFiles[0];
-    if (!file) return;
+    if (!acceptedFiles?.length) return;
+
+    // Enforce single file if not in multiple mode
+    const filesToProcess = multiple ? acceptedFiles : [acceptedFiles[0]];
 
     try {
+      // Determine what type of files we are processing for the loading text
+      const hasVideo = filesToProcess.some(f => f.type.startsWith('video/'));
+      const hasImage = filesToProcess.some(f => !f.type.startsWith('video/'));
+      setActiveType(hasVideo && hasImage ? 'mixed' : hasVideo ? 'video' : 'image');
+      
       setStatus('processing');
       setProgress(0);
       
-      let fileToUpload = file;
+      // 1. Process all files (HEIC conversion + WebP compression for images)
+      const processedFiles = await Promise.all(filesToProcess.map(async (file) => {
+        const isVideo = file.type.startsWith('video/');
+        if (isVideo) return file;
 
-      // Only run the heavy image processing if it's actually an image
-      if (mediaType === 'image' && file.type.startsWith('image/')) {
-        fileToUpload = await processImage(file, width);
-      }
+        let fileToUpload = file;
+
+        if (isHeic(file)) {
+          const convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.8 });
+          const singleBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+          fileToUpload = new File([singleBlob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg', lastModified: Date.now() });
+        }
+
+        if (fileToUpload.type.startsWith('image/')) {
+          fileToUpload = await processImage(fileToUpload, width);
+        }
+        
+        return fileToUpload;
+      }));
 
       setStatus('uploading');
-      const formData = new FormData();
-      formData.append('file', fileToUpload, fileToUpload.name);
-
       const token = localStorage.getItem('token');
+      
+      // Track upload progress for all files simultaneously
+      const uploadProgresses = new Array(processedFiles.length).fill(0);
 
-      const res = await axios.post(`${API_URL}/upload`, formData, {
-        headers: { 
-          'Content-Type': 'multipart/form-data', 
-          Authorization: token 
-        },
-        withCredentials: true,
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setProgress(percentCompleted);
-        }
+      // 2. Upload all files concurrently
+      const uploadPromises = processedFiles.map((fileToUpload, index) => {
+        const formData = new FormData();
+        formData.append('file', fileToUpload, fileToUpload.name);
+
+        return axios.post(`${API_URL}/upload`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data', Authorization: token },
+          withCredentials: true,
+          onUploadProgress: (progressEvent) => {
+            uploadProgresses[index] = progressEvent.loaded / progressEvent.total;
+            const totalProgress = Math.round((uploadProgresses.reduce((a, b) => a + b, 0) / processedFiles.length) * 100);
+            setProgress(totalProgress);
+          }
+        }).then(res => res.data.url);
       });
 
-      onUpload(res.data.url);
+      const uploadedUrls = await Promise.all(uploadPromises);
+
+      // 3. Pass data back to parent
+      if (multiple) {
+        onUpload(uploadedUrls); // Returns an array of URLs
+      } else {
+        onUpload(uploadedUrls[0]); // Returns a single string URL
+      }
+
       setStatus('success');
-      toast.success("Uploaded successfully!");
+      toast.success(multiple && uploadedUrls.length > 1 ? `Uploaded ${uploadedUrls.length} files successfully!` : "Uploaded successfully!");
       
-      setTimeout(() => setStatus('idle'), 2000);
+      setTimeout(() => setStatus('idle'), 1200);
 
     } catch (err) {
       console.error(err);
       setStatus('error');
-      toast.error("Upload failed");
+      toast.error(err.message?.includes('HEIC') ? "Failed to process Apple image" : "Upload failed");
     }
-  }, [onUpload, width, API_URL, mediaType]);
+  }, [onUpload, width, API_URL, multiple]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
     onDrop, 
-    // Dynamically accept only the selected media type
-    accept: mediaType === 'video' ? { 'video/*': [] } : { 'image/*': [] },
+    multiple,
+    accept: { 
+      'image/*': ['.jpeg', '.png', '.webp', '.jpg', '.heic', '.HEIC'], 
+      'video/*': [] 
+    },
     disabled: status === 'processing' || status === 'uploading'
   });
 
@@ -109,9 +157,13 @@ const MediaUploader = ({ onUpload, currentMedia, mediaType = 'image', width = 80
     if (status === 'processing') {
       return (
         <div className="flex flex-col items-center justify-center space-y-3 animate-pulse">
-          {mediaType === 'video' ? <FileVideo className="w-10 h-10 text-yellow-500" /> : <FileImage className="w-10 h-10 text-yellow-500" />}
+          {activeType === 'video' ? <FileVideo className="w-10 h-10 text-yellow-500" /> : 
+           activeType === 'mixed' ? <Images className="w-10 h-10 text-yellow-500" /> :
+           <FileImage className="w-10 h-10 text-yellow-500" />}
           <p className="text-sm font-medium text-yellow-500">
-            {mediaType === 'video' ? 'Preparing Video...' : 'Optimizing & Converting...'}
+            {activeType === 'video' ? 'Preparing Video...' : 
+             activeType === 'mixed' ? 'Preparing Media...' : 
+             'Optimizing & Converting...'}
           </p>
         </div>
       );
@@ -152,29 +204,62 @@ const MediaUploader = ({ onUpload, currentMedia, mediaType = 'image', width = 80
       );
     }
 
-    // Default Idle / Preview State
-    if (currentMedia) {
-      return (
-        <div className="relative group w-full h-40">
-           {mediaType === 'video' ? (
-             <video src={currentMedia} className="w-full h-full object-cover rounded-lg bg-black" controls muted />
-           ) : (
-             <img src={currentMedia} alt="Current" className="w-full h-full object-cover rounded-lg" />
-           )}
-           <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg">
-             <Upload className="text-white mb-2" />
-             <span className="text-white text-xs font-bold uppercase tracking-widest">Change Media</span>
-           </div>
-        </div>
-      );
+    // Existing Media Previews
+    if (currentMedia && currentMedia.length > 0) {
+      const mediaArray = Array.isArray(currentMedia) ? currentMedia : [currentMedia];
+
+      // Multiple Preview Grid
+      if (multiple && mediaArray.length > 0) {
+        return (
+          <div className="relative group w-full h-full p-3 overflow-y-auto custom-scrollbar">
+             <div className="grid grid-cols-3 gap-2">
+               {mediaArray.map((url, idx) => (
+                 <div key={idx} className="relative aspect-square rounded-md overflow-hidden bg-black/40">
+                   {isVideoUrl(url) ? (
+                     <video src={url} className="w-full h-full object-cover" />
+                   ) : (
+                     <img src={url} alt={`Media ${idx}`} className="w-full h-full object-cover" />
+                   )}
+                 </div>
+               ))}
+             </div>
+             <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+               <Upload className="text-white mb-2" />
+               <span className="text-white text-xs font-bold uppercase tracking-widest">Add More Media</span>
+             </div>
+          </div>
+        );
+      }
+
+      // Single Preview
+      if (!multiple && mediaArray[0]) {
+        return (
+          <div className="relative group w-full h-full">
+             {isVideoUrl(mediaArray[0]) ? (
+               <video src={mediaArray[0]} className="w-full h-full object-cover rounded-xl bg-black" controls muted />
+             ) : (
+               <img src={mediaArray[0]} alt="Current Media" className="w-full h-full object-cover rounded-xl" />
+             )}
+             <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl">
+               <Upload className="text-white mb-2" />
+               <span className="text-white text-xs font-bold uppercase tracking-widest">Change Media</span>
+             </div>
+          </div>
+        );
+      }
     }
 
+    // Default Idle State
     return (
       <div className={`flex flex-col items-center transition-colors ${isDragActive ? 'text-blue-400' : 'text-zinc-400'}`}>
-        <Upload className="w-8 h-8 mb-3" />
-        <p className="text-sm font-medium">Click or Drag {mediaType === 'video' ? 'Video' : 'Image'}</p>
+        <div className="flex space-x-2 mb-3">
+            <FileImage className="w-6 h-6" />
+            {multiple && <Images className="w-6 h-6" />}
+            <FileVideo className="w-6 h-6" />
+        </div>
+        <p className="text-sm font-medium">Click or Drag {multiple ? 'Files' : 'Image / Video'}</p>
         <p className="text-xs text-zinc-600 mt-1">
-          {mediaType === 'video' ? 'Upload raw video file' : 'Auto-converted to WebP'}
+          Supports JPG, PNG, HEIC, and Video
         </p>
       </div>
     );
@@ -183,7 +268,7 @@ const MediaUploader = ({ onUpload, currentMedia, mediaType = 'image', width = 80
   return (
     <div className="space-y-2">
       <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
-        {mediaType === 'video' ? 'Video File' : 'Image / Poster'}
+        {multiple ? 'Media Upload (Multiple)' : 'Media Upload'}
       </label>
       
       <div 
